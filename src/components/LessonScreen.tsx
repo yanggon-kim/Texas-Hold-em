@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { LevelDef, LessonCard } from '../drills/types';
 import { DrillVisual } from './DrillVisual';
+import { LessonDiagram } from './LessonDiagram';
 
 interface Props {
   level: LevelDef;
@@ -54,6 +55,12 @@ export function LessonScreen({ level, onStartPractice, onExit }: Props) {
         </div>
 
         <p className="mt-3 text-slate-700 leading-relaxed">{card.definition}</p>
+
+        {card.diagram && (
+          <div className="mt-5 flex justify-center">
+            <LessonDiagram diagram={card.diagram} />
+          </div>
+        )}
 
         {card.example && (
           <div className="mt-5 flex justify-center">

@@ -42,15 +42,19 @@ describe('lessons produce well-formed cards', () => {
 });
 
 describe('Level 2 rankings lesson', () => {
-  it('covers all 10 hands, strongest first, with correct example cards', () => {
+  it('opens with a ladder overview, then all 10 hands strongest-first', () => {
     const cards = rankingsLesson(mulberry32(9));
-    expect(cards).toHaveLength(ALL_CATEGORIES.length);
-    // Strongest first: first example should be a Royal Flush (category 9).
-    const firstExample = cards[0].example?.cards;
+    // 1 overview card + 10 hand cards.
+    expect(cards).toHaveLength(ALL_CATEGORIES.length + 1);
+    expect(cards[0].diagram).toEqual({ kind: 'rankLadder' });
+
+    const handCards = cards.slice(1);
+    // First hand example should be a Royal Flush (category 9).
+    const firstExample = handCards[0].example?.cards;
     expect(firstExample).toBeDefined();
     expect(evaluateHand(firstExample!).category).toBe(9);
-    // Every card carries a Korean translation.
-    for (const card of cards) {
+    // Every hand card carries a Korean translation.
+    for (const card of handCards) {
       expect(card.korean, `${card.term} should have Korean`).toBeTruthy();
     }
   });
