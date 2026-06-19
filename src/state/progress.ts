@@ -66,12 +66,13 @@ function saveProgress(state: ProgressState): void {
   }
 }
 
-/** A level is unlocked if it's the first level or the previous one is mastered. */
-export function isUnlocked(state: ProgressState, levelId: number): boolean {
-  const index = LEVELS.findIndex((l) => l.id === levelId);
-  if (index <= 0) return true;
-  const prev = LEVELS[index - 1];
-  return state[prev.id]?.mastered ?? false;
+/**
+ * Whether a level is accessible. All levels are open — there is no lock; the
+ * `mastered` flag is kept only for progress display and stats. The signature is
+ * retained so callers don't need to change.
+ */
+export function isUnlocked(_state: ProgressState, _levelId: number): boolean {
+  return true;
 }
 
 /** Cumulative accuracy (%) for a level, or null if nothing practised yet. */
