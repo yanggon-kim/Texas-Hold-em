@@ -3,10 +3,11 @@ import type { LevelDef } from '../drills/types';
 interface Props {
   level: LevelDef;
   onStart: () => void;
+  onEndless: () => void;
   onExit: () => void;
 }
 
-export function IntroScreen({ level, onStart, onExit }: Props) {
+export function IntroScreen({ level, onStart, onEndless, onExit }: Props) {
   return (
     <div className="mx-auto max-w-xl px-4 py-8">
       <button onClick={onExit} className="text-sm text-slate-500 hover:text-slate-800 mb-6">
@@ -47,6 +48,16 @@ export function IntroScreen({ level, onStart, onExit }: Props) {
       >
         {level.lesson ? 'Start learning →' : 'Start drills →'}
       </button>
+
+      <button
+        onClick={onEndless}
+        className="mt-3 w-full rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-3 font-semibold text-indigo-700 hover:bg-indigo-100"
+      >
+        ∞ Endless practice
+      </button>
+      <p className="mt-2 text-center text-xs text-slate-400">
+        Endless practice runs unlimited questions so you can drill by repetition — no limit, stop any time.
+      </p>
     </div>
   );
 }

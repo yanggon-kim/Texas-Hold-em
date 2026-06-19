@@ -4,10 +4,11 @@ import { type ProgressState, isUnlocked } from '../state/progress';
 interface Props {
   progress: ProgressState;
   onPick: (levelId: number) => void;
+  onPractice: (levelId: number) => void;
   onReset: () => void;
 }
 
-export function LevelMap({ progress, onPick, onReset }: Props) {
+export function LevelMap({ progress, onPick, onPractice, onReset }: Props) {
   const masteredCount = LEVELS.filter((l) => progress[l.id]?.mastered).length;
 
   return (
@@ -26,15 +27,17 @@ export function LevelMap({ progress, onPick, onReset }: Props) {
           const unlocked = isUnlocked(progress, level.id);
           const mastered = state?.mastered ?? false;
           return (
-            <li key={level.id}>
+            <li
+              className={`flex items-center gap-3 rounded-2xl border p-4 transition ${
+                unlocked
+                  ? 'border-slate-200 bg-white shadow-sm hover:border-emerald-400 hover:shadow'
+                  : 'border-slate-200 bg-slate-100 opacity-70'
+              }`}
+            >
               <button
                 disabled={!unlocked}
                 onClick={() => onPick(level.id)}
-                className={`w-full flex items-center gap-4 rounded-2xl border p-4 text-left transition ${
-                  unlocked
-                    ? 'border-slate-200 bg-white shadow-sm hover:border-emerald-400 hover:shadow'
-                    : 'border-slate-200 bg-slate-100 opacity-70 cursor-not-allowed'
-                }`}
+                className="flex flex-1 items-center gap-4 text-left min-w-0 disabled:cursor-not-allowed"
               >
                 <div className="grid place-items-center w-12 h-12 rounded-xl bg-slate-100 text-2xl shrink-0">
                   {unlocked ? level.icon : '🔒'}
@@ -58,6 +61,15 @@ export function LevelMap({ progress, onPick, onReset }: Props) {
                   </div>
                 )}
               </button>
+              {unlocked && (
+                <button
+                  onClick={() => onPractice(level.id)}
+                  title="Endless practice"
+                  className="shrink-0 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100"
+                >
+                  ∞
+                </button>
+              )}
             </li>
           );
         })}
