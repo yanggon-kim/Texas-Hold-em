@@ -2,6 +2,7 @@ import { CATEGORY_NAME, evaluateHand, compareScores } from '../engine/handEvalua
 import { makeHandOfCategory } from '../engine/handFactory';
 import { type Drill, type Rng, shuffledOptions, sampleDistinct } from './types';
 import { ALL_CATEGORIES, CATEGORY_HINT } from './categories';
+import { ko, HAND_KOREAN } from '../data/korean';
 
 /** Level 2 — recognise and compare the ten poker hand rankings. */
 export function generateRankingDrill(rng: Rng): Drill {
@@ -21,7 +22,7 @@ export function generateRankingDrill(rng: Rng): Drill {
       visual: { cards },
       options,
       correctIndex,
-      explanation: `This is a ${correct} — ${CATEGORY_HINT[category]}.`,
+      explanation: `This is a ${correct} — ${CATEGORY_HINT[category]}. 🇰🇷 ${ko(HAND_KOREAN[category])}`,
     };
   }
 
@@ -46,6 +47,6 @@ export function generateRankingDrill(rng: Rng): Drill {
     },
     options,
     correctIndex,
-    explanation: `${CATEGORY_NAME[winnerCat]} beats ${CATEGORY_NAME[loserCat]}, because it ranks higher in the hand order.`,
+    explanation: `${CATEGORY_NAME[winnerCat]} beats ${CATEGORY_NAME[loserCat]}, because it ranks higher in the hand order. 🇰🇷 ${ko(HAND_KOREAN[winnerCat])} > ${ko(HAND_KOREAN[loserCat])}`,
   };
 }

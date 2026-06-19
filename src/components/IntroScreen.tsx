@@ -36,6 +36,7 @@ export function IntroScreen({ level, onStart, onExit }: Props) {
       </div>
 
       <p className="text-center text-sm text-slate-500 mb-5">
+        {level.lesson && 'First study the concepts, then practice. '}
         {level.drillsPerSession} questions · get {level.masteryNeeded} right to master this level.
         Miss one and you'll get extra practice on it.
       </p>
@@ -44,7 +45,7 @@ export function IntroScreen({ level, onStart, onExit }: Props) {
         onClick={onStart}
         className="w-full rounded-xl bg-emerald-600 px-6 py-3 text-lg font-semibold text-white shadow-sm hover:bg-emerald-700"
       >
-        Start drills →
+        {level.lesson ? 'Start learning →' : 'Start drills →'}
       </button>
     </div>
   );

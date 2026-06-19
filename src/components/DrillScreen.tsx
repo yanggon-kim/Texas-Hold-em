@@ -5,12 +5,13 @@ import { DrillVisual } from './DrillVisual';
 interface Props {
   level: LevelDef;
   onFinish: (correct: number, total: number) => void;
+  onReplay: () => void;
   onExit: () => void;
 }
 
 const rng = Math.random;
 
-export function DrillScreen({ level, onFinish, onExit }: Props) {
+export function DrillScreen({ level, onFinish, onReplay, onExit }: Props) {
   const base = level.drillsPerSession;
 
   // The queue starts with `base` questions; missing a base question appends
@@ -57,6 +58,7 @@ export function DrillScreen({ level, onFinish, onExit }: Props) {
         correct={baseCorrect}
         total={base}
         mastered={mastered}
+        onReplay={onReplay}
         onExit={onExit}
       />
     );
@@ -156,12 +158,14 @@ function SessionSummary({
   correct,
   total,
   mastered,
+  onReplay,
   onExit,
 }: {
   title: string;
   correct: number;
   total: number;
   mastered: boolean;
+  onReplay: () => void;
   onExit: () => void;
 }) {
   return (
@@ -184,12 +188,23 @@ function SessionSummary({
           </p>
         )}
       </div>
-      <button
-        onClick={onExit}
-        className="rounded-xl bg-slate-800 px-6 py-2.5 font-semibold text-white hover:bg-slate-900"
-      >
-        Back to levels
-      </button>
+      <div className="flex flex-col gap-3">
+        <button
+          onClick={onReplay}
+          className="rounded-xl bg-emerald-600 px-6 py-2.5 font-semibold text-white shadow-sm hover:bg-emerald-700"
+        >
+          🔁 Practice again
+        </button>
+        <button
+          onClick={onExit}
+          className="rounded-xl bg-slate-800 px-6 py-2.5 font-semibold text-white hover:bg-slate-900"
+        >
+          Back to levels
+        </button>
+      </div>
+      <p className="mt-4 text-xs text-slate-400">
+        Repetition is how it sticks — run it again to lock in the concepts.
+      </p>
     </div>
   );
 }

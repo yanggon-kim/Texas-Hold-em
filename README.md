@@ -22,9 +22,11 @@ Rules fluency (Milestones M0–M3) and game flow (M4):
 | 5 | Betting Actions | Check, bet, call, raise, fold — and when each applies |
 | 6 | Position | Why acting later wins; early vs. late play |
 
-Each level: a short concept intro → 10 randomized drills with instant Coach
-feedback → master it (8/10) to unlock the next. Miss a question and you get an
-extra practice rep. Progress is saved in your browser (`localStorage`).
+Each level: a short intro → a **Learn (study) stage** with definitions, worked
+examples, and **Korean translations** of the key terms → randomized drills with
+instant Coach feedback → master it to unlock the next. Miss a question and you
+get an extra practice rep, and you can **Practice again** any time to drill by
+repetition. Progress is saved in your browser (`localStorage`).
 
 Levels 7–10 (starting hands, pot odds, board reading, full table play vs. AI)
 are planned next — see the design doc.

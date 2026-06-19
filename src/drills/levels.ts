@@ -5,6 +5,14 @@ import { generateBestHandDrill } from './level03_bestHand';
 import { generateTableFlowDrill } from './level04_tableFlow';
 import { generateActionsDrill } from './level05_actions';
 import { generatePositionDrill } from './level06_position';
+import {
+  cardsLesson,
+  rankingsLesson,
+  bestHandLesson,
+  tableFlowLesson,
+  actionsLesson,
+  positionLesson,
+} from './lessons';
 
 /**
  * The curriculum.
@@ -22,6 +30,7 @@ export const LEVELS: LevelDef[] = [
       'Suits: ♠ spades and ♣ clubs are black; ♥ hearts and ♦ diamonds are red.',
       'Ranks run 2, 3, 4 … 10, then J, Q, K, A. The Ace is usually the highest.',
     ],
+    lesson: cardsLesson,
     generate: generateCardDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,
@@ -36,9 +45,10 @@ export const LEVELS: LevelDef[] = [
       'A higher category always beats a lower one — a Flush always beats a Straight.',
       'Learn to name a hand on sight and to compare two hands.',
     ],
+    lesson: rankingsLesson,
     generate: generateRankingDrill,
-    drillsPerSession: 10,
-    masteryNeeded: 8,
+    drillsPerSession: 12,
+    masteryNeeded: 9,
   },
   {
     id: 3,
@@ -50,6 +60,7 @@ export const LEVELS: LevelDef[] = [
       'Your hand is the best 5-card combination from those 7 cards.',
       'You can use both hole cards, one, or even none ("playing the board").',
     ],
+    lesson: bestHandLesson,
     generate: generateBestHandDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,
@@ -64,6 +75,7 @@ export const LEVELS: LevelDef[] = [
       'A hand runs Pre-flop → Flop (3 cards) → Turn (1 card) → River (1 card), with betting on each.',
       'If two or more players remain after the river, the showdown decides the winner.',
     ],
+    lesson: tableFlowLesson,
     generate: generateTableFlowDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,
@@ -78,6 +90,7 @@ export const LEVELS: LevelDef[] = [
       'You can only check when there is no bet in front of you.',
       'Facing a bet, your options are fold, call, or raise — never check.',
     ],
+    lesson: actionsLesson,
     generate: generateActionsDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,
@@ -92,6 +105,7 @@ export const LEVELS: LevelDef[] = [
       'Acting later means more information — the Button is the best seat, UTG the toughest.',
       'Play tight from early position and loosen up as you get closer to the button.',
     ],
+    lesson: positionLesson,
     generate: generatePositionDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,

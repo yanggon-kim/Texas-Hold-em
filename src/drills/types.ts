@@ -27,6 +27,25 @@ export interface Drill {
 export type Rng = () => number;
 export type DrillGenerator = (rng: Rng) => Drill;
 
+/**
+ * A teaching card shown in the Learn (study) stage before drills — a concept
+ * definition with an optional worked example and a Korean translation.
+ */
+export interface LessonCard {
+  /** The term/concept being taught, e.g. "Full House". */
+  term: string;
+  /** Short Korean translation, formatted "한글 (romanization)". */
+  korean?: string;
+  /** Plain-language definition. */
+  definition: string;
+  /** Optional example cards illustrating the concept. */
+  example?: DrillVisual;
+  /** Optional extra tip. */
+  note?: string;
+}
+
+export type LessonGenerator = (rng: Rng) => LessonCard[];
+
 /** A level in the curriculum. */
 export interface LevelDef {
   id: number;
@@ -35,6 +54,8 @@ export interface LevelDef {
   icon: string;
   /** Short concept bullets shown on the intro screen. */
   concept: string[];
+  /** Optional study stage: definitions + examples shown before the drills. */
+  lesson?: LessonGenerator;
   generate: DrillGenerator;
   /** How many base questions per session. */
   drillsPerSession: number;
