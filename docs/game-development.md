@@ -175,21 +175,54 @@ interface PlayerProgress {
 
 ## 7. Development Roadmap (milestones)
 
-- **M0 — Setup**: Vite + React + TS + Tailwind project, deploy a "Hello World"
-  to GitHub Pages so the deploy pipeline works end-to-end early.
-- **M1 — Engine**: `card`, `deck`, `handEvaluator` (best 5-of-7) with unit tests.
-  This is the foundation everything else depends on.
-- **M2 — Drill framework**: generic `DrillScreen`, scoring, feedback/Coach,
-  mastery check, `localStorage` progress.
-- **M3 — Levels 1–3**: cards, hand rankings, best-hand puzzles (rules fluency).
-- **M4 — Levels 4–6**: table flow, betting actions, position (game flow).
-- **M5 — Levels 7–9**: starting hands, outs/pot odds, board reading (strategy).
-- **M6 — Level 10**: simple AI opponents + guided full-hand play with coaching.
-- **M7 — Polish**: stats dashboard, badges/streaks, dark mode, responsive
-  mobile layout.
+**Status: all milestones complete.** The full 10-level curriculum plus the
+live table are shipped and merged to `main`. (Updated 2026-06-19.)
 
-> Ship after **M3** as a usable v0.1 (the rules-fluency core already teaches a
-> lot), then iterate.
+- ✅ **M0 — Setup**: Vite + React + TS + Tailwind project; builds and deploys.
+- ✅ **M1 — Engine**: `card`, `deck`, `handEvaluator` (best 5-of-7) + a verified
+  `handFactory`, all unit-tested.
+- ✅ **M2 — Drill framework**: `DrillScreen`, scoring, instant Coach feedback,
+  mastery gating, `localStorage` progress, light spaced repetition.
+- ✅ **M3 — Levels 1–3**: cards, hand rankings, best-hand puzzles (rules fluency).
+- ✅ **M4 — Levels 4–6**: table flow, betting actions, position (game flow).
+- ✅ **M5 — Levels 7–9**: starting hands, outs/pot odds, board reading (strategy),
+  backed by `startingHands.ts` and `board.ts`.
+- ✅ **M6 — Level 10**: live table vs. AI (`game.ts` + `bot.ts` + `TableScreen`)
+  with an on-table coach, **3 bot difficulty levels**, and **side-pot** support.
+- ✅ **M7 — Polish (partial)**: per-skill **stats dashboard**, a **Learn (study)
+  stage** with visual-aid diagrams, **Korean term** translations, and an
+  **Endless Practice** mode. (Remaining nice-to-haves below.)
+
+### Shipped beyond the original plan
+- **Learn stage** before drills: definitions, worked examples, and schematic
+  diagrams (suits chart, rank strip, hand-ranking ladder, betting-rounds
+  timeline, poker-table position diagram).
+- **Korean translations** of key terms (Hangul + romanization), reinforced in
+  drill explanations.
+- **Endless Practice** mode for unlimited repetition per level.
+- **Stats dashboard**: per-skill accuracy, recent-session trend, weakest-area
+  flag, from both mastery and endless sessions.
+
+### Still open (nice-to-have)
+- Badges / streaks / daily-practice reminder.
+- Dark mode.
+- Side-pot UI breakdown on the table (engine already computes pots; the table
+  shows an aggregate summary).
+- Hand-history review with coaching notes.
+
+> Shipped after **M3** as a usable v0.1, then iterated through to M6.
+
+---
+
+## Test coverage snapshot
+
+81 unit tests (Vitest) cover the pure logic:
+- hand evaluation (categories, best 5-of-7, tie-breaking), the deck/shuffle,
+  and the verified hand factory;
+- drill/lesson generators (well-formed across many seeds);
+- starting-hand classification and board reading (flush/pair/nuts);
+- progress accumulation; and the game engine (chip conservation across full
+  hands at every bot difficulty, blinds, fold-wins, and side-pot splits).
 
 ---
 
