@@ -28,6 +28,11 @@ instant Coach feedback → master it to unlock the next. Miss a question and you
 get an extra practice rep, and you can **Practice again** any time to drill by
 repetition. Progress is saved in your browser (`localStorage`).
 
+Two practice modes per level: a **mastery session** (gates the next level) and
+**∞ Endless practice** (unlimited questions). A **📊 stats dashboard** tracks
+per-skill accuracy, questions answered, a recent-session trend, and flags your
+weakest area.
+
 Levels 7–10 (starting hands, pot odds, board reading, full table play vs. AI)
 are planned next — see the design doc.
 

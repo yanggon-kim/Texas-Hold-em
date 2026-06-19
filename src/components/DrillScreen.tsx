@@ -4,11 +4,17 @@ import { DrillVisual } from './DrillVisual';
 
 export type DrillMode = 'mastery' | 'endless';
 
+export interface SessionOutcome {
+  mode: DrillMode;
+  correct: number;
+  answered: number;
+}
+
 interface Props {
   level: LevelDef;
   mode: DrillMode;
-  /** Called when a mastery session ends (records progress). */
-  onFinish: (correct: number, total: number) => void;
+  /** Called once when a session ends (mastery or endless), to record stats. */
+  onComplete: (outcome: SessionOutcome) => void;
   /** Restart the session in the same mode. */
   onReplay: () => void;
   onExit: () => void;
@@ -16,7 +22,7 @@ interface Props {
 
 const rng = Math.random;
 
-export function DrillScreen({ level, mode, onFinish, onReplay, onExit }: Props) {
+export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props) {
   const isEndless = mode === 'endless';
   const base = level.drillsPerSession;
 
@@ -58,11 +64,16 @@ export function DrillScreen({ level, mode, onFinish, onReplay, onExit }: Props) 
     }
     if (nextIndex >= queue.length) {
       setFinished(true);
-      onFinish(baseCorrect, base);
+      onComplete({ mode: 'mastery', correct: baseCorrect, answered: base });
     } else {
       setIndex(nextIndex);
       setSelected(null);
     }
+  }
+
+  function endEndless() {
+    setFinished(true);
+    onComplete({ mode: 'endless', correct: totalCorrect, answered: answeredCount });
   }
 
   if (finished) {
@@ -126,7 +137,7 @@ export function DrillScreen({ level, mode, onFinish, onReplay, onExit }: Props) 
       <div className="mt-5 flex items-center justify-between">
         {isEndless ? (
           <button
-            onClick={() => setFinished(true)}
+            onClick={endEndless}
             className="rounded-xl px-4 py-2.5 font-medium text-slate-500 hover:bg-slate-100"
           >
             End practice

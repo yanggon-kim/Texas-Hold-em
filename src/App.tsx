@@ -5,20 +5,27 @@ import { LevelMap } from './components/LevelMap';
 import { IntroScreen } from './components/IntroScreen';
 import { LessonScreen } from './components/LessonScreen';
 import { DrillScreen, type DrillMode } from './components/DrillScreen';
+import { StatsDashboard } from './components/StatsDashboard';
 
 type View =
   | { name: 'map' }
+  | { name: 'stats' }
   | { name: 'intro'; levelId: number }
   | { name: 'lesson'; levelId: number }
   | { name: 'drill'; levelId: number; mode: DrillMode };
 
 export default function App() {
-  const { progress, recordSession, reset } = useProgress();
+  const { progress, recordResult, reset } = useProgress();
   const [view, setView] = useState<View>({ name: 'map' });
   // Bumped to remount the drill screen for a fresh practice session.
   const [sessionKey, setSessionKey] = useState(0);
 
   const goMap = () => setView({ name: 'map' });
+
+  function startDrill(levelId: number, mode: DrillMode) {
+    setSessionKey((k) => k + 1);
+    setView({ name: 'drill', levelId, mode });
+  }
 
   if (view.name === 'map') {
     return (
@@ -27,7 +34,20 @@ export default function App() {
           progress={progress}
           onPick={(levelId) => setView({ name: 'intro', levelId })}
           onPractice={(levelId) => startDrill(levelId, 'endless')}
+          onShowStats={() => setView({ name: 'stats' })}
           onReset={reset}
+        />
+      </Shell>
+    );
+  }
+
+  if (view.name === 'stats') {
+    return (
+      <Shell>
+        <StatsDashboard
+          progress={progress}
+          onBack={goMap}
+          onPractice={(levelId) => startDrill(levelId, 'endless')}
         />
       </Shell>
     );
@@ -40,11 +60,6 @@ export default function App() {
         <div className="p-8 text-center text-slate-500">Level not found.</div>
       </Shell>
     );
-  }
-
-  function startDrill(levelId: number, mode: DrillMode) {
-    setSessionKey((k) => k + 1);
-    setView({ name: 'drill', levelId, mode });
   }
 
   const startFromIntro = () =>
@@ -86,7 +101,7 @@ export default function App() {
         key={sessionKey}
         level={level}
         mode={mode}
-        onFinish={(correct, total) => recordSession(level.id, correct, total)}
+        onComplete={(outcome) => recordResult(level.id, outcome)}
         onReplay={() => startDrill(level.id, mode)}
         onExit={goMap}
       />

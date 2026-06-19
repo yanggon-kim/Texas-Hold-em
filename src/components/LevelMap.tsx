@@ -5,10 +5,11 @@ interface Props {
   progress: ProgressState;
   onPick: (levelId: number) => void;
   onPractice: (levelId: number) => void;
+  onShowStats: () => void;
   onReset: () => void;
 }
 
-export function LevelMap({ progress, onPick, onPractice, onReset }: Props) {
+export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }: Props) {
   const masteredCount = LEVELS.filter((l) => progress[l.id]?.mastered).length;
 
   return (
@@ -19,6 +20,12 @@ export function LevelMap({ progress, onPick, onPractice, onReset }: Props) {
         <p className="text-xs text-slate-400 mt-3">
           {masteredCount} / {LEVELS.length} levels mastered
         </p>
+        <button
+          onClick={onShowStats}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm font-medium text-slate-600 shadow-sm hover:border-slate-300"
+        >
+          📊 View stats
+        </button>
       </header>
 
       <ol className="space-y-3">
