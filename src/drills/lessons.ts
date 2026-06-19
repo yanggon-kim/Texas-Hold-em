@@ -345,6 +345,7 @@ export function tablePlayLesson(_rng: Rng): LessonCard[] {
   return [
     {
       term: 'Live play vs. AI',
+      korean: ko(TERM_KOREAN.pot),
       definition:
         'Now play full hands against bot opponents. You start with 1,000 chips at a 4-handed table; blinds are 10/20.',
       diagram: { kind: 'table' },
@@ -354,6 +355,17 @@ export function tablePlayLesson(_rng: Rng): LessonCard[] {
       definition:
         'Pick good starting hands by position, read the board for threats, and weigh pot odds before calling. Bet your strong hands, fold your weak ones.',
       diagram: { kind: 'bettingRounds' },
+    },
+    {
+      term: 'Action words (Korean)',
+      definition: `Buttons you'll use at the table: Fold = ${ko(TERM_KOREAN.fold)}, Check = ${ko(
+        TERM_KOREAN.check,
+      )}, Call = ${ko(TERM_KOREAN.call)}, Bet = ${ko(TERM_KOREAN.bet)}, Raise = ${ko(
+        TERM_KOREAN.raise,
+      )}, All-in = ${ko(TERM_KOREAN['all-in'])}.`,
+      note: `The pot is ${ko(TERM_KOREAN.pot)}, the blinds are ${ko(
+        TERM_KOREAN['small blind'],
+      )} / ${ko(TERM_KOREAN['big blind'])}.`,
     },
     {
       term: 'The Coach is on',
