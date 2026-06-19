@@ -38,6 +38,7 @@ export function cardsLesson(rng: Rng): LessonCard[] {
       korean: ko(TERM_KOREAN.deck),
       definition:
         'A standard deck has 52 cards: 4 suits, each with 13 ranks (2 to 10, then J, Q, K, A).',
+      diagram: { kind: 'suits' },
     },
   ];
   for (const suit of SUITS) {
@@ -53,6 +54,7 @@ export function cardsLesson(rng: Rng): LessonCard[] {
     term: 'Ranks & colours',
     definition:
       'Ranks low→high: 2,3,4,5,6,7,8,9,10,J,Q,K,A (Ace is usually highest). Hearts ♥ and diamonds ♦ are red; spades ♠ and clubs ♣ are black.',
+    diagram: { kind: 'rankStrip' },
     note: `Red = ${ko(TERM_KOREAN.red)}, Black = ${ko(TERM_KOREAN.black)}.`,
   });
   void rng;
@@ -62,16 +64,20 @@ export function cardsLesson(rng: Rng): LessonCard[] {
 /** Level 2 — the ten hand rankings, strongest → weakest, each with an example. */
 export function rankingsLesson(rng: Rng): LessonCard[] {
   const strongestFirst = [...ALL_CATEGORIES].reverse();
-  return strongestFirst.map((category, i) => ({
+  const overview: LessonCard = {
+    term: 'The 10 hands',
+    definition:
+      'Every hand falls into one of ten categories. A higher category always beats a lower one — no matter the cards. Here they are, strongest to weakest:',
+    diagram: { kind: 'rankLadder' },
+    note: 'The next cards show a real example of each, from the top down.',
+  };
+  const hands = strongestFirst.map((category, i) => ({
     term: `${strongestFirst.length - i}. ${CATEGORY_NAME[category]}`,
     korean: ko(HAND_KOREAN[category]),
     definition: HAND_DEF[category],
     example: { label: 'Example', cards: makeHandOfCategory(category, rng) },
-    note:
-      i === 0
-        ? 'Hands are listed strongest first. A higher hand always beats a lower one.'
-        : undefined,
   }));
+  return [overview, ...hands];
 }
 
 /** Level 3 — hole cards, community cards, and making the best 5 of 7. */
@@ -111,13 +117,21 @@ export function tableFlowLesson(_rng: Rng): LessonCard[] {
       term: 'Dealer button',
       korean: ko(TERM_KOREAN['dealer button']),
       definition:
-        'A marker showing who is "the dealer" for the hand. It moves one seat clockwise every hand.',
+        'A marker (the "D") showing who is "the dealer" for the hand. It moves one seat clockwise every hand.',
+      diagram: { kind: 'table', highlight: 'button' },
     },
     {
       term: 'Small & big blind',
       korean: `${ko(TERM_KOREAN['small blind'])} / ${ko(TERM_KOREAN['big blind'])}`,
       definition:
         'Forced bets that start the action. The player left of the button posts the small blind; the next player posts the (larger) big blind.',
+      diagram: { kind: 'table', highlight: 'blinds' },
+    },
+    {
+      term: 'The four betting rounds',
+      definition:
+        'A hand plays out in four rounds, with betting on each: Pre-flop, then the Flop, Turn, and River, ending in a showdown.',
+      diagram: { kind: 'bettingRounds' },
     },
     {
       term: 'Pre-flop',
@@ -197,24 +211,28 @@ export function positionLesson(_rng: Rng): LessonCard[] {
       term: 'Position',
       korean: ko(TERM_KOREAN.position),
       definition:
-        'Where you sit relative to the button, which decides the order you act in. Acting later = more information = an advantage.',
+        'Where you sit relative to the button, which decides the order you act in. Acting later = more information = an advantage. A 6-seat table:',
+      diagram: { kind: 'table' },
     },
     {
       term: 'The Button (BTN)',
       korean: ko(TERM_KOREAN.button),
       definition:
         'The seat on the dealer button. It acts last after the flop — the best, most profitable seat.',
+      diagram: { kind: 'table', highlight: 'button' },
     },
     {
       term: 'Under the gun (UTG)',
       korean: ko(TERM_KOREAN['under the gun']),
       definition:
         'The seat left of the big blind. It acts first pre-flop — the toughest spot, so play tight here.',
+      diagram: { kind: 'table', highlight: 'utg' },
     },
     {
       term: 'Early vs. late',
       definition:
         'Play few, strong hands from early position; loosen up and play more hands as you get closer to the button.',
+      diagram: { kind: 'table', highlight: 'earlyLate' },
       note: 'The blinds act first after the flop, a positional disadvantage.',
     },
   ];

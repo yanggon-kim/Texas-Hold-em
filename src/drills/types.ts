@@ -27,6 +27,17 @@ export interface Drill {
 export type Rng = () => number;
 export type DrillGenerator = (rng: Rng) => Drill;
 
+/** Highlight modes for the poker-table diagram. */
+export type TableHighlight = 'button' | 'blinds' | 'utg' | 'earlyLate';
+
+/** A schematic visual aid shown in the Learn stage. */
+export type LessonDiagram =
+  | { kind: 'suits' }
+  | { kind: 'rankStrip' }
+  | { kind: 'rankLadder' }
+  | { kind: 'bettingRounds' }
+  | { kind: 'table'; highlight?: TableHighlight };
+
 /**
  * A teaching card shown in the Learn (study) stage before drills — a concept
  * definition with an optional worked example and a Korean translation.
@@ -40,6 +51,8 @@ export interface LessonCard {
   definition: string;
   /** Optional example cards illustrating the concept. */
   example?: DrillVisual;
+  /** Optional schematic visual aid (table layout, betting timeline, etc.). */
+  diagram?: LessonDiagram;
   /** Optional extra tip. */
   note?: string;
 }
