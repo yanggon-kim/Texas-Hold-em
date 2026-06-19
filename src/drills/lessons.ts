@@ -338,3 +338,27 @@ export function boardLesson(_rng: Rng): LessonCard[] {
     },
   ];
 }
+
+/** Level 10 — putting it together at a live table vs. bots. */
+export function tablePlayLesson(_rng: Rng): LessonCard[] {
+  void _rng;
+  return [
+    {
+      term: 'Live play vs. AI',
+      definition:
+        'Now play full hands against bot opponents. You start with 1,000 chips at a 4-handed table; blinds are 10/20.',
+      diagram: { kind: 'table' },
+    },
+    {
+      term: 'Use everything you learned',
+      definition:
+        'Pick good starting hands by position, read the board for threats, and weigh pot odds before calling. Bet your strong hands, fold your weak ones.',
+      diagram: { kind: 'bettingRounds' },
+    },
+    {
+      term: 'The Coach is on',
+      definition:
+        'A coach tip suggests an action and explains why on each of your decisions. Turn it off with the 💡 toggle once you feel confident.',
+    },
+  ];
+}

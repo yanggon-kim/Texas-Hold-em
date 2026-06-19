@@ -68,7 +68,7 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
                   </div>
                 )}
               </button>
-              {unlocked && (
+              {unlocked && !level.play && (
                 <button
                   onClick={() => onPractice(level.id)}
                   title="Endless practice"
@@ -83,7 +83,7 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
       </ol>
 
       <p className="text-center text-xs text-slate-400 mt-8">
-        Level 10 (full table play vs. AI opponents) is coming soon.
+        Work through all 10 levels, then play full hands vs. AI in Level 10. ♠️
       </p>
 
       {masteredCount > 0 && (

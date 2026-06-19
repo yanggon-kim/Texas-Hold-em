@@ -24,6 +24,7 @@ Rules fluency (Milestones M0–M3) and game flow (M4):
 | 7 | Starting Hands | Which two cards to play, by tier and position |
 | 8 | Outs & Pot Odds | Counting outs, the Rule of 2 & 4, pot-odds calls |
 | 9 | Reading the Board | The nuts, flush threats, and paired boards |
+| 10 | Play vs. AI | Full hands at a live table against bots, with a coach |
 
 Each level: a short intro → a **Learn (study) stage** with definitions, worked
 examples, and **Korean translations** of the key terms → randomized drills with
@@ -36,7 +37,9 @@ Two practice modes per level: a **mastery session** (gates the next level) and
 per-skill accuracy, questions answered, a recent-session trend, and flags your
 weakest area.
 
-Level 10 (full table play vs. AI opponents) is planned next — see the design doc.
+**Level 10** is a live table: play full No-Limit hands against simple bot
+opponents (built on a compact hand engine in `src/engine/game.ts` + `bot.ts`),
+with a coach that suggests an action and explains why on every decision.
 
 ## Tech
 
