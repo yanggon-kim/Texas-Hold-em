@@ -22,13 +22,22 @@ interface Props {
 
 const rng = Math.random;
 
+// Fallback so a misconfigured level never crashes (play levels never use this).
+const emptyDrill: Drill = {
+  prompt: 'No drills for this level.',
+  options: ['OK'],
+  correctIndex: 0,
+  explanation: '',
+};
+
 export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props) {
   const isEndless = mode === 'endless';
-  const base = level.drillsPerSession;
+  const base = level.drillsPerSession ?? 10;
+  const generate = level.generate ?? (() => emptyDrill);
 
   // Mastery starts with `base` questions; endless starts with one and grows.
   const [queue, setQueue] = useState<Drill[]>(() =>
-    isEndless ? [level.generate(rng)] : Array.from({ length: base }, () => level.generate(rng)),
+    isEndless ? [generate(rng)] : Array.from({ length: base }, () => generate(rng)),
   );
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -50,14 +59,14 @@ export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props
     if (isBaseQuestion && correct) setBaseCorrect((c) => c + 1);
     // Missing a base/endless question appends a bonus rep (spaced repetition).
     if (!correct && (isEndless || isBaseQuestion)) {
-      setQueue((q) => [...q, level.generate(rng)]);
+      setQueue((q) => [...q, generate(rng)]);
     }
   }
 
   function next() {
     const nextIndex = index + 1;
     if (isEndless) {
-      if (nextIndex >= queue.length) setQueue((q) => [...q, level.generate(rng)]);
+      if (nextIndex >= queue.length) setQueue((q) => [...q, generate(rng)]);
       setIndex(nextIndex);
       setSelected(null);
       return;
@@ -93,7 +102,7 @@ export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props
         title={level.title}
         correct={baseCorrect}
         total={base}
-        mastered={baseCorrect >= level.masteryNeeded}
+        mastered={baseCorrect >= (level.masteryNeeded ?? base)}
         onReplay={onReplay}
         onExit={onExit}
       />

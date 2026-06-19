@@ -6,13 +6,15 @@ import { IntroScreen } from './components/IntroScreen';
 import { LessonScreen } from './components/LessonScreen';
 import { DrillScreen, type DrillMode } from './components/DrillScreen';
 import { StatsDashboard } from './components/StatsDashboard';
+import { TableScreen } from './components/TableScreen';
 
 type View =
   | { name: 'map' }
   | { name: 'stats' }
   | { name: 'intro'; levelId: number }
   | { name: 'lesson'; levelId: number }
-  | { name: 'drill'; levelId: number; mode: DrillMode };
+  | { name: 'drill'; levelId: number; mode: DrillMode }
+  | { name: 'table'; levelId: number };
 
 export default function App() {
   const { progress, recordResult, reset } = useProgress();
@@ -62,12 +64,18 @@ export default function App() {
     );
   }
 
+  // After the lesson (or directly), launch drills or the live table.
+  const afterLesson = () =>
+    level.play
+      ? setView({ name: 'table', levelId: level.id })
+      : startDrill(level.id, 'mastery');
+
   const startFromIntro = () =>
-    setView(
-      level.lesson
-        ? { name: 'lesson', levelId: level.id }
-        : { name: 'drill', levelId: level.id, mode: 'mastery' },
-    );
+    setView(level.lesson ? { name: 'lesson', levelId: level.id } : pickPlayOrDrill(level.id, level.play));
+
+  function pickPlayOrDrill(levelId: number, play?: boolean): View {
+    return play ? { name: 'table', levelId } : { name: 'drill', levelId, mode: 'mastery' };
+  }
 
   if (view.name === 'intro') {
     return (
@@ -85,11 +93,15 @@ export default function App() {
   if (view.name === 'lesson') {
     return (
       <Shell>
-        <LessonScreen
-          level={level}
-          onStartPractice={() => startDrill(level.id, 'mastery')}
-          onExit={goMap}
-        />
+        <LessonScreen level={level} onStartPractice={afterLesson} onExit={goMap} />
+      </Shell>
+    );
+  }
+
+  if (view.name === 'table') {
+    return (
+      <Shell>
+        <TableScreen onExit={goMap} />
       </Shell>
     );
   }

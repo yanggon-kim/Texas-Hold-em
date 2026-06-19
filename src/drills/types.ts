@@ -69,11 +69,14 @@ export interface LevelDef {
   concept: string[];
   /** Optional study stage: definitions + examples shown before the drills. */
   lesson?: LessonGenerator;
-  generate: DrillGenerator;
-  /** How many base questions per session. */
-  drillsPerSession: number;
-  /** Correct answers (out of drillsPerSession) needed to master the level. */
-  masteryNeeded: number;
+  /** Drill generator (required for quiz levels; omitted for play levels). */
+  generate?: DrillGenerator;
+  /** How many base questions per session (quiz levels). */
+  drillsPerSession?: number;
+  /** Correct answers needed to master the level (quiz levels). */
+  masteryNeeded?: number;
+  /** A "play" level launches the live table vs. AI instead of drills. */
+  play?: boolean;
 }
 
 /**

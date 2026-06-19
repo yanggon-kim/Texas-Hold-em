@@ -37,27 +37,31 @@ export function IntroScreen({ level, onStart, onEndless, onExit }: Props) {
       </div>
 
       <p className="text-center text-sm text-slate-500 mb-5">
-        {level.lesson && 'First study the concepts, then practice. '}
-        {level.drillsPerSession} questions · get {level.masteryNeeded} right to master this level.
-        Miss one and you'll get extra practice on it.
+        {level.play
+          ? 'Study the quick briefing, then sit down and play full hands against the bots.'
+          : `${level.lesson ? 'First study the concepts, then practice. ' : ''}${level.drillsPerSession} questions · get ${level.masteryNeeded} right to master this level. Miss one and you'll get extra practice on it.`}
       </p>
 
       <button
         onClick={onStart}
         className="w-full rounded-xl bg-emerald-600 px-6 py-3 text-lg font-semibold text-white shadow-sm hover:bg-emerald-700"
       >
-        {level.lesson ? 'Start learning →' : 'Start drills →'}
+        {level.play ? 'Start ♠️' : level.lesson ? 'Start learning →' : 'Start drills →'}
       </button>
 
-      <button
-        onClick={onEndless}
-        className="mt-3 w-full rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-3 font-semibold text-indigo-700 hover:bg-indigo-100"
-      >
-        ∞ Endless practice
-      </button>
-      <p className="mt-2 text-center text-xs text-slate-400">
-        Endless practice runs unlimited questions so you can drill by repetition — no limit, stop any time.
-      </p>
+      {!level.play && (
+        <>
+          <button
+            onClick={onEndless}
+            className="mt-3 w-full rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-3 font-semibold text-indigo-700 hover:bg-indigo-100"
+          >
+            ∞ Endless practice
+          </button>
+          <p className="mt-2 text-center text-xs text-slate-400">
+            Endless practice runs unlimited questions so you can drill by repetition — no limit, stop any time.
+          </p>
+        </>
+      )}
     </div>
   );
 }

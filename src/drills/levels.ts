@@ -18,6 +18,7 @@ import {
   startingHandsLesson,
   oddsLesson,
   boardLesson,
+  tablePlayLesson,
 } from './lessons';
 
 /**
@@ -160,6 +161,19 @@ export const LEVELS: LevelDef[] = [
     generate: generateBoardDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,
+  },
+  {
+    id: 10,
+    title: 'Play vs. AI',
+    subtitle: 'Full hands at a live table',
+    icon: '♠️',
+    concept: [
+      'Put it all together: play complete hands against bot opponents.',
+      'Choose starting hands by position, read the board, and use pot odds.',
+      'A coach suggests an action with reasoning on every decision.',
+    ],
+    lesson: tablePlayLesson,
+    play: true,
   },
 ];
 
