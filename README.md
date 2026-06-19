@@ -37,9 +37,12 @@ Two practice modes per level: a **mastery session** (gates the next level) and
 per-skill accuracy, questions answered, a recent-session trend, and flags your
 weakest area.
 
-**Level 10** is a live table: play full No-Limit hands against simple bot
-opponents (built on a compact hand engine in `src/engine/game.ts` + `bot.ts`),
-with a coach that suggests an action and explains why on every decision.
+**Level 10** is a live table: play full No-Limit hands against bot opponents
+(built on a compact hand engine in `src/engine/game.ts` + `bot.ts`), with a
+coach that suggests an action and explains why on every decision. Bots have
+**three difficulty levels** (Easy = loose-passive, Normal, Hard =
+tight-aggressive), and the engine builds proper **side pots** for all-ins of
+different sizes.
 
 ## Tech
 

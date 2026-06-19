@@ -8,6 +8,31 @@ import { evaluateHand, HandCategory } from './handEvaluator';
 
 const TIER_SCORE: Record<Tier, number> = { premium: 3, strong: 2, playable: 1, trash: 0 };
 
+export type Difficulty = 'easy' | 'normal' | 'hard';
+
+export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
+  easy: 'Easy',
+  normal: 'Normal',
+  hard: 'Hard',
+};
+
+interface BotProfile {
+  noise: number; // randomness added to the strength estimate
+  foldThreshold: number; // fold to a bet below this strength (when the price is meaningful)
+  raiseStrength: number; // raise/bet at or above this strength
+  raiseFreq: number; // how often to raise when strong enough
+  bluffFreq: number; // chance to bluff/bet a weak hand with no bet to face
+}
+
+const PROFILES: Record<Difficulty, BotProfile> = {
+  // Loose-passive "calling station": calls too much, rarely raises — easy to beat.
+  easy: { noise: 0.35, foldThreshold: 0.12, raiseStrength: 0.85, raiseFreq: 0.15, bluffFreq: 0 },
+  // Balanced.
+  normal: { noise: 0.2, foldThreshold: 0.3, raiseStrength: 0.65, raiseFreq: 0.5, bluffFreq: 0.05 },
+  // Tight-aggressive: folds weak hands, value-raises often, bluffs sometimes.
+  hard: { noise: 0.1, foldThreshold: 0.42, raiseStrength: 0.55, raiseFreq: 0.75, bluffFreq: 0.14 },
+};
+
 /** A rough 0..1 strength estimate for the player to act. */
 function handStrength(state: GameState): number {
   const p = state.players[state.toAct];
@@ -23,27 +48,34 @@ function handStrength(state: GameState): number {
   return 0.25; // high card
 }
 
-/** Decide a bot's action. `rng` lets tests/UI stay deterministic if needed. */
-export function decideBotAction(state: GameState, rng: () => number = Math.random): Action {
+/** Decide a bot's action at the given difficulty. */
+export function decideBotAction(
+  state: GameState,
+  rng: () => number = Math.random,
+  difficulty: Difficulty = 'normal',
+): Action {
+  const profile = PROFILES[difficulty];
   const legal = legalActions(state);
   const strength = handStrength(state);
-  const noise = (rng() - 0.5) * 0.2;
-  const s = strength + noise;
+  const s = strength + (rng() - 0.5) * profile.noise;
+  const raiseTo = () => botRaiseTarget(state, legal.minRaiseTo, legal.maxRaiseTo);
 
   // Facing a bet.
   if (legal.callAmount > 0) {
     const potOdds = legal.callAmount / (state.pot + legal.callAmount);
-    if (s < 0.3 && potOdds > 0.15) return { type: 'fold' };
-    // Strong hands raise sometimes.
-    if (s > 0.8 && legal.canRaise && rng() < 0.5) {
-      return { type: 'raise', amount: botRaiseTarget(state, legal.minRaiseTo, legal.maxRaiseTo) };
+    if (s < profile.foldThreshold && potOdds > 0.12) return { type: 'fold' };
+    if (s >= profile.raiseStrength && legal.canRaise && rng() < profile.raiseFreq) {
+      return { type: 'raise', amount: raiseTo() };
     }
     return { type: 'call' };
   }
 
-  // No bet to face: check or bet.
-  if (s > 0.6 && legal.canRaise && rng() < 0.6) {
-    return { type: 'raise', amount: botRaiseTarget(state, legal.minRaiseTo, legal.maxRaiseTo) };
+  // No bet to face: bet for value, occasionally bluff, otherwise check.
+  if (s >= profile.raiseStrength && legal.canRaise && rng() < profile.raiseFreq) {
+    return { type: 'raise', amount: raiseTo() };
+  }
+  if (s < 0.4 && legal.canRaise && rng() < profile.bluffFreq) {
+    return { type: 'raise', amount: raiseTo() };
   }
   return { type: 'check' };
 }

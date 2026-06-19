@@ -31,9 +31,16 @@ export interface ShowdownEntry {
   result: HandResult | null; // null if folded
 }
 
+export interface PotResult {
+  amount: number;
+  winners: number[]; // player ids sharing this pot
+  label: string; // "Pot", "Main pot", "Side pot 1", …
+}
+
 export interface HandOutcome {
-  winners: number[]; // player ids
-  amountEach: number;
+  winners: number[]; // every player id that won any pot
+  pots: PotResult[]; // main + side pots
+  winnings: Record<number, number>; // player id → chips won
   showdown: ShowdownEntry[]; // non-folded hands revealed (empty if won by folds)
   summary: string;
 }
@@ -324,50 +331,91 @@ function advanceStreet(state: GameState): GameState {
   return state;
 }
 
-/** Settle the hand: award the pot and reveal hands at showdown. */
+/** Settle the hand: build side pots, award them, and reveal hands at showdown. */
 function finishHand(state: GameState): GameState {
   state.toAct = -1;
-  const contenders = activeIndexes(state);
+  const contenders = activeIndexes(state); // non-folded seat indexes
+  const foldedIds = new Set(state.players.filter((p) => p.folded).map((p) => p.id));
 
-  let winners: number[];
+  // Evaluate the remaining hands (only needed for a real showdown).
+  const handById = new Map<number, HandResult>();
   let showdown: ShowdownEntry[] = [];
+  if (contenders.length > 1) {
+    for (const i of contenders) {
+      const res = evaluateHand([...state.players[i].hole, ...state.board]);
+      handById.set(state.players[i].id, res);
+      showdown.push({ playerId: state.players[i].id, result: res });
+    }
+  }
 
-  if (contenders.length === 1) {
-    winners = [state.players[contenders[0]].id];
+  // Build side pots from each player's total contribution this hand.
+  const contrib = new Map<number, number>();
+  for (const p of state.players) if (p.totalCommitted > 0) contrib.set(p.id, p.totalCommitted);
+
+  const pots: PotResult[] = [];
+  let guard = 0;
+  while ([...contrib.values()].some((v) => v > 0) && guard++ < 50) {
+    const positive = [...contrib.entries()].filter(([, v]) => v > 0);
+    const layer = Math.min(...positive.map(([, v]) => v));
+    let amount = 0;
+    const eligible: number[] = [];
+    for (const [id, v] of positive) {
+      amount += layer;
+      contrib.set(id, v - layer);
+      if (!foldedIds.has(id)) eligible.push(id);
+    }
+
+    let winners: number[];
+    if (contenders.length === 1) {
+      winners = [state.players[contenders[0]].id];
+    } else if (eligible.length === 0) {
+      winners = positive.map(([id]) => id); // refund (shouldn't normally happen)
+    } else {
+      let best: HandResult | null = null;
+      for (const id of eligible) {
+        const r = handById.get(id)!;
+        if (!best || compareScores(r.score, best.score) > 0) best = r;
+      }
+      winners = eligible.filter((id) => compareScores(handById.get(id)!.score, best!.score) === 0);
+    }
+    pots.push({ amount, winners, label: 'Pot' });
+  }
+
+  // Label pots (main + side) and distribute, giving odd chips to the first winner.
+  const winnings: Record<number, number> = {};
+  pots.forEach((pot, idx) => {
+    pot.label = pots.length === 1 ? 'Pot' : idx === 0 ? 'Main pot' : `Side pot ${idx}`;
+    const each = Math.floor(pot.amount / pot.winners.length);
+    const remainder = pot.amount - each * pot.winners.length;
+    pot.winners.forEach((id, wi) => {
+      winnings[id] = (winnings[id] ?? 0) + each + (wi === 0 ? remainder : 0);
+    });
+  });
+  for (const p of state.players) if (winnings[p.id]) p.chips += winnings[p.id];
+
+  const allWinners = [...new Set(pots.flatMap((p) => p.winners))];
+  const name = (id: number) => state.players.find((p) => p.id === id)!.name;
+
+  let summary: string;
+  if (showdown.length === 0) {
+    const total = pots.reduce((s, p) => s + p.amount, 0);
+    summary = `${allWinners.map(name).join(' & ')} win ${total} (everyone else folded)`;
+  } else if (pots.length === 1) {
+    const pot = pots[0];
+    const handName = handById.get(pot.winners[0])?.name ?? 'the best hand';
+    summary = `${pot.winners.map(name).join(' & ')} win ${pot.amount} with ${handName}`;
   } else {
-    // Showdown: evaluate each remaining hand.
-    const scored = contenders.map((i) => ({
-      i,
-      result: evaluateHand([...state.players[i].hole, ...state.board]),
-    }));
-    showdown = scored.map((s) => ({ playerId: state.players[s.i].id, result: s.result }));
-    let best = scored[0];
-    for (const s of scored) if (compareScores(s.result.score, best.result.score) > 0) best = s;
-    winners = scored
-      .filter((s) => compareScores(s.result.score, best.result.score) === 0)
-      .map((s) => state.players[s.i].id);
+    summary = pots
+      .map((pot) => {
+        const handName = handById.get(pot.winners[0])?.name;
+        return `${pot.label}: ${pot.winners.map(name).join(' & ')} win ${pot.amount}${
+          handName ? ` (${handName})` : ''
+        }`;
+      })
+      .join('; ');
   }
 
-  const amountEach = Math.floor(state.pot / winners.length);
-  const remainder = state.pot - amountEach * winners.length;
-  for (const p of state.players) {
-    if (winners.includes(p.id)) p.chips += amountEach;
-  }
-  // Odd chip(s) from a split go to the first winner.
-  if (remainder > 0) {
-    const first = state.players.find((p) => p.id === winners[0]);
-    if (first) first.chips += remainder;
-  }
-
-  const winnerNames = winners.map((id) => state.players.find((p) => p.id === id)!.name);
-  const summary =
-    showdown.length > 0
-      ? `${winnerNames.join(' & ')} win ${amountEach} with ${
-          showdown.find((s) => s.playerId === winners[0])?.result?.name ?? 'the best hand'
-        }`
-      : `${winnerNames.join(' & ')} win ${state.pot} (everyone else folded)`;
-
-  state.outcome = { winners, amountEach, showdown, summary };
+  state.outcome = { winners: allWinners, pots, winnings, showdown, summary };
   state.street = 'complete';
   state.log.push(summary);
   return state;
