@@ -68,11 +68,9 @@ describe('levelAccuracy / isUnlocked', () => {
     expect(levelAccuracy(fresh())).toBeNull();
   });
 
-  it('unlocks level 2 only when level 1 is mastered', () => {
+  it('treats every level as unlocked (no lock system)', () => {
     const state: ProgressState = { 1: fresh(), 2: fresh() };
-    expect(isUnlocked(state, 1)).toBe(true); // first level always unlocked
-    expect(isUnlocked(state, 2)).toBe(false);
-    state[1] = applyResult(state[1], { mode: 'mastery', correct: 10, answered: 10 }, 8).next;
-    expect(isUnlocked(state, 2)).toBe(true);
+    expect(isUnlocked(state, 1)).toBe(true);
+    expect(isUnlocked(state, 2)).toBe(true); // accessible even before mastering level 1
   });
 });
