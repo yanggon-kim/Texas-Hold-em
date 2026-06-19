@@ -103,7 +103,7 @@ which keeps it free and trivial to deploy. Progress is stored in the browser.
 - **State/persistence:** React state + `localStorage` (no backend)
 - **Card images:** SVG card set (lightweight, scalable)
 - **Testing:** Vitest (unit-test the poker logic)
-- **Deployment:** GitHub Pages (free, integrates with this repo) — or Vercel/Netlify
+- **Deployment:** Vercel (free tier, build-on-push)
 
 > The poker rules engine (deck, dealing, hand evaluation) is pure TypeScript with
 > **zero UI dependencies**, so it can be fully unit-tested and reused anywhere.
@@ -195,21 +195,28 @@ interface PlayerProgress {
 
 ## 8. Deployment
 
-- **GitHub Pages** via a GitHub Actions workflow: build on push to the main
-  branch → publish the `dist/` folder.
-- Set Vite's `base` to the repo name for correct Pages asset paths.
+- **Vercel**: connect the GitHub repo → Vercel auto-detects Vite → builds on
+  every push and publishes the `dist/` output.
+- No `base` path tweak needed (served from the domain root).
 - Result: a public URL the learner can open on desktop or phone, anytime.
 
 ---
 
-## 9. Open Questions / Decisions to Confirm
+## 9. Locked Decisions
 
-1. **Stack** — happy with React + Vite + TypeScript + Tailwind, or prefer
-   something else (e.g. plain HTML/JS, Svelte)?
-2. **Hosting** — GitHub Pages (free, in-repo) vs. Vercel/Netlify?
-3. **Scope of v0.1** — ship after Levels 1–3, or hold for the full 10?
-4. **Card art** — use an existing open-source SVG deck, or generate simple
-   CSS/Unicode cards to start?
+These were confirmed and are the source of truth for the build:
+
+1. **Stack** — ✅ **React + Vite + TypeScript** (+ Tailwind CSS).
+2. **v0.1 scope** — ✅ **Levels 1–3 first** (rules-fluency core: cards, hand
+   rankings, best 5-of-7), then iterate toward the full 10.
+3. **Hosting** — ✅ **Vercel** (build on push, free tier).
+
+### Still open (minor)
+- **Card art** — start with simple CSS/Unicode cards, swap to an open-source SVG
+  deck later if desired.
+
+> Note on deployment: since hosting is **Vercel** (not GitHub Pages), Vite's
+> `base` can stay as the default `'/'` — no repo-name base path needed.
 
 ---
 
