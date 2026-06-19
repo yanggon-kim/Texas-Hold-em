@@ -2,10 +2,14 @@ import type { LevelDef } from './types';
 import { generateCardDrill } from './level01_cards';
 import { generateRankingDrill } from './level02_rankings';
 import { generateBestHandDrill } from './level03_bestHand';
+import { generateTableFlowDrill } from './level04_tableFlow';
+import { generateActionsDrill } from './level05_actions';
+import { generatePositionDrill } from './level06_position';
 
 /**
- * The v0.1 curriculum: the three rules-fluency levels.
- * Later milestones append Levels 4–10 to this list.
+ * The curriculum.
+ *   Levels 1–3: rules fluency.   Levels 4–6: game flow.
+ * Later milestones append Levels 7–10 (strategy + full play) to this list.
  */
 export const LEVELS: LevelDef[] = [
   {
@@ -47,6 +51,48 @@ export const LEVELS: LevelDef[] = [
       'You can use both hole cards, one, or even none ("playing the board").',
     ],
     generate: generateBestHandDrill,
+    drillsPerSession: 10,
+    masteryNeeded: 8,
+  },
+  {
+    id: 4,
+    title: 'Table & Flow',
+    subtitle: 'Button, blinds, and the 4 betting rounds',
+    icon: '🎬',
+    concept: [
+      'The dealer button rotates clockwise; the two players left of it post the small and big blinds.',
+      'A hand runs Pre-flop → Flop (3 cards) → Turn (1 card) → River (1 card), with betting on each.',
+      'If two or more players remain after the river, the showdown decides the winner.',
+    ],
+    generate: generateTableFlowDrill,
+    drillsPerSession: 10,
+    masteryNeeded: 8,
+  },
+  {
+    id: 5,
+    title: 'Betting Actions',
+    subtitle: 'Check, bet, call, raise, fold',
+    icon: '💰',
+    concept: [
+      'Check = pass with no bet; Bet = put chips in first; Call = match; Raise = increase; Fold = give up.',
+      'You can only check when there is no bet in front of you.',
+      'Facing a bet, your options are fold, call, or raise — never check.',
+    ],
+    generate: generateActionsDrill,
+    drillsPerSession: 10,
+    masteryNeeded: 8,
+  },
+  {
+    id: 6,
+    title: 'Position',
+    subtitle: 'Why acting later wins',
+    icon: '🎯',
+    concept: [
+      'Position is your seat relative to the button and the order in which you act.',
+      'Acting later means more information — the Button is the best seat, UTG the toughest.',
+      'Play tight from early position and loosen up as you get closer to the button.',
+    ],
+    generate: generatePositionDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,
   },
