@@ -65,4 +65,11 @@ export const TERM_KOREAN: Record<string, KoreanTerm> = {
   position: { ko: '포지션', roma: 'pojisyeon' },
   button: { ko: '버튼', roma: 'beoteun' },
   'under the gun': { ko: '언더 더 건', roma: 'eondeo deo geon' },
+  // strategy
+  'starting hand': { ko: '스타팅 핸드', roma: 'seutating haendeu' },
+  outs: { ko: '아웃', roma: 'aut' },
+  draw: { ko: '드로우', roma: 'deurou' },
+  'pot odds': { ko: '팟 오즈', roma: 'pat ojeu' },
+  equity: { ko: '에쿼티', roma: 'ekwoti' },
+  nuts: { ko: '너츠', roma: 'neocheu' },
 };

@@ -237,3 +237,104 @@ export function positionLesson(_rng: Rng): LessonCard[] {
     },
   ];
 }
+
+/** Level 7 — starting-hand selection. */
+export function startingHandsLesson(_rng: Rng): LessonCard[] {
+  void _rng;
+  return [
+    {
+      term: 'Starting hands',
+      korean: ko(TERM_KOREAN['starting hand']),
+      definition:
+        'Your 2 hole cards. Choosing which ones to play is the most important pre-flop decision — winning players fold most hands.',
+    },
+    {
+      term: 'Premium hands',
+      definition:
+        'The strongest openers: big pairs (AA, KK, QQ, JJ) and big aces (AK, AQ). Always playable, from any position.',
+      example: { label: 'e.g. A♠ K♠', cards: [c('A♠'), c('K♠')] },
+    },
+    {
+      term: 'Playable hands',
+      definition:
+        'Hands like small/medium pairs, suited connectors, and suited aces. Good from late position, usually folded from early position.',
+      example: { label: 'e.g. 7♥ 6♥', cards: [c('7♥'), c('6♥')] },
+    },
+    {
+      term: 'Trash hands',
+      definition:
+        'Weak, unconnected cards like 7-2 offsuit. Fold these — most beginners lose by playing too many of them.',
+      example: { label: 'e.g. 7♣ 2♦', cards: [c('7♣'), c('2♦')] },
+    },
+    {
+      term: 'Tight early, loose late',
+      definition:
+        'From early position play only premium/strong hands; near the button you can add the playable hands too.',
+      diagram: { kind: 'table', highlight: 'earlyLate' },
+    },
+  ];
+}
+
+/** Level 8 — outs, the Rule of 2 & 4, and pot odds. */
+export function oddsLesson(_rng: Rng): LessonCard[] {
+  void _rng;
+  return [
+    {
+      term: 'Outs',
+      korean: ko(TERM_KOREAN.outs),
+      definition:
+        'The cards still in the deck that complete your hand. Example: a flush draw has 9 outs; an open-ended straight draw has 8.',
+    },
+    {
+      term: 'Draw',
+      korean: ko(TERM_KOREAN.draw),
+      definition:
+        'An incomplete hand that can improve. Common ones: flush draw (9 outs), open-ended straight (8), gutshot (4).',
+      example: { label: '4 to a flush — a flush draw', cards: [c('A♥'), c('9♥'), c('5♥'), c('K♥')] },
+    },
+    {
+      term: 'Rule of 2 and 4',
+      korean: ko(TERM_KOREAN.equity),
+      definition:
+        'Quick equity estimate: with two cards to come, equity ≈ outs × 4%. With one card to come, ≈ outs × 2%.',
+      note: '9 outs on the flop ≈ 36% to hit by the river.',
+    },
+    {
+      term: 'Pot odds',
+      korean: ko(TERM_KOREAN['pot odds']),
+      definition:
+        'The price of a call as a share of the final pot: call ÷ (pot + call). If your chance to win is higher than this price, calling is profitable.',
+      note: 'Pot $80, call $20 → 20 ÷ 100 = 20%. Need ~20%+ equity to call.',
+    },
+  ];
+}
+
+/** Level 9 — reading the board. */
+export function boardLesson(_rng: Rng): LessonCard[] {
+  void _rng;
+  return [
+    {
+      term: 'The nuts',
+      korean: ko(TERM_KOREAN.nuts),
+      definition:
+        'The best possible hand on a given board. Before betting big, ask: what is the strongest hand someone could have here?',
+    },
+    {
+      term: 'Flush threats',
+      definition:
+        'If three or more cards of one suit are on the board, someone holding two of that suit has a flush. Watch the suits.',
+      example: { label: 'Three ♠ — flush possible', cards: [c('Q♠'), c('8♠'), c('3♠'), c('J♥'), c('2♦')] },
+    },
+    {
+      term: 'Paired boards',
+      definition:
+        'When a rank appears twice on the board, full houses and four-of-a-kind become possible — proceed with caution.',
+      example: { label: 'Paired board (8-8)', cards: [c('8♣'), c('8♦'), c('K♠'), c('4♥'), c('2♣')] },
+    },
+    {
+      term: 'What beats me?',
+      definition:
+        'Good board reading is a habit: each street, scan for straights, flushes, and pairs that could beat your hand before you commit chips.',
+    },
+  ];
+}

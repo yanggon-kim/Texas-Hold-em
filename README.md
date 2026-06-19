@@ -21,6 +21,9 @@ Rules fluency (Milestones M0–M3) and game flow (M4):
 | 4 | Table & Flow | Button, blinds, and the four betting rounds |
 | 5 | Betting Actions | Check, bet, call, raise, fold — and when each applies |
 | 6 | Position | Why acting later wins; early vs. late play |
+| 7 | Starting Hands | Which two cards to play, by tier and position |
+| 8 | Outs & Pot Odds | Counting outs, the Rule of 2 & 4, pot-odds calls |
+| 9 | Reading the Board | The nuts, flush threats, and paired boards |
 
 Each level: a short intro → a **Learn (study) stage** with definitions, worked
 examples, and **Korean translations** of the key terms → randomized drills with
@@ -33,8 +36,7 @@ Two practice modes per level: a **mastery session** (gates the next level) and
 per-skill accuracy, questions answered, a recent-session trend, and flags your
 weakest area.
 
-Levels 7–10 (starting hands, pot odds, board reading, full table play vs. AI)
-are planned next — see the design doc.
+Level 10 (full table play vs. AI opponents) is planned next — see the design doc.
 
 ## Tech
 

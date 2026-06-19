@@ -5,6 +5,9 @@ import { generateBestHandDrill } from './level03_bestHand';
 import { generateTableFlowDrill } from './level04_tableFlow';
 import { generateActionsDrill } from './level05_actions';
 import { generatePositionDrill } from './level06_position';
+import { generateStartingHandDrill } from './level07_startingHands';
+import { generateOddsDrill } from './level08_odds';
+import { generateBoardDrill } from './level09_board';
 import {
   cardsLesson,
   rankingsLesson,
@@ -12,12 +15,15 @@ import {
   tableFlowLesson,
   actionsLesson,
   positionLesson,
+  startingHandsLesson,
+  oddsLesson,
+  boardLesson,
 } from './lessons';
 
 /**
  * The curriculum.
- *   Levels 1–3: rules fluency.   Levels 4–6: game flow.
- * Later milestones append Levels 7–10 (strategy + full play) to this list.
+ *   Levels 1–3: rules fluency.   Levels 4–6: game flow.   Levels 7–9: strategy.
+ * A later milestone appends Level 10 (full table play) to this list.
  */
 export const LEVELS: LevelDef[] = [
   {
@@ -107,6 +113,51 @@ export const LEVELS: LevelDef[] = [
     ],
     lesson: positionLesson,
     generate: generatePositionDrill,
+    drillsPerSession: 10,
+    masteryNeeded: 8,
+  },
+  {
+    id: 7,
+    title: 'Starting Hands',
+    subtitle: 'Which two cards to play',
+    icon: '🃏',
+    concept: [
+      'Your 2 hole cards decide most of your pre-flop success — fold most hands.',
+      'Tiers: premium (AA–JJ, AK, AQ), strong, playable (small pairs, suited connectors), and trash.',
+      'Play tight from early position; add playable hands from late position.',
+    ],
+    lesson: startingHandsLesson,
+    generate: generateStartingHandDrill,
+    drillsPerSession: 12,
+    masteryNeeded: 9,
+  },
+  {
+    id: 8,
+    title: 'Outs & Pot Odds',
+    subtitle: 'The math of drawing',
+    icon: '🧮',
+    concept: [
+      'Outs are the cards that complete your hand (flush draw = 9, open-ender = 8, gutshot = 4).',
+      'Rule of 2 and 4: equity ≈ outs × 4 (two cards to come) or × 2 (one card to come).',
+      'Pot odds = call ÷ (pot + call). Call when your equity beats that price.',
+    ],
+    lesson: oddsLesson,
+    generate: generateOddsDrill,
+    drillsPerSession: 12,
+    masteryNeeded: 9,
+  },
+  {
+    id: 9,
+    title: 'Reading the Board',
+    subtitle: 'Spot the threats and the nuts',
+    icon: '🔍',
+    concept: [
+      'The "nuts" is the best hand possible on a board — always ask what could beat you.',
+      'Three of one suit means a flush is possible; a paired board allows full houses and quads.',
+      'Scan every street for straights, flushes, and pairs before committing chips.',
+    ],
+    lesson: boardLesson,
+    generate: generateBoardDrill,
     drillsPerSession: 10,
     masteryNeeded: 8,
   },

@@ -83,7 +83,7 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
       </ol>
 
       <p className="text-center text-xs text-slate-400 mt-8">
-        More levels (starting hands, pot odds, full table play) are coming soon.
+        Level 10 (full table play vs. AI opponents) is coming soon.
       </p>
 
       {masteredCount > 0 && (
