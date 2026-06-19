@@ -7,7 +7,12 @@ import {
   applyAction,
   legalActions,
 } from '../engine/game';
-import { decideBotAction, coachTip } from '../engine/bot';
+import {
+  decideBotAction,
+  coachTip,
+  type Difficulty,
+  DIFFICULTY_LABEL,
+} from '../engine/bot';
 import { PlayingCard, CardBack } from './PlayingCard';
 
 const BIG_BLIND = 20;
@@ -32,6 +37,7 @@ export function TableScreen({ onExit }: Props) {
     startHand(makePlayers(BOTS, STARTING_CHIPS), 0, BIG_BLIND),
   );
   const [showCoach, setShowCoach] = useState(true);
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const human = game.players.find((p) => p.isHuman)!;
@@ -45,13 +51,13 @@ export function TableScreen({ onExit }: Props) {
     timer.current = setTimeout(() => {
       setGame((g) => {
         if (g.street === 'complete' || g.toAct < 0 || g.players[g.toAct].isHuman) return g;
-        return applyAction(g, decideBotAction(g));
+        return applyAction(g, decideBotAction(g, Math.random, difficulty));
       });
     }, BOT_DELAY_MS);
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [game, actor, handOver]);
+  }, [game, actor, handOver, difficulty]);
 
   const act = useCallback(
     (action: Parameters<typeof applyAction>[1]) => {
@@ -89,18 +95,35 @@ export function TableScreen({ onExit }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-5">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between gap-2 mb-3">
         <button onClick={onExit} className="text-sm text-slate-500 hover:text-slate-800">
           ← Exit
         </button>
-        <label className="flex items-center gap-2 text-sm text-slate-500 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={showCoach}
-            onChange={(e) => setShowCoach(e.target.checked)}
-          />
-          💡 Coach
-        </label>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1" title="Bot difficulty">
+            {(['easy', 'normal', 'hard'] as Difficulty[]).map((d) => (
+              <button
+                key={d}
+                onClick={() => setDifficulty(d)}
+                className={`rounded-md px-2 py-1 text-xs font-semibold ${
+                  difficulty === d
+                    ? 'bg-slate-800 text-white'
+                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                }`}
+              >
+                {DIFFICULTY_LABEL[d]}
+              </button>
+            ))}
+          </div>
+          <label className="flex items-center gap-1.5 text-sm text-slate-500 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showCoach}
+              onChange={(e) => setShowCoach(e.target.checked)}
+            />
+            💡
+          </label>
+        </div>
       </div>
 
       {/* opponents */}

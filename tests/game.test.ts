@@ -5,8 +5,9 @@ import {
   applyAction,
   legalActions,
   type GameState,
+  type Player,
 } from '../src/engine/game';
-import { decideBotAction } from '../src/engine/bot';
+import { decideBotAction, type Difficulty } from '../src/engine/bot';
 import { mulberry32 } from '../src/engine/deck';
 
 const totalChips = (s: GameState) => s.players.reduce((sum, p) => sum + p.chips, 0);
@@ -60,6 +61,50 @@ describe('chip conservation', () => {
       }
       expect(s.street).toBe('complete');
       expect(totalChips(s)).toBe(before);
+    }
+  });
+});
+
+describe('side pots', () => {
+  it('splits into a main and side pot when stacks are unequal', () => {
+    const players: Player[] = makePlayers(2, 500); // 3 players, 500 each
+    players[0].chips = 100; // short stack
+    players[0].name = 'Shorty';
+
+    let s = startHand(players, 0, 20, mulberry32(11));
+    let guard = 0;
+    while (s.street !== 'complete' && s.toAct >= 0 && guard++ < 50) {
+      const legal = legalActions(s);
+      s = applyAction(s, legal.canRaise ? { type: 'allin' } : { type: 'call' });
+    }
+
+    expect(s.street).toBe('complete');
+    // Contributions 100 / 500 / 500 → main pot 300 (all 3), side pot 800 (the two big stacks).
+    const amounts = s.outcome!.pots.map((p) => p.amount).sort((a, b) => a - b);
+    expect(amounts).toEqual([300, 800]);
+    expect(s.players.reduce((t, p) => t + p.chips, 0)).toBe(1100); // conserved
+
+    // The short stack can only ever win the 300 main pot, never the side pot.
+    const shorty = s.players.find((p) => p.name === 'Shorty')!;
+    expect(shorty.chips === 0 || shorty.chips === 300).toBe(true);
+  });
+});
+
+describe('bot difficulty', () => {
+  it('plays valid, chip-conserving hands at every difficulty', () => {
+    for (const d of ['easy', 'normal', 'hard'] as Difficulty[]) {
+      for (let seed = 1; seed <= 15; seed++) {
+        const rng = mulberry32(seed * 13);
+        const players = makePlayers(3, 1000);
+        let s = startHand(players, 0, 20, rng);
+        const before = totalChips(s) + s.pot;
+        let guard = 0;
+        while (s.street !== 'complete' && s.toAct >= 0 && guard++ < 300) {
+          s = applyAction(s, decideBotAction(s, rng, d));
+        }
+        expect(s.street).toBe('complete');
+        expect(totalChips(s)).toBe(before);
+      }
     }
   });
 });
