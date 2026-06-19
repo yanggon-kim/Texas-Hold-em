@@ -64,7 +64,7 @@ export function LevelMap({ progress, onPick, onReset }: Props) {
       </ol>
 
       <p className="text-center text-xs text-slate-400 mt-8">
-        More levels (position, starting hands, pot odds, full play) are coming soon.
+        More levels (starting hands, pot odds, full table play) are coming soon.
       </p>
 
       {masteredCount > 0 && (

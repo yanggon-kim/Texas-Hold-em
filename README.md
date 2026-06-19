@@ -9,22 +9,25 @@ the rules and strategy before unlocking the next level.
 > for the full design, and [`docs/beginner-guide.md`](docs/beginner-guide.md) for
 > the rules & strategy reference the level content is based on.
 
-## v0.1 — what's included
+## What's included
 
-The rules-fluency core (Milestones M0–M3):
+Rules fluency (Milestones M0–M3) and game flow (M4):
 
 | Level | Title | What you drill |
 |-------|-------|----------------|
 | 1 | Cards & Suits | Recognise all 52 cards, suits, and colours |
 | 2 | Hand Rankings | Name the 10 hands and compare two hands |
 | 3 | Make the Best Hand | Pick the best 5-card hand from 7 cards |
+| 4 | Table & Flow | Button, blinds, and the four betting rounds |
+| 5 | Betting Actions | Check, bet, call, raise, fold — and when each applies |
+| 6 | Position | Why acting later wins; early vs. late play |
 
 Each level: a short concept intro → 10 randomized drills with instant Coach
 feedback → master it (8/10) to unlock the next. Miss a question and you get an
 extra practice rep. Progress is saved in your browser (`localStorage`).
 
-Levels 4–10 (position, starting hands, pot odds, full table play vs. AI) are
-planned next — see the design doc.
+Levels 7–10 (starting hands, pot odds, board reading, full table play vs. AI)
+are planned next — see the design doc.
 
 ## Tech
 
