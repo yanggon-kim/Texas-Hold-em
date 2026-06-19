@@ -14,6 +14,18 @@ import {
   DIFFICULTY_LABEL,
 } from '../engine/bot';
 import { PlayingCard, CardBack } from './PlayingCard';
+import { TERM_KOREAN } from '../data/korean';
+
+// Short Korean (Hangul) labels for the in-game action words.
+const KO = {
+  fold: TERM_KOREAN.fold.ko,
+  check: TERM_KOREAN.check.ko,
+  call: TERM_KOREAN.call.ko,
+  bet: TERM_KOREAN.bet.ko,
+  raise: TERM_KOREAN.raise.ko,
+  allin: TERM_KOREAN['all-in'].ko,
+  pot: TERM_KOREAN.pot.ko,
+};
 
 const BIG_BLIND = 20;
 const STARTING_CHIPS = 1000;
@@ -141,7 +153,7 @@ export function TableScreen({ onExit }: Props) {
       {/* felt: pot + board */}
       <div className="rounded-3xl bg-emerald-700 border-4 border-emerald-900 p-5 mb-3 shadow-inner">
         <div className="text-center text-emerald-100 text-sm mb-3">
-          Pot <span className="font-bold text-white">{game.pot}</span>
+          Pot ({KO.pot}) <span className="font-bold text-white">{game.pot}</span>
           <span className="mx-2 text-emerald-300">·</span>
           <span className="capitalize">{handOver ? 'hand over' : game.street}</span>
         </div>
@@ -196,39 +208,46 @@ export function TableScreen({ onExit }: Props) {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => act({ type: 'fold' })}
-              className="flex-1 rounded-xl bg-rose-100 text-rose-700 px-4 py-3 font-semibold hover:bg-rose-200"
+              className="flex-1 rounded-xl bg-rose-100 text-rose-700 px-4 py-2.5 font-semibold hover:bg-rose-200 leading-tight"
             >
               Fold
+              <span className="block text-[11px] font-normal opacity-70">{KO.fold}</span>
             </button>
             {legal.canCheck ? (
               <button
                 onClick={() => act({ type: 'check' })}
-                className="flex-1 rounded-xl bg-slate-200 text-slate-800 px-4 py-3 font-semibold hover:bg-slate-300"
+                className="flex-1 rounded-xl bg-slate-200 text-slate-800 px-4 py-2.5 font-semibold hover:bg-slate-300 leading-tight"
               >
                 Check
+                <span className="block text-[11px] font-normal opacity-70">{KO.check}</span>
               </button>
             ) : (
               <button
                 onClick={() => act({ type: 'call' })}
-                className="flex-1 rounded-xl bg-slate-200 text-slate-800 px-4 py-3 font-semibold hover:bg-slate-300"
+                className="flex-1 rounded-xl bg-slate-200 text-slate-800 px-4 py-2.5 font-semibold hover:bg-slate-300 leading-tight"
               >
                 Call {legal.callAmount}
+                <span className="block text-[11px] font-normal opacity-70">{KO.call}</span>
               </button>
             )}
             {legal.canRaise && raiseTarget < legal.maxRaiseTo && (
               <button
                 onClick={() => act({ type: 'raise', amount: raiseTarget })}
-                className="flex-1 rounded-xl bg-emerald-600 text-white px-4 py-3 font-semibold hover:bg-emerald-700"
+                className="flex-1 rounded-xl bg-emerald-600 text-white px-4 py-2.5 font-semibold hover:bg-emerald-700 leading-tight"
               >
                 {game.currentBet > 0 ? 'Raise' : 'Bet'} {raiseTarget}
+                <span className="block text-[11px] font-normal opacity-80">
+                  {game.currentBet > 0 ? KO.raise : KO.bet}
+                </span>
               </button>
             )}
             {legal.canRaise && (
               <button
                 onClick={() => act({ type: 'allin' })}
-                className="flex-1 rounded-xl bg-amber-500 text-white px-4 py-3 font-semibold hover:bg-amber-600"
+                className="flex-1 rounded-xl bg-amber-500 text-white px-4 py-2.5 font-semibold hover:bg-amber-600 leading-tight"
               >
                 All-in {legal.maxRaiseTo}
+                <span className="block text-[11px] font-normal opacity-80">{KO.allin}</span>
               </button>
             )}
           </div>
