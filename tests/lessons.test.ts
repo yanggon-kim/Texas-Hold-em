@@ -8,12 +8,15 @@ import {
   tableFlowLesson,
   actionsLesson,
   positionLesson,
+  startingHandsLesson,
+  oddsLesson,
+  boardLesson,
 } from '../src/drills/lessons';
 import { evaluateHand } from '../src/engine/handEvaluator';
 import { ALL_CATEGORIES } from '../src/drills/categories';
 
 describe('every level has a study lesson', () => {
-  it('all 6 levels define a lesson generator', () => {
+  it('all levels define a lesson generator', () => {
     for (const level of LEVELS) {
       expect(level.lesson, `level ${level.id} should have a lesson`).toBeTypeOf('function');
     }
@@ -28,6 +31,9 @@ describe('lessons produce well-formed cards', () => {
     tableFlowLesson,
     actionsLesson,
     positionLesson,
+    startingHandsLesson,
+    oddsLesson,
+    boardLesson,
   ];
   for (const gen of all) {
     it(`${gen.name} cards have a term and definition`, () => {
