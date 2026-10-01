@@ -2,7 +2,7 @@ import { type Card, type Suit, cardId } from './card';
 import { makeDeck } from './deck';
 import { type HandResult, evaluateHand, compareScores } from './handEvaluator';
 
-/** The highest count of any single suit on the board. */
+/** 보드에서 한 무늬가 나온 최대 개수. */
 export function maxSuitCount(board: Card[]): number {
   const counts = new Map<Suit, number>();
   let max = 0;
@@ -14,7 +14,7 @@ export function maxSuitCount(board: Card[]): number {
   return max;
 }
 
-/** True if any rank appears two or more times on the board. */
+/** 보드에 같은 랭크가 두 번 이상 나오면 true. */
 export function isPaired(board: Card[]): boolean {
   const seen = new Set<string>();
   for (const c of board) {
@@ -24,14 +24,14 @@ export function isPaired(board: Card[]): boolean {
   return false;
 }
 
-/** A flush is possible for someone when 3+ of one suit are on the board. */
+/** 보드에 한 무늬가 3장 이상 있으면 누군가 플러시를 만들 수 있습니다. */
 export function flushPossible(board: Card[]): boolean {
   return maxSuitCount(board) >= 3;
 }
 
 /**
- * The "nuts": the best possible 5-card hand anyone could hold on this board,
- * found by trying every pair of remaining cards as hole cards.
+ * "넛츠": 이 보드에서 누구든 가질 수 있는 가장 좋은 5장 핸드.
+ * 남은 카드의 모든 2장 조합을 홀 카드로 넣어 보며 찾습니다.
  */
 export function boardNuts(board: Card[]): HandResult {
   const used = new Set(board.map(cardId));

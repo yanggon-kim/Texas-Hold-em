@@ -17,8 +17,8 @@ const fresh = (): LevelProgress => ({
   recentAccuracy: [],
 });
 
-describe('applyResult — session accumulation', () => {
-  it('accumulates totals and trend across mastery and endless sessions', () => {
+describe('applyResult — 세션 누적', () => {
+  it('마스터 세션과 무한 연습 세션의 합계와 추세를 누적한다', () => {
     let p = fresh();
     p = applyResult(p, { mode: 'mastery', correct: 8, answered: 10 }, 8).next;
     p = applyResult(p, { mode: 'endless', correct: 5, answered: 20 }, 8).next;
@@ -31,30 +31,30 @@ describe('applyResult — session accumulation', () => {
     expect(levelAccuracy(p)).toBe(43); // 13/30 ≈ 43%
   });
 
-  it('only a passing mastery session marks the level mastered', () => {
+  it('통과한 마스터 세션만 레벨을 마스터로 표시한다', () => {
     let p = fresh();
-    // Endless never masters, even at 100%.
+    // 무한 연습은 100%여도 마스터가 되지 않는다.
     const endless = applyResult(p, { mode: 'endless', correct: 10, answered: 10 }, 8);
     expect(endless.mastered).toBe(false);
     expect(endless.next.mastered).toBe(false);
 
-    // A mastery session below the threshold also doesn't master.
+    // 기준 미달인 마스터 세션도 마스터가 되지 않는다.
     p = applyResult(endless.next, { mode: 'mastery', correct: 7, answered: 10 }, 8).next;
     expect(p.mastered).toBe(false);
 
-    // A passing mastery session does.
+    // 통과한 마스터 세션은 마스터가 된다.
     const pass = applyResult(p, { mode: 'mastery', correct: 9, answered: 10 }, 8);
     expect(pass.mastered).toBe(true);
     expect(pass.next.mastered).toBe(true);
   });
 
-  it('mastery stays sticky once earned', () => {
+  it('한 번 얻은 마스터는 유지된다', () => {
     let p = applyResult(fresh(), { mode: 'mastery', correct: 9, answered: 10 }, 8).next;
-    p = applyResult(p, { mode: 'mastery', correct: 2, answered: 10 }, 8).next; // bad session
+    p = applyResult(p, { mode: 'mastery', correct: 2, answered: 10 }, 8).next; // 나쁜 세션
     expect(p.mastered).toBe(true);
   });
 
-  it('caps the trend at 12 recent sessions', () => {
+  it('추세는 최근 12개 세션까지만 남긴다', () => {
     let p = fresh();
     for (let i = 0; i < 20; i++) {
       p = applyResult(p, { mode: 'endless', correct: 1, answered: 1 }, 8).next;
@@ -64,13 +64,13 @@ describe('applyResult — session accumulation', () => {
 });
 
 describe('levelAccuracy / isUnlocked', () => {
-  it('returns null accuracy before any practice', () => {
+  it('연습 전에는 정확도로 null을 돌려준다', () => {
     expect(levelAccuracy(fresh())).toBeNull();
   });
 
-  it('treats every level as unlocked (no lock system)', () => {
+  it('모든 레벨을 열린 것으로 취급한다 (잠금 없음)', () => {
     const state: ProgressState = { 1: fresh(), 2: fresh() };
     expect(isUnlocked(state, 1)).toBe(true);
-    expect(isUnlocked(state, 2)).toBe(true); // accessible even before mastering level 1
+    expect(isUnlocked(state, 2)).toBe(true); // 레벨 1을 마스터하기 전에도 들어갈 수 있다
   });
 });

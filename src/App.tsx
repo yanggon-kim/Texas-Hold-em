@@ -19,7 +19,7 @@ type View =
 export default function App() {
   const { progress, recordResult, reset } = useProgress();
   const [view, setView] = useState<View>({ name: 'map' });
-  // Bumped to remount the drill screen for a fresh practice session.
+  // 새 연습 세션을 위해 연습 화면을 다시 마운트할 때 증가시킵니다.
   const [sessionKey, setSessionKey] = useState(0);
 
   const goMap = () => setView({ name: 'map' });
@@ -59,12 +59,12 @@ export default function App() {
   if (!level) {
     return (
       <Shell>
-        <div className="p-8 text-center text-slate-500">Level not found.</div>
+        <div className="p-8 text-center text-slate-500">레벨을 찾을 수 없습니다.</div>
       </Shell>
     );
   }
 
-  // After the lesson (or directly), launch drills or the live table.
+  // 학습이 끝나면(또는 바로) 연습 문제나 실전 테이블을 엽니다.
   const afterLesson = () =>
     level.play
       ? setView({ name: 'table', levelId: level.id })

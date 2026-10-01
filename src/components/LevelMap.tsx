@@ -15,16 +15,16 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
   return (
     <div className="mx-auto max-w-xl px-4 py-8">
       <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-slate-800">Learn Texas Hold'em</h1>
-        <p className="text-slate-500 mt-1">Step by step, one skill at a time.</p>
+        <h1 className="text-3xl font-bold text-slate-800">텍사스 홀덤 배우기</h1>
+        <p className="text-slate-500 mt-1">한 번에 하나씩, 차근차근.</p>
         <p className="text-xs text-slate-400 mt-3">
-          {masteredCount} / {LEVELS.length} levels mastered
+          {LEVELS.length}개 레벨 중 {masteredCount}개 마스터
         </p>
         <button
           onClick={onShowStats}
           className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm font-medium text-slate-600 shadow-sm hover:border-slate-300"
         >
-          📊 View stats
+          📊 통계 보기
         </button>
       </header>
 
@@ -51,9 +51,9 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-slate-400">LEVEL {level.id}</span>
+                    <span className="text-xs font-semibold text-slate-400">레벨 {level.id}</span>
                     {mastered && (
-                      <span className="text-xs font-semibold text-emerald-600">✓ Mastered</span>
+                      <span className="text-xs font-semibold text-emerald-600">✓ 마스터</span>
                     )}
                   </div>
                   <h2 className="font-semibold text-slate-800 truncate">{level.title}</h2>
@@ -61,7 +61,7 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
                 </div>
                 {state && state.attempts > 0 && (
                   <div className="text-right text-xs text-slate-400 shrink-0">
-                    best
+                    최고 점수
                     <div className="text-sm font-semibold text-slate-600">
                       {state.bestScore}/{level.drillsPerSession}
                     </div>
@@ -71,7 +71,7 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
               {unlocked && !level.play && (
                 <button
                   onClick={() => onPractice(level.id)}
-                  title="Endless practice"
+                  title="무한 연습"
                   className="shrink-0 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100"
                 >
                   ∞
@@ -83,13 +83,13 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
       </ol>
 
       <p className="text-center text-xs text-slate-400 mt-8">
-        Work through all 10 levels, then play full hands vs. AI in Level 10. ♠️
+        10개 레벨을 차례로 익히고, 레벨 10에서 AI와 실전 핸드를 플레이하세요. ♠️
       </p>
 
       {masteredCount > 0 && (
         <div className="text-center mt-6">
           <button onClick={onReset} className="text-xs text-slate-400 hover:text-rose-500 underline">
-            Reset progress
+            진행 상황 초기화
           </button>
         </div>
       )}

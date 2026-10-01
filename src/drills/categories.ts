@@ -1,6 +1,6 @@
 import { HandCategory, CATEGORY_NAME } from '../engine/handEvaluator';
 
-/** Categories listed weakest → strongest. */
+/** 약한 것 → 강한 것 순서의 족보 목록. */
 export const ALL_CATEGORIES: HandCategory[] = [
   HandCategory.HighCard,
   HandCategory.OnePair,
@@ -14,19 +14,19 @@ export const ALL_CATEGORIES: HandCategory[] = [
   HandCategory.RoyalFlush,
 ];
 
-/** All category display names, weakest → strongest. */
+/** 모든 족보의 표시 이름, 약한 것 → 강한 것 순서. */
 export const CATEGORY_NAMES: string[] = ALL_CATEGORIES.map((c) => CATEGORY_NAME[c]);
 
-/** One-line description of each category, used in Coach explanations. */
+/** 족보별 한 줄 설명. 코치 해설에 사용합니다. */
 export const CATEGORY_HINT: Record<HandCategory, string> = {
-  [HandCategory.HighCard]: 'no pair or better — ranked by its highest card',
-  [HandCategory.OnePair]: 'two cards of the same rank',
-  [HandCategory.TwoPair]: 'two different pairs',
-  [HandCategory.ThreeOfAKind]: 'three cards of the same rank',
-  [HandCategory.Straight]: 'five cards in a row (mixed suits)',
-  [HandCategory.Flush]: 'five cards of one suit, not in sequence',
-  [HandCategory.FullHouse]: 'three of a kind plus a pair',
-  [HandCategory.FourOfAKind]: 'four cards of the same rank',
-  [HandCategory.StraightFlush]: 'five cards in a row, all the same suit',
-  [HandCategory.RoyalFlush]: 'A-K-Q-J-10 all of one suit — the best possible hand',
+  [HandCategory.HighCard]: '페어 이상이 없어 가장 높은 카드로 순위를 정하는 핸드',
+  [HandCategory.OnePair]: '같은 랭크의 카드 2장',
+  [HandCategory.TwoPair]: '서로 다른 페어 2개',
+  [HandCategory.ThreeOfAKind]: '같은 랭크의 카드 3장',
+  [HandCategory.Straight]: '무늬가 섞인 연속된 숫자 5장',
+  [HandCategory.Flush]: '연속되지 않은, 같은 무늬 5장',
+  [HandCategory.FullHouse]: '트리플과 원 페어의 조합',
+  [HandCategory.FourOfAKind]: '같은 랭크의 카드 4장',
+  [HandCategory.StraightFlush]: '같은 무늬의 연속된 숫자 5장',
+  [HandCategory.RoyalFlush]: '같은 무늬의 A-K-Q-J-10 — 가능한 가장 강한 핸드',
 };

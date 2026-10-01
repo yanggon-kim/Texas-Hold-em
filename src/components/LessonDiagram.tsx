@@ -1,6 +1,5 @@
 import type { LessonDiagram as Diagram, TableHighlight } from '../drills/types';
 import { RANKS, SUITS, SUIT_NAME } from '../engine/card';
-import { ko, SUIT_KOREAN } from '../data/korean';
 import { parseCard } from '../engine/handEvaluator';
 import { PlayingCard, CardBack } from './PlayingCard';
 
@@ -19,7 +18,7 @@ export function LessonDiagram({ diagram }: { diagram: Diagram }) {
   }
 }
 
-/* ---- the four suits, with colour and Korean ---- */
+/* ---- 네 가지 무늬와 색깔 ---- */
 function SuitsDiagram() {
   return (
     <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
@@ -33,9 +32,8 @@ function SuitsDiagram() {
             <span className={`text-3xl ${red ? 'text-rose-600' : 'text-slate-900'}`}>{suit}</span>
             <div className="min-w-0">
               <div className="font-semibold text-slate-800 text-sm">{SUIT_NAME[suit]}</div>
-              <div className="text-xs text-indigo-600">🇰🇷 {ko(SUIT_KOREAN[suit])}</div>
               <div className={`text-[10px] font-medium ${red ? 'text-rose-500' : 'text-slate-500'}`}>
-                {red ? 'red' : 'black'}
+                {red ? '빨간색' : '검은색'}
               </div>
             </div>
           </div>
@@ -45,7 +43,7 @@ function SuitsDiagram() {
   );
 }
 
-/* ---- the rank ladder 2 → A ---- */
+/* ---- 랭크 순서 2 → A ---- */
 function RankStripDiagram() {
   return (
     <div className="flex flex-col items-center gap-1.5">
@@ -60,31 +58,31 @@ function RankStripDiagram() {
         ))}
       </div>
       <div className="flex items-center justify-between w-full max-w-xs text-xs text-slate-400">
-        <span>← low</span>
-        <span>high (Ace) →</span>
+        <span>← 낮음</span>
+        <span>높음 (에이스) →</span>
       </div>
     </div>
   );
 }
 
-/* ---- the 10 hand rankings as a ladder, strongest at the top ---- */
+/* ---- 10가지 족보 사다리, 가장 강한 것이 맨 위 ---- */
 const LADDER: { name: string; tone: string }[] = [
-  { name: 'Royal Flush', tone: 'bg-emerald-600' },
-  { name: 'Straight Flush', tone: 'bg-emerald-500' },
-  { name: 'Four of a Kind', tone: 'bg-teal-500' },
-  { name: 'Full House', tone: 'bg-cyan-500' },
-  { name: 'Flush', tone: 'bg-sky-500' },
-  { name: 'Straight', tone: 'bg-blue-500' },
-  { name: 'Three of a Kind', tone: 'bg-indigo-500' },
-  { name: 'Two Pair', tone: 'bg-violet-500' },
-  { name: 'One Pair', tone: 'bg-purple-400' },
-  { name: 'High Card', tone: 'bg-slate-400' },
+  { name: '로열 플러시', tone: 'bg-emerald-600' },
+  { name: '스트레이트 플러시', tone: 'bg-emerald-500' },
+  { name: '포카드', tone: 'bg-teal-500' },
+  { name: '풀하우스', tone: 'bg-cyan-500' },
+  { name: '플러시', tone: 'bg-sky-500' },
+  { name: '스트레이트', tone: 'bg-blue-500' },
+  { name: '트리플', tone: 'bg-indigo-500' },
+  { name: '투 페어', tone: 'bg-violet-500' },
+  { name: '원 페어', tone: 'bg-purple-400' },
+  { name: '하이 카드', tone: 'bg-slate-400' },
 ];
 
 function RankLadderDiagram() {
   return (
     <div className="w-full max-w-sm">
-      <div className="text-xs text-slate-400 mb-1 text-center">strongest ↑</div>
+      <div className="text-xs text-slate-400 mb-1 text-center">가장 강함 ↑</div>
       <div className="flex flex-col gap-1">
         {LADDER.map((row, i) => (
           <div
@@ -96,12 +94,12 @@ function RankLadderDiagram() {
           </div>
         ))}
       </div>
-      <div className="text-xs text-slate-400 mt-1 text-center">weakest ↓</div>
+      <div className="text-xs text-slate-400 mt-1 text-center">가장 약함 ↓</div>
     </div>
   );
 }
 
-/* ---- the four betting rounds as a timeline ---- */
+/* ---- 네 번의 베팅 라운드 타임라인 ---- */
 const c = (label: string) => parseCard(label);
 
 function Stage({ title, children }: { title: string; children: React.ReactNode }) {
@@ -120,33 +118,33 @@ function Arrow() {
 function BettingRoundsDiagram() {
   return (
     <div className="flex items-start gap-1.5 overflow-x-auto w-full justify-center pb-1">
-      <Stage title="Pre-flop">
+      <Stage title="프리플랍">
         <CardBack size="sm" />
         <CardBack size="sm" />
       </Stage>
       <Arrow />
-      <Stage title="Flop (3)">
+      <Stage title="플랍 (3)">
         <PlayingCard card={c('K♠')} size="sm" />
         <PlayingCard card={c('9♥')} size="sm" />
         <PlayingCard card={c('4♣')} size="sm" />
       </Stage>
       <Arrow />
-      <Stage title="Turn (1)">
+      <Stage title="턴 (1)">
         <PlayingCard card={c('Q♦')} size="sm" />
       </Stage>
       <Arrow />
-      <Stage title="River (1)">
+      <Stage title="리버 (1)">
         <PlayingCard card={c('2♠')} size="sm" />
       </Stage>
       <Arrow />
-      <Stage title="Showdown">
+      <Stage title="쇼다운">
         <span className="text-2xl leading-none">🏆</span>
       </Stage>
     </div>
   );
 }
 
-/* ---- a 6-max poker table with seat roles ---- */
+/* ---- 자리 역할이 표시된 6인 포커 테이블 ---- */
 interface Seat {
   role: string;
   top: number;
@@ -160,6 +158,16 @@ const SEATS: Seat[] = [
   { role: 'MP', top: 14, left: 70 },
   { role: 'CO', top: 50, left: 92 },
 ];
+
+/** 그림에 표시하는 자리 이름. */
+const SEAT_LABEL: Record<string, string> = {
+  BTN: '버튼',
+  SB: '스몰 블라인드',
+  BB: '빅 블라인드',
+  UTG: '언더더건',
+  MP: '미들',
+  CO: '컷오프',
+};
 
 function seatStyle(role: string, highlight?: TableHighlight): string {
   const on = 'bg-emerald-500 text-white border-emerald-600 ring-2 ring-emerald-300';
@@ -186,21 +194,21 @@ function PokerTableDiagram({ highlight }: { highlight?: TableHighlight }) {
   return (
     <div className="w-full max-w-sm">
       <div className="relative w-full" style={{ paddingBottom: '62%' }}>
-        {/* felt */}
+        {/* 테이블 천 */}
         <div className="absolute inset-[14%] rounded-[50%] bg-emerald-700 border-4 border-emerald-900 shadow-inner grid place-items-center">
-          <span className="text-emerald-200/70 text-xs font-semibold tracking-wide">TABLE</span>
+          <span className="text-emerald-200/70 text-xs font-semibold tracking-wide">테이블</span>
         </div>
-        {/* seats */}
+        {/* 자리 */}
         {SEATS.map((seat) => (
           <div
             key={seat.role}
-            className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-lg border px-2 py-1 text-xs font-bold shadow-sm ${seatStyle(
+            className={`absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-lg border px-2 py-1 text-xs font-bold shadow-sm ${seatStyle(
               seat.role,
               highlight,
             )}`}
             style={{ top: `${seat.top}%`, left: `${seat.left}%` }}
           >
-            {seat.role}
+            {SEAT_LABEL[seat.role]}
             {seat.role === 'BTN' && (
               <span className="ml-1 inline-grid place-items-center w-4 h-4 rounded-full bg-white text-slate-900 text-[9px] align-middle">
                 D
@@ -211,8 +219,8 @@ function PokerTableDiagram({ highlight }: { highlight?: TableHighlight }) {
       </div>
       {highlight === 'earlyLate' && (
         <div className="flex justify-center gap-4 mt-1 text-[11px]">
-          <span className="text-amber-700">● early (tight)</span>
-          <span className="text-emerald-700">● late (loose)</span>
+          <span className="text-amber-700">● 얼리 (타이트)</span>
+          <span className="text-emerald-700">● 레이트 (루즈)</span>
         </div>
       )}
     </div>

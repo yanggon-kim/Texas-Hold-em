@@ -1,83 +1,77 @@
-# Texas Hold'em — Learn Step by Step
+# 텍사스 홀덤 — 차근차근 배우기
 
-A web-deployed **learning game** that teaches Texas Hold'em to a complete
-novice, one skill at a time. You progress through levels from low → high, and
-each level uses lots of **repetition (drills)** with instant feedback to lock in
-the rules and strategy before unlocking the next level.
+텍사스 홀덤을 전혀 모르는 사람에게 한 번에 한 가지 기술씩 가르치는 웹 **학습 게임**입니다.
+낮은 레벨부터 높은 레벨로 올라가며, 각 레벨은 즉각적인 피드백이 있는 **반복 연습**으로
+규칙과 전략을 몸에 익히도록 구성되어 있습니다.
 
-> Built as a personal learning tool. See [`docs/game-development.md`](docs/game-development.md)
-> for the full design, and [`docs/beginner-guide.md`](docs/beginner-guide.md) for
-> the rules & strategy reference the level content is based on.
+> 개인 학습 도구로 만들었습니다. 전체 설계는 [`docs/game-development.md`](docs/game-development.md),
+> 레벨 내용의 바탕이 된 규칙과 전략 자료는 [`docs/beginner-guide.md`](docs/beginner-guide.md)를 참고하세요.
 
-## What's included
+## 포함된 내용
 
-Rules fluency (Milestones M0–M3) and game flow (M4):
+규칙 익히기(마일스톤 M0–M3)와 게임 진행(M4), 전략(M5), 실전(M6):
 
-| Level | Title | What you drill |
-|-------|-------|----------------|
-| 1 | Cards & Suits | Recognise all 52 cards, suits, and colours |
-| 2 | Hand Rankings | Name the 10 hands and compare two hands |
-| 3 | Make the Best Hand | Pick the best 5-card hand from 7 cards |
-| 4 | Table & Flow | Button, blinds, and the four betting rounds |
-| 5 | Betting Actions | Check, bet, call, raise, fold — and when each applies |
-| 6 | Position | Why acting later wins; early vs. late play |
-| 7 | Starting Hands | Which two cards to play, by tier and position |
-| 8 | Outs & Pot Odds | Counting outs, the Rule of 2 & 4, pot-odds calls |
-| 9 | Reading the Board | The nuts, flush threats, and paired boards |
-| 10 | Play vs. AI | Full hands at a live table against bots, with a coach |
+| 레벨 | 제목 | 연습 내용 |
+|------|------|-----------|
+| 1 | 카드와 무늬 | 52장의 카드, 무늬, 색깔 알아보기 |
+| 2 | 족보 | 10가지 족보의 이름을 말하고 두 핸드 비교하기 |
+| 3 | 가장 좋은 핸드 만들기 | 7장 중 가장 좋은 5장 고르기 |
+| 4 | 테이블과 진행 | 버튼, 블라인드, 네 번의 베팅 라운드 |
+| 5 | 베팅 액션 | 체크, 벳, 콜, 레이즈, 폴드 — 각각 언제 쓰는지 |
+| 6 | 포지션 | 나중에 행동하는 쪽이 유리한 이유, 얼리와 레이트 플레이 |
+| 7 | 스타팅 핸드 | 등급과 포지션에 따라 어떤 카드 2장을 플레이할지 |
+| 8 | 아웃츠와 팟 오즈 | 아웃츠 세기, 2와 4의 법칙, 팟 오즈로 콜 판단 |
+| 9 | 보드 읽기 | 넛츠, 플러시 위협, 페어 보드 |
+| 10 | AI와 실전 | 코치와 함께 봇을 상대로 실전 테이블에서 플레이 |
 
-Each level: a short intro → a **Learn (study) stage** with definitions, worked
-examples, and **Korean translations** of the key terms → randomized drills with
-instant Coach feedback → master it to unlock the next. Miss a question and you
-get an extra practice rep, and you can **Practice again** any time to drill by
-repetition. Progress is saved in your browser (`localStorage`).
+각 레벨은 짧은 소개 → 정의와 예시가 있는 **학습 단계** → 코치가 바로 해설해 주는 무작위
+연습 문제 순서로 진행됩니다. 문제를 틀리면 추가 연습 문제가 나오고, 언제든 **다시 연습하기**로
+반복할 수 있습니다. 진행 상황은 브라우저(`localStorage`)에 저장됩니다. 모든 레벨은 처음부터
+열려 있습니다.
 
-Two practice modes per level: a **mastery session** (gates the next level) and
-**∞ Endless practice** (unlimited questions). A **📊 stats dashboard** tracks
-per-skill accuracy, questions answered, a recent-session trend, and flags your
-weakest area.
+레벨마다 연습 모드가 두 가지 있습니다. **마스터 세션**(목표 점수를 넘기면 레벨 마스터)과
+**∞ 무한 연습**(문제 수 제한 없음)입니다. **📊 통계 화면**에서는 분야별 정확도, 푼 문제 수,
+최근 세션 추세를 보여 주고, 가장 약한 분야를 알려 줍니다.
 
-**Level 10** is a live table: play full No-Limit hands against bot opponents
-(built on a compact hand engine in `src/engine/game.ts` + `bot.ts`), with a
-coach that suggests an action and explains why on every decision. Bots have
-**three difficulty levels** (Easy = loose-passive, Normal, Hard =
-tight-aggressive), and the engine builds proper **side pots** for all-ins of
-different sizes.
+**레벨 10**은 실전 테이블입니다. 봇 상대와 노리밋 핸드를 끝까지 플레이합니다
+(`src/engine/game.ts`와 `bot.ts`의 간결한 핸드 엔진 기반). 매 결정마다 코치가 액션을
+추천하고 이유를 설명합니다. 봇은 **난이도가 세 가지**(쉬움 = 루즈-패시브, 보통,
+어려움 = 타이트-어그레시브)이며, 엔진은 금액이 다른 올인에 대해 **사이드 팟**을 올바르게 만듭니다.
 
-## Tech
+## 기술 스택
 
-- **React + Vite + TypeScript**, styled with **Tailwind CSS v4**
-- A pure, UI-free **poker engine** (`src/engine/`) — deck, hand evaluator
-  (best 5-of-7 with tie-breaking), and a verified hand factory — fully unit-tested
-- Client-only: no backend, no database
+- **React + Vite + TypeScript**, 스타일은 **Tailwind CSS v4**
+- UI와 분리된 순수 **포커 엔진**(`src/engine/`) — 덱, 핸드 평가기(7장 중 가장 좋은 5장,
+  동점 판정 포함), 검증된 핸드 생성기 — 모두 단위 테스트 완료
+- 클라이언트 전용: 백엔드와 데이터베이스가 없습니다
 
-## Develop
+## 개발
 
 ```bash
-npm install      # install dependencies
-npm run dev      # start the dev server (http://localhost:5173)
-npm test         # run the engine unit tests (Vitest)
-npm run build    # typecheck + production build to dist/
-npm run preview  # preview the production build locally
+npm install      # 의존성 설치
+npm run dev      # 개발 서버 시작 (http://localhost:5173)
+npm test         # 엔진 단위 테스트 실행 (Vitest)
+npm run build    # 타입 검사 + dist/에 프로덕션 빌드
+npm run preview  # 프로덕션 빌드를 로컬에서 미리 보기
 ```
 
-## Deploy (Vercel)
+## 배포 (Vercel)
 
-1. Push this repo to GitHub (already done on the working branch).
-2. In your Vercel dashboard: **Add New → Project → Import** this repo.
-3. Vercel auto-detects Vite — no settings needed:
-   - Build command: `npm run build`
-   - Output directory: `dist`
-4. Deploy. No environment variables or secrets are required (it's a static SPA).
+1. 이 저장소를 GitHub에 푸시합니다 (작업 브랜치는 이미 푸시되어 있습니다).
+2. Vercel 대시보드에서 **Add New → Project → Import**로 이 저장소를 가져옵니다.
+3. Vercel이 Vite를 자동으로 감지하므로 따로 설정할 것이 없습니다:
+   - 빌드 명령: `npm run build`
+   - 출력 디렉터리: `dist`
+4. 배포합니다. 환경 변수나 비밀 값은 필요 없습니다 (정적 SPA입니다).
 
-## Project layout
+## 프로젝트 구조
 
 ```
 src/
-  engine/        pure poker logic (card, deck, handEvaluator, handFactory, odds)
-  drills/        per-level question generators + the level registry
-  state/         progress tracking + localStorage persistence
-  components/    React UI (cards, level map, intro, drill screen, coach)
-tests/           Vitest unit tests for the engine
-docs/            design doc + beginner guide
+  engine/        순수 포커 로직 (card, deck, handEvaluator, handFactory, odds, game, bot, josa)
+  drills/        레벨별 문제 생성기, 학습 카드, 레벨 목록
+  state/         진행 상황 추적 + localStorage 저장
+  components/    React UI (카드, 레벨 지도, 소개, 학습, 연습 화면, 통계, 실전 테이블)
+tests/           엔진과 문제 생성기의 Vitest 단위 테스트
+docs/            설계 문서 + 초보자 가이드
 ```

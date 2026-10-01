@@ -1,127 +1,123 @@
-# 🃏 Texas Hold'em — A Beginner's Learning Guide
+# 🃏 텍사스 홀덤 — 초보자 학습 가이드
 
-A step-by-step learning path for someone brand new to Texas Hold'em. Work
-through the stages in order — each one builds on the last.
-
----
-
-## Stage 1 — Memorize the Hand Rankings (do this first)
-
-Before anything else, burn the 10 hands into memory, strongest → weakest.
-Every decision in the game depends on knowing what beats what.
-
-| Rank | Hand | Example |
-|------|------|---------|
-| 1 | Royal Flush | A♠ K♠ Q♠ J♠ 10♠ |
-| 2 | Straight Flush | 9♥ 8♥ 7♥ 6♥ 5♥ |
-| 3 | Four of a Kind | Q Q Q Q 3 |
-| 4 | Full House | K K K 7 7 |
-| 5 | Flush | A♣ J♣ 8♣ 5♣ 2♣ |
-| 6 | Straight | 8 7 6 5 4 (mixed suits) |
-| 7 | Three of a Kind | 5 5 5 K 2 |
-| 8 | Two Pair | J J 4 4 9 |
-| 9 | One Pair | 10 10 A 7 3 |
-| 10 | High Card | A Q 9 6 3 |
-
-> 💡 **Practice:** name the winner between two random hands until it's instant.
+텍사스 홀덤을 처음 접하는 사람을 위한 단계별 학습 경로입니다. 단계를 순서대로
+따라가세요 — 각 단계는 앞 단계를 바탕으로 합니다.
 
 ---
 
-## Stage 2 — Understand the Goal & Setup
+## 1단계 — 족보 외우기 (가장 먼저)
 
-- Make the **best 5-card hand** from your **2 private hole cards + 5 shared
-  community cards**.
-- 2–10 players, standard 52-card deck (no jokers).
-- The **dealer button** rotates clockwise each hand and sets who posts the
-  blinds.
+무엇보다 먼저 10가지 족보를 강한 순서 → 약한 순서로 확실히 외우세요.
+게임의 모든 결정은 무엇이 무엇을 이기는지 아는 데서 시작합니다.
 
----
+| 순위 | 족보 | 예시 |
+|------|------|------|
+| 1 | 로열 플러시 | A♠ K♠ Q♠ J♠ 10♠ |
+| 2 | 스트레이트 플러시 | 9♥ 8♥ 7♥ 6♥ 5♥ |
+| 3 | 포카드 | Q Q Q Q 3 |
+| 4 | 풀하우스 | K K K 7 7 |
+| 5 | 플러시 | A♣ J♣ 8♣ 5♣ 2♣ |
+| 6 | 스트레이트 | 8 7 6 5 4 (무늬 섞임) |
+| 7 | 트리플 | 5 5 5 K 2 |
+| 8 | 투 페어 | J J 4 4 9 |
+| 9 | 원 페어 | 10 10 A 7 3 |
+| 10 | 하이 카드 | A Q 9 6 3 |
 
-## Stage 3 — Walk Through One Full Hand (the 7 phases)
-
-This is the core loop. Learn the *order* cold.
-
-| # | Phase | What happens |
-|---|-------|--------------|
-| 1 | **Post blinds** | Player left of button = small blind; next = big blind (forced bets that start the action) |
-| 2 | **Hole cards** | Everyone gets 2 face-down cards |
-| 3 | **Pre-flop** | First betting round, starts with the player "under the gun" (left of big blind) |
-| 4 | **Flop** | 3 community cards revealed → betting |
-| 5 | **Turn** | 4th community card → betting |
-| 6 | **River** | 5th community card → final betting |
-| 7 | **Showdown** | Remaining players reveal; best 5-card hand wins the pot |
-
-> A card is "burned" (discarded face down) before the flop, turn, and river to
-> deter cheating.
+> 💡 **연습:** 무작위 핸드 두 개 중 승자를 바로 말할 수 있을 때까지 반복하세요.
 
 ---
 
-## Stage 4 — Learn the 5 Betting Actions
+## 2단계 — 목표와 준비 이해하기
 
-- **Check** — pass without betting (only if no bet is pending)
-- **Bet** — put the first chips in
-- **Call** — match the current bet
-- **Raise** — increase the current bet
-- **Fold** — give up the hand
-- (**All-in** — commit all your remaining chips)
+- **나만 보는 홀 카드 2장 + 모두가 함께 쓰는 커뮤니티 카드 5장**으로 **가장 좋은 5장 핸드**를
+  만듭니다.
+- 2~10명이 표준 52장 덱(조커 없음)으로 플레이합니다.
+- **딜러 버튼**은 매 핸드 시계 방향으로 돌며, 누가 블라인드를 낼지 정합니다.
 
 ---
 
-## Stage 5 — Learn Position (the #1 beginner edge)
+## 3단계 — 한 핸드를 처음부터 끝까지 따라가기 (7단계)
 
-- The **later you act, the more information you have** → the bigger your edge.
-- The **Button (BTN)** is the most profitable seat at the table.
-- **Early position (UTG)** → play **tight**; **late position** → play **more
-  hands**.
+이것이 게임의 핵심 흐름입니다. *순서*를 완벽히 익히세요.
 
----
+| # | 단계 | 하는 일 |
+|---|------|---------|
+| 1 | **블라인드 내기** | 버튼 왼쪽 = 스몰 블라인드, 그다음 = 빅 블라인드 (액션을 시작하는 강제 베팅) |
+| 2 | **홀 카드** | 모두 뒷면으로 2장씩 받습니다 |
+| 3 | **프리플랍** | 첫 베팅 라운드. "언더더건"(빅 블라인드 왼쪽) 플레이어부터 시작합니다 |
+| 4 | **플랍** | 커뮤니티 카드 3장 공개 → 베팅 |
+| 5 | **턴** | 4번째 커뮤니티 카드 → 베팅 |
+| 6 | **리버** | 5번째 커뮤니티 카드 → 마지막 베팅 |
+| 7 | **쇼다운** | 남은 플레이어가 공개하고, 가장 좋은 5장 핸드가 팟을 가져갑니다 |
 
-## Stage 6 — Starting Hand Selection
-
-Winning players **fold pre-flop ~70%+ of the time.** A simple starter framework:
-
-- ✅ **Premium (always play):** pocket pairs TT+, AK, AQ
-- 🟡 **Situational (position-dependent):** medium pairs 55–99, suited connectors
-  (KQ, QJ), suited aces
-- ❌ **Trash (fold):** junk like Q5, J6, 72 offsuit
-
-> 💡 Use a free **color-coded pre-flop chart** organized by position rather than
-> trying to memorize everything at once.
+> 속임수를 막기 위해 플랍, 턴, 리버 전에 카드 한 장을 "번"(뒷면으로 버리기)합니다.
 
 ---
 
-## Stage 7 — The 3 Golden Rules for Beginners
+## 4단계 — 다섯 가지 베팅 액션 익히기
 
-1. **Play your position** — tighter early, looser late.
-2. **Bet aggressively with strong hands** — don't play passively.
-3. **Avoid costly chases** — don't pay big to draw to unlikely hands.
-
----
-
-## Stage 8 — Practice Safely (recommended progression)
-
-1. **Free online play-money games** → learn mechanics risk-free
-2. **Freerolls** (free tournaments with real prizes)
-3. **Low-stakes real money** once comfortable
+- **체크** — 베팅 없이 넘기기 (받은 벳이 없을 때만)
+- **벳** — 처음으로 칩 걸기
+- **콜** — 현재 베팅 금액 맞추기
+- **레이즈** — 현재 베팅 금액 올리기
+- **폴드** — 핸드 포기하기
+- (**올인** — 남은 칩을 모두 걸기)
 
 ---
 
-## Betting Structures (good to know)
+## 5단계 — 포지션 익히기 (초보자의 가장 큰 무기)
 
-- **Limit** — fixed bet sizes per round
-- **No-Limit** — bet any amount up to all your chips (the format used in the
-  WSOP main event)
-- **Pot-Limit** — maximum bet is the current size of the pot
+- **나중에 행동할수록 정보가 많고** → 그만큼 유리합니다.
+- **버튼(BTN)**은 테이블에서 가장 수익이 좋은 자리입니다.
+- **얼리 포지션(UTG)** → **타이트하게**, **레이트 포지션** → **더 많은 핸드**를 플레이하세요.
 
 ---
 
-## 📚 Sources & Recommended Reading
+## 6단계 — 스타팅 핸드 고르기
 
-- [How to Play Texas Hold'em Poker for Beginners — PokerNews](https://www.pokernews.com/poker-rules/texas-holdem.htm)
-- [How to Play Texas Hold'em — Poker.org](https://www.poker.org/poker-strategy/how-to-play-texas-holdem/)
-- [Texas Hold'em Starting Hands Guide — Upswing Poker](https://upswingpoker.com/texas-holdem-starting-hands-guide/)
-- [Texas Hold'em Strategy for Beginners — WSOP Academy](https://www.playwsop.com/academy/texas-holdem-strategy-for-beginners-position-strong-hands-smart-folds/)
-- [Starting Hands: Rankings, Charts & Position Play — CardPlayer](https://www.cardplayer.com/online-poker/starting-hands-in-texas-holdem)
-- [Starting Hand Selection — Pokerology](https://www.pokerology.com/lessons/starting-hand-selection/)
-- [Learn Texas Hold'em in 10 Minutes — Sportskeeda](https://sportskeeda.com/poker/learn-how-to-play-texas-hold-em-poker-in-10-minutes)
-- [Texas hold 'em — Wikipedia](https://en.wikipedia.org/wiki/Texas_hold_%27em)
+이기는 플레이어는 **프리플랍에서 70% 이상 폴드합니다.** 간단한 시작 기준:
+
+- ✅ **프리미엄 (항상 플레이):** 포켓 페어 TT 이상, AK, AQ
+- 🟡 **상황에 따라 (포지션에 따라 다름):** 중간 페어 55–99, 수티드 커넥터
+  (KQ, QJ), 수티드 에이스
+- ❌ **트래시 (폴드):** Q5, J6, 72 오프수트 같은 약한 핸드
+
+> 💡 한 번에 모두 외우려 하지 말고, 포지션별로 정리된 무료 **색깔 프리플랍 차트**를 활용하세요.
+
+---
+
+## 7단계 — 초보자를 위한 세 가지 황금률
+
+1. **포지션에 맞게 플레이하세요** — 얼리에서는 타이트하게, 레이트에서는 느슨하게.
+2. **강한 핸드로는 공격적으로 베팅하세요** — 수동적으로 플레이하지 마세요.
+3. **비싼 추격을 피하세요** — 될 가능성이 낮은 핸드를 위해 큰돈을 내지 마세요.
+
+---
+
+## 8단계 — 안전하게 연습하기 (추천 순서)
+
+1. **무료 온라인 연습용 머니 게임** → 위험 없이 진행 방식 익히기
+2. **프리롤** (참가비 없이 실제 상품이 걸린 토너먼트)
+3. 익숙해지면 **낮은 판돈의 실제 게임**
+
+---
+
+## 베팅 방식 (알아 두면 좋은 것)
+
+- **리밋** — 라운드마다 베팅 금액이 정해져 있음
+- **노리밋** — 가진 칩 전부까지 원하는 만큼 베팅 가능 (WSOP 메인 이벤트에서 쓰는 방식)
+- **팟 리밋** — 최대 베팅 금액이 현재 팟 크기
+
+---
+
+## 📚 출처와 추천 자료
+
+- [초보자를 위한 텍사스 홀덤 하는 법 — PokerNews](https://www.pokernews.com/poker-rules/texas-holdem.htm)
+- [텍사스 홀덤 하는 법 — Poker.org](https://www.poker.org/poker-strategy/how-to-play-texas-holdem/)
+- [텍사스 홀덤 스타팅 핸드 가이드 — Upswing Poker](https://upswingpoker.com/texas-holdem-starting-hands-guide/)
+- [초보자를 위한 텍사스 홀덤 전략 — WSOP Academy](https://www.playwsop.com/academy/texas-holdem-strategy-for-beginners-position-strong-hands-smart-folds/)
+- [스타팅 핸드: 순위, 차트, 포지션 플레이 — CardPlayer](https://www.cardplayer.com/online-poker/starting-hands-in-texas-holdem)
+- [스타팅 핸드 선택 — Pokerology](https://www.pokerology.com/lessons/starting-hand-selection/)
+- [10분 만에 배우는 텍사스 홀덤 — Sportskeeda](https://sportskeeda.com/poker/learn-how-to-play-texas-hold-em-poker-in-10-minutes)
+- [텍사스 홀덤 — 위키백과](https://ko.wikipedia.org/wiki/%ED%85%8D%EC%82%AC%EC%8A%A4_%ED%99%80%EB%8D%A4)
+- [포커 용어집 — 풀넛츠](https://sites.google.com/site/fullnuts/online-poker-school/poker-glossary)

@@ -13,19 +13,19 @@ export interface SessionOutcome {
 interface Props {
   level: LevelDef;
   mode: DrillMode;
-  /** Called once when a session ends (mastery or endless), to record stats. */
+  /** 세션이 끝날 때(마스터 또는 무한 연습) 한 번 호출되어 통계를 기록합니다. */
   onComplete: (outcome: SessionOutcome) => void;
-  /** Restart the session in the same mode. */
+  /** 같은 모드로 세션을 다시 시작합니다. */
   onReplay: () => void;
   onExit: () => void;
 }
 
 const rng = Math.random;
 
-// Fallback so a misconfigured level never crashes (play levels never use this).
+// 레벨 설정이 잘못되어도 멈추지 않도록 하는 대체 문제 (플레이 레벨은 사용하지 않음).
 const emptyDrill: Drill = {
-  prompt: 'No drills for this level.',
-  options: ['OK'],
+  prompt: '이 레벨에는 연습 문제가 없습니다.',
+  options: ['확인'],
   correctIndex: 0,
   explanation: '',
 };
@@ -35,14 +35,14 @@ export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props
   const base = level.drillsPerSession ?? 10;
   const generate = level.generate ?? (() => emptyDrill);
 
-  // Mastery starts with `base` questions; endless starts with one and grows.
+  // 마스터 모드는 `base`개 문제로 시작하고, 무한 연습은 한 문제로 시작해 늘어납니다.
   const [queue, setQueue] = useState<Drill[]>(() =>
     isEndless ? [generate(rng)] : Array.from({ length: base }, () => generate(rng)),
   );
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
-  const [baseCorrect, setBaseCorrect] = useState(0); // correct among first `base` (mastery)
-  const [totalCorrect, setTotalCorrect] = useState(0); // correct overall (both modes)
+  const [baseCorrect, setBaseCorrect] = useState(0); // 처음 `base`개 중 정답 수 (마스터)
+  const [totalCorrect, setTotalCorrect] = useState(0); // 전체 정답 수 (두 모드 모두)
   const [finished, setFinished] = useState(false);
 
   const current = queue[index];
@@ -57,7 +57,7 @@ export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props
     const correct = i === current.correctIndex;
     if (correct) setTotalCorrect((c) => c + 1);
     if (isBaseQuestion && correct) setBaseCorrect((c) => c + 1);
-    // Missing a base/endless question appends a bonus rep (spaced repetition).
+    // 기본·무한 연습 문제를 틀리면 보너스 반복 문제가 추가됩니다 (간격 반복).
     if (!correct && (isEndless || isBaseQuestion)) {
       setQueue((q) => [...q, generate(rng)]);
     }
@@ -113,24 +113,24 @@ export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      {/* header / progress */}
+      {/* 머리글 / 진행도 */}
       <div className="flex items-center justify-between mb-4">
         <button onClick={onExit} className="text-sm text-slate-500 hover:text-slate-800">
-          ← Exit
+          ← 나가기
         </button>
         <div className="text-sm text-slate-500">
           {isEndless ? (
             <>
-              <span className="text-indigo-600 font-medium">∞ Endless</span>
-              <span className="ml-3">Answered {answeredCount}</span>
+              <span className="text-indigo-600 font-medium">∞ 무한 연습</span>
+              <span className="ml-3">{answeredCount}문제 풂</span>
             </>
           ) : isBaseQuestion ? (
-            <>Question {progressShown} / {base}</>
+            <>문제 {progressShown} / {base}</>
           ) : (
-            <span className="text-amber-600">Bonus practice</span>
+            <span className="text-amber-600">보너스 연습</span>
           )}
           <span className="ml-3 font-medium text-emerald-600">
-            {isEndless ? `${totalCorrect} correct · ${accuracy}%` : `${baseCorrect} correct`}
+            {isEndless ? `${totalCorrect}개 정답 · ${accuracy}%` : `${baseCorrect}개 정답`}
           </span>
         </div>
       </div>
@@ -149,7 +149,7 @@ export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props
             onClick={endEndless}
             className="rounded-xl px-4 py-2.5 font-medium text-slate-500 hover:bg-slate-100"
           >
-            End practice
+            연습 끝내기
           </button>
         ) : (
           <span />
@@ -159,7 +159,7 @@ export function DrillScreen({ level, mode, onComplete, onReplay, onExit }: Props
             onClick={next}
             className="rounded-xl bg-emerald-600 px-6 py-2.5 font-semibold text-white shadow-sm hover:bg-emerald-700"
           >
-            {isEndless ? 'Next →' : index + 1 >= queue.length ? 'Finish' : 'Next →'}
+            {isEndless ? '다음 →' : index + 1 >= queue.length ? '완료' : '다음 →'}
           </button>
         )}
       </div>
@@ -223,7 +223,7 @@ function Coach({ correct, text }: { correct: boolean; text: string }) {
       }`}
     >
       <p className={`font-semibold mb-1 ${correct ? 'text-emerald-700' : 'text-amber-700'}`}>
-        {correct ? '✅ Correct!' : '💡 Not quite'}
+        {correct ? '✅ 정답입니다!' : '💡 아쉬워요'}
       </p>
       <p className="text-slate-700 leading-relaxed">{text}</p>
     </div>
@@ -250,7 +250,7 @@ function MasterySummary({
       <div className="text-6xl mb-4">{mastered ? '🎉' : '💪'}</div>
       <h2 className="text-2xl font-bold text-slate-800 mb-1">{title}</h2>
       <p className="text-slate-500 mb-6">
-        You scored <span className="font-semibold text-slate-800">{correct} / {total}</span>
+        점수 <span className="font-semibold text-slate-800">{correct} / {total}</span>
       </p>
       <div
         className={`rounded-xl border p-4 mb-8 ${
@@ -258,10 +258,10 @@ function MasterySummary({
         }`}
       >
         {mastered ? (
-          <p className="text-emerald-700 font-medium">Level mastered — the next level is unlocked! 🔓</p>
+          <p className="text-emerald-700 font-medium">레벨 마스터 — 잘했어요! 🏅</p>
         ) : (
           <p className="text-amber-700 font-medium">
-            Almost! Score at least the mastery target to unlock the next level. Keep practising.
+            거의 다 왔어요! 마스터 목표 점수 이상을 받으면 레벨을 마스터합니다. 계속 연습하세요.
           </p>
         )}
       </div>
@@ -270,17 +270,17 @@ function MasterySummary({
           onClick={onReplay}
           className="rounded-xl bg-emerald-600 px-6 py-2.5 font-semibold text-white shadow-sm hover:bg-emerald-700"
         >
-          🔁 Practice again
+          🔁 다시 연습하기
         </button>
         <button
           onClick={onExit}
           className="rounded-xl bg-slate-800 px-6 py-2.5 font-semibold text-white hover:bg-slate-900"
         >
-          Back to levels
+          레벨 목록으로
         </button>
       </div>
       <p className="mt-4 text-xs text-slate-400">
-        Repetition is how it sticks — run it again to lock in the concepts.
+        반복해야 몸에 익습니다 — 다시 풀어서 개념을 확실히 다지세요.
       </p>
     </div>
   );
@@ -303,23 +303,23 @@ function EndlessSummary({
   return (
     <div className="mx-auto max-w-md px-4 py-12 text-center">
       <div className="text-6xl mb-4">🏋️</div>
-      <h2 className="text-2xl font-bold text-slate-800 mb-1">{title} · Endless Practice</h2>
+      <h2 className="text-2xl font-bold text-slate-800 mb-1">{title} · 무한 연습</h2>
       <p className="text-slate-500 mb-6">
-        You answered <span className="font-semibold text-slate-800">{total}</span> questions ·{' '}
-        <span className="font-semibold text-slate-800">{correct} correct</span> ({accuracy}%)
+        <span className="font-semibold text-slate-800">{total}</span>문제 풂 ·{' '}
+        <span className="font-semibold text-slate-800">{correct}개 정답</span> ({accuracy}%)
       </p>
       <div className="flex flex-col gap-3">
         <button
           onClick={onReplay}
           className="rounded-xl bg-indigo-600 px-6 py-2.5 font-semibold text-white shadow-sm hover:bg-indigo-700"
         >
-          🔁 Keep practising
+          🔁 계속 연습하기
         </button>
         <button
           onClick={onExit}
           className="rounded-xl bg-slate-800 px-6 py-2.5 font-semibold text-white hover:bg-slate-900"
         >
-          Back to levels
+          레벨 목록으로
         </button>
       </div>
     </div>

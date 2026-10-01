@@ -1,6 +1,6 @@
-// Builds example hands of a *target* category, so drills can show real cards.
-// Every constructor is verified with the real evaluator and retried on a miss,
-// so the output category is always exactly what was requested.
+// *원하는* 족보의 예시 핸드를 만들어, 연습 문제에서 실제 카드를 보여 줍니다.
+// 모든 생성 결과는 실제 평가기로 검증하고, 빗나가면 다시 시도하므로
+// 결과 족보는 항상 요청한 것과 정확히 같습니다.
 
 import { type Card, type Suit, SUITS, cardId, rankForValue } from './card';
 import { evaluateHand, HandCategory } from './handEvaluator';
@@ -14,7 +14,7 @@ const pick = <T,>(rng: Rng, arr: readonly T[]): T => arr[ri(rng, 0, arr.length -
 
 const card = (value: number, suit: Suit): Card => ({ rank: rankForValue(value), suit });
 
-/** n distinct rank values sampled from 2..14. */
+/** 2..14에서 뽑은 서로 다른 랭크 값 n개. */
 function distinctValues(rng: Rng, n: number): number[] {
   const pool = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
   for (let i = pool.length - 1; i > 0; i--) {
@@ -24,7 +24,7 @@ function distinctValues(rng: Rng, n: number): number[] {
   return pool.slice(0, n);
 }
 
-/** Suits laid out so the run is never a flush (cycles through the 4 suits). */
+/** 연속된 카드가 플러시가 되지 않도록 배치한 무늬 (4가지 무늬를 돌아가며 사용). */
 function mixedSuits(rng: Rng, n: number): Suit[] {
   const start = ri(rng, 0, 3);
   return Array.from({ length: n }, (_, i) => SUITS[(start + i) % 4]);
@@ -38,7 +38,7 @@ function build(category: HandCategory, rng: Rng): Card[] {
     }
     case HandCategory.StraightFlush: {
       const s = pick(rng, SUITS);
-      const high = ri(rng, 6, 13); // 14 would be a royal flush
+      const high = ri(rng, 6, 13); // 14면 로열 플러시가 됩니다
       return [0, 1, 2, 3, 4].map((d) => card(high - d, s));
     }
     case HandCategory.FourOfAKind: {
@@ -56,10 +56,10 @@ function build(category: HandCategory, rng: Rng): Card[] {
     }
     case HandCategory.Flush: {
       const s = pick(rng, SUITS);
-      return distinctValues(rng, 5).map((v) => card(v, s)); // verify rejects straights
+      return distinctValues(rng, 5).map((v) => card(v, s)); // 검증 단계에서 스트레이트는 걸러집니다
     }
     case HandCategory.Straight: {
-      const high = ri(rng, 6, 14); // avoid the wheel for simplicity
+      const high = ri(rng, 6, 14); // 단순하게 하려고 휠은 피합니다
       const suits = mixedSuits(rng, 5);
       return [0, 1, 2, 3, 4].map((d) => card(high - d, suits[d]));
     }
@@ -92,12 +92,12 @@ function build(category: HandCategory, rng: Rng): Card[] {
     default: {
       const vals = distinctValues(rng, 5);
       const suits = mixedSuits(rng, 5);
-      return vals.map((v, i) => card(v, suits[i])); // verify rejects straights
+      return vals.map((v, i) => card(v, suits[i])); // 검증 단계에서 스트레이트는 걸러집니다
     }
   }
 }
 
-/** A verified 5-card hand of exactly the requested category. */
+/** 요청한 족보와 정확히 같은, 검증된 5장 핸드. */
 export function makeHandOfCategory(
   category: HandCategory,
   rng: Rng = Math.random,
@@ -106,7 +106,7 @@ export function makeHandOfCategory(
     const cards = build(category, rng);
     if (evaluateHand(cards).category === category) return cards;
   }
-  throw new Error(`Could not construct a ${HandCategory[category]} hand`);
+  throw new Error(`${HandCategory[category]} 핸드를 만들 수 없습니다`);
 }
 
 function randomCardNotIn(used: Set<string>, rng: Rng): Card {
@@ -117,9 +117,9 @@ function randomCardNotIn(used: Set<string>, rng: Rng): Card {
 }
 
 /**
- * Seven cards (2 hole + 5 board) whose best 5-card hand is exactly `category`.
- * Two filler cards are added and the whole thing is re-verified so the filler
- * never accidentally upgrades the hand.
+ * 가장 좋은 5장 핸드가 정확히 `category`인 7장 (홀 카드 2장 + 보드 5장).
+ * 채움 카드 2장을 더한 뒤 전체를 다시 검증하므로, 채움 카드가 실수로
+ * 핸드를 더 높은 족보로 올리는 일은 없습니다.
  */
 export function make7OfCategory(
   category: HandCategory,
@@ -136,9 +136,9 @@ export function make7OfCategory(
     }
     const all = [...five, ...extra];
     if (evaluateHand(all).category === category) {
-      // Label any two as hole cards; evaluation is independent of the labels.
+      // 아무 2장이나 홀 카드로 지정합니다. 평가는 지정 방식과 무관합니다.
       return { hole: all.slice(0, 2), board: all.slice(2), all };
     }
   }
-  throw new Error(`Could not construct a 7-card ${HandCategory[category]} hand`);
+  throw new Error(`7장짜리 ${HandCategory[category]} 핸드를 만들 수 없습니다`);
 }

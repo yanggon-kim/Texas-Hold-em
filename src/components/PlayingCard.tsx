@@ -27,7 +27,7 @@ export function PlayingCard({ card, size = 'md' }: { card: Card; size?: Size }) 
   );
 }
 
-/** A face-down card back, used as a placeholder. */
+/** 뒷면이 보이는 카드. 자리 표시용으로 씁니다. */
 export function CardBack({ size = 'md' }: { size?: Size }) {
   return (
     <div

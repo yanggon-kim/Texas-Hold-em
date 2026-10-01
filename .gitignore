@@ -1,14 +1,14 @@
-# dependencies
+# 의존성
 node_modules
 .pnp
 .pnp.js
 
-# build output
+# 빌드 결과물
 dist
 dist-ssr
 *.tsbuildinfo
 
-# logs
+# 로그
 logs
 *.log
 npm-debug.log*
@@ -16,7 +16,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# editor / OS
+# 편집기 / 운영체제
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -27,10 +27,10 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-# vercel
+# 버셀
 .vercel
 
-# misc
+# 기타
 .env
 .env.*
 !.env.example
