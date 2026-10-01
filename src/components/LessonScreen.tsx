@@ -12,7 +12,7 @@ interface Props {
 const rng = Math.random;
 
 export function LessonScreen({ level, onStartPractice, onExit }: Props) {
-  // Generate the lesson once per visit (examples are stable while studying).
+  // 방문할 때마다 학습 내용을 한 번 만듭니다 (공부하는 동안 예시는 바뀌지 않습니다).
   const cards = useMemo<LessonCard[]>(
     () => (level.lesson ? level.lesson(rng) : []),
     [level],
@@ -31,10 +31,10 @@ export function LessonScreen({ level, onStartPractice, onExit }: Props) {
     <div className="mx-auto max-w-xl px-4 py-6">
       <div className="flex items-center justify-between mb-4">
         <button onClick={onExit} className="text-sm text-slate-500 hover:text-slate-800">
-          ← Exit
+          ← 나가기
         </button>
         <span className="text-sm text-slate-500">
-          Learn · {index + 1} / {cards.length}
+          학습 · {index + 1} / {cards.length}
         </span>
       </div>
       <div className="h-1.5 w-full rounded bg-slate-200 mb-6">
@@ -45,14 +45,7 @@ export function LessonScreen({ level, onStartPractice, onExit }: Props) {
       </div>
 
       <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-6 min-h-[18rem] flex flex-col">
-        <div className="flex items-baseline justify-between gap-3 flex-wrap">
-          <h2 className="text-xl font-bold text-slate-800">{card.term}</h2>
-          {card.korean && (
-            <span className="text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full px-3 py-1">
-              🇰🇷 {card.korean}
-            </span>
-          )}
-        </div>
+        <h2 className="text-xl font-bold text-slate-800">{card.term}</h2>
 
         <p className="mt-3 text-slate-700 leading-relaxed">{card.definition}</p>
 
@@ -79,21 +72,21 @@ export function LessonScreen({ level, onStartPractice, onExit }: Props) {
           disabled={index === 0}
           className="rounded-xl px-4 py-2.5 font-medium text-slate-600 disabled:opacity-40 hover:bg-slate-100"
         >
-          ← Previous
+          ← 이전
         </button>
         {isLast ? (
           <button
             onClick={onStartPractice}
             className="rounded-xl bg-emerald-600 px-6 py-2.5 font-semibold text-white shadow-sm hover:bg-emerald-700"
           >
-            Start practice →
+            연습 시작 →
           </button>
         ) : (
           <button
             onClick={() => setIndex((i) => Math.min(cards.length - 1, i + 1))}
             className="rounded-xl bg-indigo-600 px-6 py-2.5 font-semibold text-white shadow-sm hover:bg-indigo-700"
           >
-            Next →
+            다음 →
           </button>
         )}
       </div>

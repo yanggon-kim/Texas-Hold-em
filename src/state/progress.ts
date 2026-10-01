@@ -2,18 +2,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { LEVELS } from '../drills/levels';
 
 const STORAGE_KEY = 'th-learn-progress-v1';
-const MAX_TREND = 12; // how many recent session accuracies to remember
+const MAX_TREND = 12; // 기억할 최근 세션 정확도 개수
 
 export type SessionMode = 'mastery' | 'endless';
 
 export interface LevelProgress {
   mastered: boolean;
-  bestScore: number; // best correct count in a single mastery session
-  attempts: number; // number of mastery sessions
-  practiceSessions: number; // number of endless sessions
-  totalAnswered: number; // cumulative questions answered (all modes)
-  totalCorrect: number; // cumulative correct answers (all modes)
-  recentAccuracy: number[]; // accuracy % of the last few sessions, oldest → newest
+  bestScore: number; // 마스터 세션 한 번에서 맞힌 최고 개수
+  attempts: number; // 마스터 세션 횟수
+  practiceSessions: number; // 무한 연습 세션 횟수
+  totalAnswered: number; // 누적 푼 문제 수 (모든 모드)
+  totalCorrect: number; // 누적 정답 수 (모든 모드)
+  recentAccuracy: number[]; // 최근 몇 세션의 정확도 %, 오래된 것 → 최신
 }
 
 export type ProgressState = Record<number, LevelProgress>;
@@ -36,7 +36,7 @@ function emptyProgress(): ProgressState {
   return state;
 }
 
-/** Fill in any missing fields so older saved data and new levels both work. */
+/** 빠진 필드를 채워, 예전에 저장한 데이터와 새 레벨이 모두 동작하게 합니다. */
 function normalize(parsed: Partial<Record<number, Partial<LevelProgress>>>): ProgressState {
   const state = emptyProgress();
   for (const level of LEVELS) {
@@ -62,20 +62,20 @@ function saveProgress(state: ProgressState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
-    // Storage may be unavailable (private mode); progress just won't persist.
+    // 저장소를 못 쓸 수 있습니다(시크릿 모드 등). 그러면 진행 상황이 저장되지 않을 뿐입니다.
   }
 }
 
 /**
- * Whether a level is accessible. All levels are open — there is no lock; the
- * `mastered` flag is kept only for progress display and stats. The signature is
- * retained so callers don't need to change.
+ * 레벨에 들어갈 수 있는지 여부. 모든 레벨이 열려 있으며 잠금은 없습니다.
+ * `mastered` 표시는 진행 상황과 통계 표시용으로만 유지합니다. 호출하는 쪽을
+ * 바꾸지 않아도 되도록 함수 형태는 그대로 둡니다.
  */
 export function isUnlocked(_state: ProgressState, _levelId: number): boolean {
   return true;
 }
 
-/** Cumulative accuracy (%) for a level, or null if nothing practised yet. */
+/** 레벨의 누적 정확도(%). 아직 연습하지 않았으면 null. */
 export function levelAccuracy(p: LevelProgress): number | null {
   if (p.totalAnswered === 0) return null;
   return Math.round((p.totalCorrect / p.totalAnswered) * 100);
@@ -88,8 +88,8 @@ export interface SessionResult {
 }
 
 /**
- * Pure reducer: fold a finished session into a level's progress. Kept separate
- * from React so the accumulation logic can be unit-tested directly.
+ * 순수 리듀서: 끝난 세션을 레벨 진행 상황에 반영합니다. 누적 로직을 직접
+ * 단위 테스트할 수 있도록 React와 분리해 둡니다.
  */
 export function applyResult(
   cur: LevelProgress,
@@ -116,7 +116,7 @@ export function applyResult(
 
 export interface ProgressApi {
   progress: ProgressState;
-  /** Record a finished session (mastery or endless). Returns whether the level is now mastered. */
+  /** 끝난 세션(마스터 또는 무한 연습)을 기록합니다. 이제 레벨을 마스터했는지 돌려줍니다. */
   recordResult: (levelId: number, result: SessionResult) => boolean;
   reset: () => void;
 }

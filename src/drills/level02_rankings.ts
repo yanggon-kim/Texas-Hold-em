@@ -2,14 +2,14 @@ import { CATEGORY_NAME, evaluateHand, compareScores } from '../engine/handEvalua
 import { makeHandOfCategory } from '../engine/handFactory';
 import { type Drill, type Rng, shuffledOptions, sampleDistinct } from './types';
 import { ALL_CATEGORIES, CATEGORY_HINT } from './categories';
-import { ko, HAND_KOREAN } from '../data/korean';
+import { josa } from '../engine/josa';
 
-/** Level 2 — recognise and compare the ten poker hand rankings. */
+/** 레벨 2 — 포커 족보 10가지를 알아보고 비교합니다. */
 export function generateRankingDrill(rng: Rng): Drill {
   const askCompare = rng() < 0.5;
 
   if (!askCompare) {
-    // "What hand is this?" — show 5 cards of a random category.
+    // "이 핸드는 무엇인가?" — 무작위 족보의 카드 5장을 보여 줍니다.
     const category = ALL_CATEGORIES[Math.floor(rng() * ALL_CATEGORIES.length)];
     const cards = makeHandOfCategory(category, rng);
     const correct = CATEGORY_NAME[category];
@@ -18,35 +18,35 @@ export function generateRankingDrill(rng: Rng): Drill {
     );
     const { options, correctIndex } = shuffledOptions(rng, correct, distractors);
     return {
-      prompt: 'What is the name of this hand?',
+      prompt: '이 핸드의 족보 이름은 무엇인가요?',
       visual: { cards },
       options,
       correctIndex,
-      explanation: `This is a ${correct} — ${CATEGORY_HINT[category]}. 🇰🇷 ${ko(HAND_KOREAN[category])}`,
+      explanation: `이 핸드는 ${correct}입니다 — ${CATEGORY_HINT[category]}.`,
     };
   }
 
-  // "Which hand is stronger?" — two different categories side by side.
+  // "어느 핸드가 더 강한가?" — 서로 다른 족보 2개를 나란히 보여 줍니다.
   const [catA, catB] = sampleDistinct(rng, ALL_CATEGORIES, 2);
   const handA = makeHandOfCategory(catA, rng);
   const handB = makeHandOfCategory(catB, rng);
   const resA = evaluateHand(handA);
   const resB = evaluateHand(handB);
   const aWins = compareScores(resA.score, resB.score) > 0;
-  const options = ['Hand A', 'Hand B'];
+  const options = ['핸드 A', '핸드 B'];
   const correctIndex = aWins ? 0 : 1;
   const winnerCat = aWins ? catA : catB;
   const loserCat = aWins ? catB : catA;
   return {
-    prompt: 'Which hand is stronger?',
+    prompt: '어느 핸드가 더 강한가요?',
     visual: {
       hands: [
-        { label: 'Hand A', cards: handA },
-        { label: 'Hand B', cards: handB },
+        { label: '핸드 A', cards: handA },
+        { label: '핸드 B', cards: handB },
       ],
     },
     options,
     correctIndex,
-    explanation: `${CATEGORY_NAME[winnerCat]} beats ${CATEGORY_NAME[loserCat]}, because it ranks higher in the hand order. 🇰🇷 ${ko(HAND_KOREAN[winnerCat])} > ${ko(HAND_KOREAN[loserCat])}`,
+    explanation: `족보 순위에서 더 높기 때문에 ${josa(CATEGORY_NAME[winnerCat], '이/가')} ${josa(CATEGORY_NAME[loserCat], '을/를')} 이깁니다.`,
   };
 }

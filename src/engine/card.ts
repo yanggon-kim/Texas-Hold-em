@@ -1,4 +1,4 @@
-// Pure card model — no UI dependencies.
+// 순수 카드 모델 — UI 의존성이 없습니다.
 
 export const SUITS = ['♠', '♥', '♦', '♣'] as const;
 export type Suit = (typeof SUITS)[number];
@@ -13,29 +13,29 @@ export interface Card {
   suit: Suit;
 }
 
-/** Numeric strength of a rank, 2 (low) .. 14 (Ace high). */
+/** 랭크의 숫자 세기: 2(가장 낮음) .. 14(에이스, 가장 높음). */
 export const RANK_VALUE: Record<Rank, number> = {
   '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8,
   '9': 9, '10': 10, J: 11, Q: 12, K: 13, A: 14,
 };
 
 export const SUIT_NAME: Record<Suit, string> = {
-  '♠': 'Spades',
-  '♥': 'Hearts',
-  '♦': 'Diamonds',
-  '♣': 'Clubs',
+  '♠': '스페이드',
+  '♥': '하트',
+  '♦': '다이아몬드',
+  '♣': '클럽',
 };
 
 export const RANK_NAME: Record<Rank, string> = {
-  '2': 'Two', '3': 'Three', '4': 'Four', '5': 'Five', '6': 'Six',
-  '7': 'Seven', '8': 'Eight', '9': 'Nine', '10': 'Ten',
-  J: 'Jack', Q: 'Queen', K: 'King', A: 'Ace',
+  '2': '2', '3': '3', '4': '4', '5': '5', '6': '6',
+  '7': '7', '8': '8', '9': '9', '10': '10',
+  J: '잭', Q: '퀸', K: '킹', A: '에이스',
 };
 
-/** The Rank whose strength equals `value` (2..14). */
+/** 세기가 `value`(2..14)인 랭크를 돌려줍니다. */
 export function rankForValue(value: number): Rank {
   const rank = RANKS[value - 2];
-  if (!rank) throw new Error(`No rank for value ${value}`);
+  if (!rank) throw new Error(`값 ${value}에 해당하는 랭크가 없습니다`);
   return rank;
 }
 
@@ -45,17 +45,17 @@ export function isRed(card: Card): boolean {
   return RED_SUITS.has(card.suit);
 }
 
-/** Short label such as "A♠" or "10♥". */
+/** "A♠", "10♥" 같은 짧은 표기. */
 export function cardLabel(card: Card): string {
   return `${card.rank}${card.suit}`;
 }
 
-/** Full spoken name such as "Ace of Spades". */
+/** "스페이드 에이스" 같은 카드의 전체 이름. */
 export function cardName(card: Card): string {
-  return `${RANK_NAME[card.rank]} of ${SUIT_NAME[card.suit]}`;
+  return `${SUIT_NAME[card.suit]} ${RANK_NAME[card.rank]}`;
 }
 
-/** Stable id used for keys / dedupe, e.g. "A-♠". */
+/** 키·중복 제거에 쓰는 고정 ID, 예: "A-♠". */
 export function cardId(card: Card): string {
   return `${card.rank}-${card.suit}`;
 }

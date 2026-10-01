@@ -3,14 +3,14 @@ import { type Card, RANK_VALUE, rankForValue } from './card';
 export type Tier = 'premium' | 'strong' | 'playable' | 'trash';
 
 export const TIER_LABEL: Record<Tier, string> = {
-  premium: 'Premium',
-  strong: 'Strong',
-  playable: 'Playable',
-  trash: 'Trash',
+  premium: '프리미엄',
+  strong: '강함',
+  playable: '플레이 가능',
+  trash: '트래시',
 };
 
 export interface StartingHand {
-  /** Canonical code, e.g. "AA", "AKs", "72o". */
+  /** 표준 코드, 예: "AA", "AKs", "72o". */
   code: string;
   tier: Tier;
   suited: boolean;
@@ -18,8 +18,8 @@ export interface StartingHand {
 }
 
 /**
- * Classify a 2-card starting hand into a beginner tier, following a simple,
- * widely-taught chart. High card first; 's' = suited, 'o' = offsuit.
+ * 2장짜리 스타팅 핸드를 초보자용 등급으로 분류합니다. 널리 쓰이는 간단한 차트를
+ * 따릅니다. 높은 카드를 먼저 쓰며, 's' = 수티드(같은 무늬), 'o' = 오프수트(다른 무늬)입니다.
  */
 export function classifyStartingHand(a: Card, b: Card): StartingHand {
   const va = RANK_VALUE[a.rank];
@@ -36,7 +36,7 @@ export function classifyStartingHand(a: Card, b: Card): StartingHand {
 
 function tierOf(hi: number, lo: number, pair: boolean, suited: boolean): Tier {
   if (pair) {
-    if (hi >= 11) return 'premium'; // JJ+
+    if (hi >= 11) return 'premium'; // JJ 이상
     if (hi >= 9) return 'strong'; // TT, 99
     return 'playable'; // 22–88
   }
@@ -54,11 +54,11 @@ function tierOf(hi: number, lo: number, pair: boolean, suited: boolean): Tier {
     }
     if (hi === 12 && lo >= 10) return 'playable'; // QJs, QTs
     if (hi === 11 && lo === 10) return 'playable'; // JTs
-    if (hi - lo === 1 && lo >= 4) return 'playable'; // suited connectors 54s–T9s
+    if (hi - lo === 1 && lo >= 4) return 'playable'; // 수티드 커넥터 54s–T9s
     return 'trash';
   }
 
-  // offsuit
+  // 오프수트
   if (hi === 14) {
     if (lo === 13) return 'premium'; // AKo
     if (lo >= 11) return 'strong'; // AQo, AJo
@@ -78,11 +78,11 @@ function tierOf(hi: number, lo: number, pair: boolean, suited: boolean): Tier {
 export type Position = 'early' | 'late';
 
 /**
- * Whether to play a hand as the first raise ("raise first in") from a position.
- * Early position is tight (premium/strong only); late position adds playables.
+ * 해당 포지션에서 처음 레이즈("레이즈 퍼스트 인")로 이 핸드를 플레이할지 여부.
+ * 얼리 포지션은 타이트하게(프리미엄·강함만), 레이트 포지션은 플레이 가능 핸드까지 더합니다.
  */
 export function shouldPlay(tier: Tier, position: Position): boolean {
   if (tier === 'trash') return false;
   if (tier === 'playable') return position === 'late';
-  return true; // premium / strong from anywhere
+  return true; // 프리미엄·강함은 어디서나
 }

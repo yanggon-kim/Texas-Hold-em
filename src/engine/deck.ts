@@ -1,6 +1,6 @@
 import { type Card, RANKS, SUITS } from './card';
 
-/** A fresh, ordered 52-card deck. */
+/** 순서대로 정렬된 새 52장 덱. */
 export function makeDeck(): Card[] {
   const deck: Card[] = [];
   for (const suit of SUITS) {
@@ -12,8 +12,8 @@ export function makeDeck(): Card[] {
 }
 
 /**
- * Returns a shuffled copy of `cards` using Fisher–Yates.
- * `rng` defaults to Math.random but can be injected for deterministic tests.
+ * 피셔–예이츠 방식으로 `cards`를 섞은 사본을 돌려줍니다.
+ * `rng`의 기본값은 Math.random이며, 결정적 테스트를 위해 주입할 수 있습니다.
  */
 export function shuffle<T>(cards: readonly T[], rng: () => number = Math.random): T[] {
   const out = cards.slice();
@@ -24,25 +24,25 @@ export function shuffle<T>(cards: readonly T[], rng: () => number = Math.random)
   return out;
 }
 
-/** A shuffled full deck. */
+/** 섞인 전체 덱. */
 export function shuffledDeck(rng: () => number = Math.random): Card[] {
   return shuffle(makeDeck(), rng);
 }
 
 /**
- * Draw `count` cards from the front of `deck`, returning the drawn cards and
- * the remaining deck (does not mutate the input).
+ * `deck` 앞쪽에서 `count`장을 뽑아, 뽑은 카드와 남은 덱을 돌려줍니다
+ * (입력은 변경하지 않습니다).
  */
 export function draw(deck: readonly Card[], count: number): { drawn: Card[]; rest: Card[] } {
   if (count > deck.length) {
-    throw new Error(`Cannot draw ${count} cards from a deck of ${deck.length}`);
+    throw new Error(`${deck.length}장짜리 덱에서 ${count}장을 뽑을 수 없습니다`);
   }
   return { drawn: deck.slice(0, count), rest: deck.slice(count) };
 }
 
 /**
- * A small seedable PRNG (mulberry32) so drills can be reproduced for testing
- * and so "replay this exact question" is possible later.
+ * 시드를 줄 수 있는 작은 의사난수 생성기(mulberry32). 테스트에서 문제를 재현하고,
+ * 나중에 "이 문제 다시 풀기"를 가능하게 합니다.
  */
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;

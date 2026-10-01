@@ -37,13 +37,13 @@ export function DrillVisual({ visual }: { visual?: DrillVisualData }) {
         <div className="flex flex-col gap-4 items-center">
           {visual.board && (
             <div className="flex flex-col items-center gap-1.5">
-              <span className="text-xs uppercase tracking-wide text-slate-400">Community board</span>
+              <span className="text-xs uppercase tracking-wide text-slate-400">커뮤니티 보드</span>
               <CardRow cards={visual.board} />
             </div>
           )}
           {visual.hole && (
             <div className="flex flex-col items-center gap-1.5">
-              <span className="text-xs uppercase tracking-wide text-emerald-500">Your hole cards</span>
+              <span className="text-xs uppercase tracking-wide text-emerald-500">내 홀 카드</span>
               <CardRow cards={visual.hole} />
             </div>
           )}

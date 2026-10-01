@@ -22,20 +22,20 @@ import {
 } from './lessons';
 
 /**
- * The curriculum.
- *   Levels 1–3: rules fluency.   Levels 4–6: game flow.   Levels 7–9: strategy.
- * A later milestone appends Level 10 (full table play) to this list.
+ * 커리큘럼.
+ *   레벨 1–3: 규칙 익히기.   레벨 4–6: 게임 진행.   레벨 7–9: 전략.
+ *   레벨 10: AI와의 실전 테이블.
  */
 export const LEVELS: LevelDef[] = [
   {
     id: 1,
-    title: 'Cards & Suits',
-    subtitle: 'Recognise all 52 cards',
+    title: '카드와 무늬',
+    subtitle: '52장의 카드를 모두 알아보기',
     icon: '🂡',
     concept: [
-      'A standard deck has 52 cards: 4 suits × 13 ranks.',
-      'Suits: ♠ spades and ♣ clubs are black; ♥ hearts and ♦ diamonds are red.',
-      'Ranks run 2, 3, 4 … 10, then J, Q, K, A. The Ace is usually the highest.',
+      '표준 덱은 52장입니다: 무늬 4가지 × 랭크 13가지.',
+      '무늬: 스페이드 ♠와 클럽 ♣는 검은색, 하트 ♥와 다이아몬드 ♦는 빨간색입니다.',
+      '랭크는 2, 3, 4 … 10, 그다음 J, Q, K, A 순서입니다. 보통 에이스가 가장 높습니다.',
     ],
     lesson: cardsLesson,
     generate: generateCardDrill,
@@ -44,13 +44,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 2,
-    title: 'Hand Rankings',
-    subtitle: 'The 10 hands, weakest to strongest',
+    title: '족보',
+    subtitle: '10가지 족보의 순위',
     icon: '🏆',
     concept: [
-      'From strongest to weakest: Royal Flush, Straight Flush, Four of a Kind, Full House, Flush, Straight, Three of a Kind, Two Pair, One Pair, High Card.',
-      'A higher category always beats a lower one — a Flush always beats a Straight.',
-      'Learn to name a hand on sight and to compare two hands.',
+      '강한 순서: 로열 플러시, 스트레이트 플러시, 포카드, 풀하우스, 플러시, 스트레이트, 트리플, 투 페어, 원 페어, 하이 카드.',
+      '높은 족보는 항상 낮은 족보를 이깁니다 — 플러시는 언제나 스트레이트를 이깁니다.',
+      '핸드를 보자마자 이름을 말하고, 두 핸드를 비교하는 법을 익힙니다.',
     ],
     lesson: rankingsLesson,
     generate: generateRankingDrill,
@@ -59,13 +59,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 3,
-    title: 'Make the Best Hand',
-    subtitle: 'Best 5 cards from 7',
+    title: '가장 좋은 핸드 만들기',
+    subtitle: '7장 중 가장 좋은 5장',
     icon: '🃏',
     concept: [
-      'You get 2 private hole cards; 5 community cards are shared by everyone.',
-      'Your hand is the best 5-card combination from those 7 cards.',
-      'You can use both hole cards, one, or even none ("playing the board").',
+      '나만 보는 홀 카드 2장을 받고, 커뮤니티 카드 5장은 모두가 함께 씁니다.',
+      '내 핸드는 그 7장으로 만들 수 있는 가장 좋은 5장 조합입니다.',
+      '홀 카드를 2장 다, 1장만, 또는 하나도 쓰지 않을 수도 있습니다("보드 플레이").',
     ],
     lesson: bestHandLesson,
     generate: generateBestHandDrill,
@@ -74,13 +74,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 4,
-    title: 'Table & Flow',
-    subtitle: 'Button, blinds, and the 4 betting rounds',
+    title: '테이블과 진행',
+    subtitle: '버튼, 블라인드, 4번의 베팅 라운드',
     icon: '🎬',
     concept: [
-      'The dealer button rotates clockwise; the two players left of it post the small and big blinds.',
-      'A hand runs Pre-flop → Flop (3 cards) → Turn (1 card) → River (1 card), with betting on each.',
-      'If two or more players remain after the river, the showdown decides the winner.',
+      '딜러 버튼은 시계 방향으로 돌고, 버튼 왼쪽의 두 플레이어가 스몰 블라인드와 빅 블라인드를 냅니다.',
+      '한 핸드는 프리플랍 → 플랍(3장) → 턴(1장) → 리버(1장) 순서로 진행되며, 매번 베팅이 있습니다.',
+      '리버 후 두 명 이상 남아 있으면 쇼다운으로 승자를 정합니다.',
     ],
     lesson: tableFlowLesson,
     generate: generateTableFlowDrill,
@@ -89,13 +89,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 5,
-    title: 'Betting Actions',
-    subtitle: 'Check, bet, call, raise, fold',
+    title: '베팅 액션',
+    subtitle: '체크, 벳, 콜, 레이즈, 폴드',
     icon: '💰',
     concept: [
-      'Check = pass with no bet; Bet = put chips in first; Call = match; Raise = increase; Fold = give up.',
-      'You can only check when there is no bet in front of you.',
-      'Facing a bet, your options are fold, call, or raise — never check.',
+      '체크 = 베팅 없이 넘기기, 벳 = 처음으로 칩 걸기, 콜 = 맞추기, 레이즈 = 올리기, 폴드 = 포기하기.',
+      '체크는 내 앞에 벳이 없을 때만 할 수 있습니다.',
+      '벳을 받으면 폴드, 콜, 레이즈 중에서 고릅니다 — 체크는 할 수 없습니다.',
     ],
     lesson: actionsLesson,
     generate: generateActionsDrill,
@@ -104,13 +104,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 6,
-    title: 'Position',
-    subtitle: 'Why acting later wins',
+    title: '포지션',
+    subtitle: '나중에 행동하는 쪽이 유리한 이유',
     icon: '🎯',
     concept: [
-      'Position is your seat relative to the button and the order in which you act.',
-      'Acting later means more information — the Button is the best seat, UTG the toughest.',
-      'Play tight from early position and loosen up as you get closer to the button.',
+      '포지션은 버튼을 기준으로 한 내 자리와, 그에 따른 행동 순서입니다.',
+      '나중에 행동할수록 정보가 많습니다 — 버튼이 가장 좋은 자리, 언더더건이 가장 어려운 자리입니다.',
+      '얼리 포지션에서는 타이트하게, 버튼에 가까워질수록 느슨하게 플레이하세요.',
     ],
     lesson: positionLesson,
     generate: generatePositionDrill,
@@ -119,13 +119,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 7,
-    title: 'Starting Hands',
-    subtitle: 'Which two cards to play',
+    title: '스타팅 핸드',
+    subtitle: '어떤 카드 2장으로 플레이할까',
     icon: '🃏',
     concept: [
-      'Your 2 hole cards decide most of your pre-flop success — fold most hands.',
-      'Tiers: premium (AA–JJ, AK, AQ), strong, playable (small pairs, suited connectors), and trash.',
-      'Play tight from early position; add playable hands from late position.',
+      '홀 카드 2장이 프리플랍 성패의 대부분을 정합니다 — 대부분의 핸드는 폴드하세요.',
+      '등급: 프리미엄(AA–JJ, AK, AQ), 강함, 플레이 가능(작은 페어, 수티드 커넥터), 트래시.',
+      '얼리 포지션에서는 타이트하게, 레이트 포지션에서는 플레이 가능 핸드를 더합니다.',
     ],
     lesson: startingHandsLesson,
     generate: generateStartingHandDrill,
@@ -134,13 +134,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 8,
-    title: 'Outs & Pot Odds',
-    subtitle: 'The math of drawing',
+    title: '아웃츠와 팟 오즈',
+    subtitle: '드로우의 수학',
     icon: '🧮',
     concept: [
-      'Outs are the cards that complete your hand (flush draw = 9, open-ender = 8, gutshot = 4).',
-      'Rule of 2 and 4: equity ≈ outs × 4 (two cards to come) or × 2 (one card to come).',
-      'Pot odds = call ÷ (pot + call). Call when your equity beats that price.',
+      '아웃츠는 내 핸드를 완성해 주는 카드입니다 (플러시 드로우 = 9, 오픈엔디드 = 8, 거트샷 = 4).',
+      '2와 4의 법칙: 에퀴티 ≈ 아웃츠 × 4 (카드 2장 남음) 또는 × 2 (카드 1장 남음).',
+      '팟 오즈 = 콜 금액 ÷ (팟 + 콜 금액). 내 에퀴티가 이 비용보다 높을 때 콜하세요.',
     ],
     lesson: oddsLesson,
     generate: generateOddsDrill,
@@ -149,13 +149,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 9,
-    title: 'Reading the Board',
-    subtitle: 'Spot the threats and the nuts',
+    title: '보드 읽기',
+    subtitle: '위협과 넛츠 찾기',
     icon: '🔍',
     concept: [
-      'The "nuts" is the best hand possible on a board — always ask what could beat you.',
-      'Three of one suit means a flush is possible; a paired board allows full houses and quads.',
-      'Scan every street for straights, flushes, and pairs before committing chips.',
+      '"넛츠"는 그 보드에서 가능한 가장 좋은 핸드입니다 — 무엇이 나를 이길 수 있는지 항상 따져 보세요.',
+      '같은 무늬가 3장이면 플러시가 가능하고, 페어 보드에서는 풀하우스와 포카드가 가능합니다.',
+      '칩을 걸기 전에 매 스트리트마다 스트레이트, 플러시, 페어를 살펴보세요.',
     ],
     lesson: boardLesson,
     generate: generateBoardDrill,
@@ -164,13 +164,13 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 10,
-    title: 'Play vs. AI',
-    subtitle: 'Full hands at a live table',
+    title: 'AI와 실전',
+    subtitle: '실전 테이블에서 한 핸드 끝까지',
     icon: '♠️',
     concept: [
-      'Put it all together: play complete hands against bot opponents.',
-      'Choose starting hands by position, read the board, and use pot odds.',
-      'A coach suggests an action with reasoning on every decision.',
+      '모든 것을 종합합니다: 봇 상대와 핸드를 끝까지 플레이합니다.',
+      '포지션에 맞게 스타팅 핸드를 고르고, 보드를 읽고, 팟 오즈를 활용하세요.',
+      '매 결정마다 코치가 이유와 함께 액션을 추천합니다.',
     ],
     lesson: tablePlayLesson,
     play: true,

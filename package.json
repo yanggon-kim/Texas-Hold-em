@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "A leveled, drill-based learning game for Texas Hold'em novices.",
+  "description": "텍사스 홀덤 초보자를 위한 레벨별 반복 연습 학습 게임.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

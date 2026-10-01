@@ -1,140 +1,135 @@
-# 🎮 Texas Hold'em Learning Game — Development Design Document
+# 🎮 텍사스 홀덤 학습 게임 — 개발 설계 문서
 
-A web-deployed, single-player **learning game** that teaches Texas Hold'em to a
-complete novice, one step at a time. The player progresses through **levels from
-low → high**, and each level uses **lots of repetition (drills)** to lock in the
-rules and strategy before unlocking the next level.
+텍사스 홀덤을 전혀 모르는 사람에게 한 단계씩 가르치는, 웹으로 배포되는 1인용 **학습 게임**입니다.
+플레이어는 **낮은 레벨부터 높은 레벨로** 올라가며, 각 레벨은 **많은 반복 연습**으로
+규칙과 전략을 몸에 익히도록 구성됩니다.
 
-> **Audience:** built for a personal learner (the author) who wants to go from
-> "knows nothing" → "plays a confident, basic-strategy game."
-
----
-
-## 1. Vision & Design Principles
-
-1. **Learn by doing, not by reading.** Every concept is taught through
-   interactive drills, not walls of text.
-2. **One concept at a time.** Each level isolates a single skill so the learner
-   is never overwhelmed.
-3. **Repetition builds mastery.** A level is only "passed" after the learner
-   answers enough drills correctly (a mastery threshold).
-4. **Immediate feedback.** Every answer shows ✅/❌ instantly with a short
-   explanation of *why*.
-5. **Progress is visible & saved.** A map/path shows locked vs. unlocked levels;
-   progress persists between sessions.
-6. **Safe to fail.** No real money, no penalties — just practice and feedback.
+> **대상:** "아무것도 모르는" 상태에서 "기본 전략으로 자신 있게 플레이하는" 상태까지
+> 가고 싶은 개인 학습자(작성자)를 위해 만들었습니다.
 
 ---
 
-## 2. Learning Curriculum (Levels: low → high)
+## 1. 비전과 설계 원칙
 
-Each level has: **a short lesson → repetition drills → a mastery check** that
-unlocks the next level.
-
-| Level | Title | Skill learned | Drill type |
-|-------|-------|---------------|------------|
-| **1** | Cards & Suits | Recognize the 52 cards, 4 suits, 13 ranks | Flashcard / "name this card" |
-| **2** | Hand Rankings | Memorize the 10 hands, strongest → weakest | "Which hand wins?" pairs |
-| **3** | Make the Best Hand | Pick the best 5-card hand from 7 cards | Board + hole cards puzzle |
-| **4** | Table & Flow | Dealer button, blinds, the 4 betting rounds | Order-the-phases / fill-in |
-| **5** | Betting Actions | check / bet / call / raise / fold in context | "What can you do here?" |
-| **6** | Position | Why acting later is better; seat names (UTG→BTN) | Identify position / advantage |
-| **7** | Starting Hands | Pre-flop hand selection by position | Play / Fold chart drills |
-| **8** | Outs & Pot Odds | Count outs, basic odds, call/fold math | Count-the-outs + decision |
-| **9** | Reading the Board | Draws, made hands, what beats you | "Best possible hand?" reads |
-| **10** | Full Hands vs. AI | Apply everything against simple bot opponents | Guided full-table play + coach |
-
-> Levels 1–3 = **rules fluency**. Levels 4–6 = **game flow**. Levels 7–9 =
-> **strategy**. Level 10 = **integration**.
+1. **읽기보다 직접 해 보며 배운다.** 모든 개념은 긴 글이 아니라 상호작용하는 연습 문제로
+   가르칩니다.
+2. **한 번에 한 개념.** 레벨마다 한 가지 기술만 다루어 학습자가 부담을 느끼지 않게 합니다.
+3. **반복이 숙달을 만든다.** 학습자가 연습 문제를 충분히 맞혀야(마스터 기준) 레벨을
+   "통과"합니다.
+4. **즉각적인 피드백.** 답할 때마다 ✅/❌와 함께 *이유*를 짧게 바로 설명합니다.
+5. **진행 상황이 보이고 저장된다.** 지도 화면에서 진행 상황을 보여 주고, 세션 사이에도
+   진행 상황이 유지됩니다.
+6. **실패해도 괜찮다.** 실제 돈도, 벌칙도 없습니다 — 연습과 피드백뿐입니다.
 
 ---
 
-## 3. Level Structure (repeated pattern for every level)
+## 2. 학습 커리큘럼 (레벨: 낮음 → 높음)
+
+각 레벨은 **짧은 학습 → 반복 연습 문제 → 마스터 확인**으로 이루어집니다.
+
+| 레벨 | 제목 | 배우는 기술 | 문제 유형 |
+|------|------|-------------|-----------|
+| **1** | 카드와 무늬 | 52장의 카드, 무늬 4가지, 랭크 13가지 알아보기 | 플래시카드 / "이 카드는?" |
+| **2** | 족보 | 10가지 족보를 강한 순서로 외우기 | "어느 핸드가 이기나?" 비교 |
+| **3** | 가장 좋은 핸드 만들기 | 7장 중 가장 좋은 5장 고르기 | 보드 + 홀 카드 퍼즐 |
+| **4** | 테이블과 진행 | 딜러 버튼, 블라인드, 네 번의 베팅 라운드 | 단계 순서 맞히기 / 빈칸 채우기 |
+| **5** | 베팅 액션 | 상황에 맞는 체크 / 벳 / 콜 / 레이즈 / 폴드 | "여기서 할 수 있는 것은?" |
+| **6** | 포지션 | 나중에 행동하는 쪽이 유리한 이유, 자리 이름 (언더더건 → 버튼) | 포지션과 이점 알아보기 |
+| **7** | 스타팅 핸드 | 포지션에 따른 프리플랍 핸드 선택 | 플레이 / 폴드 차트 문제 |
+| **8** | 아웃츠와 팟 오즈 | 아웃츠 세기, 기본 확률, 콜/폴드 계산 | 아웃츠 세기 + 결정 |
+| **9** | 보드 읽기 | 드로우, 완성된 핸드, 나를 이기는 핸드 | "가능한 가장 좋은 핸드는?" |
+| **10** | AI와 실전 | 간단한 봇 상대로 모든 것을 적용하기 | 코치가 있는 실전 테이블 플레이 |
+
+> 레벨 1–3 = **규칙 익히기**. 레벨 4–6 = **게임 진행**. 레벨 7–9 = **전략**.
+> 레벨 10 = **종합**.
+
+---
+
+## 3. 레벨 구조 (모든 레벨에서 반복되는 패턴)
 
 ```
-Level N
-├── Intro card        (1 screen: the concept in ~3 bullets)
-├── Worked example    (1–2 fully explained examples)
-├── Drill set         (10–20 randomized questions — the repetition core)
-│     ├── Question
-│     ├── Answer + instant feedback (why it's right/wrong)
-│     └── Running score
-├── Mastery check     (e.g. 8/10 correct, or streak of N)
-└── Unlock next level + award progress
+레벨 N
+├── 소개 카드        (화면 1개: 개념을 약 3개의 요점으로)
+├── 예시 풀이        (자세히 설명한 예시 1~2개)
+├── 연습 문제 세트    (무작위 문제 10~20개 — 반복의 핵심)
+│     ├── 문제
+│     ├── 답 + 즉각적인 피드백 (왜 맞았는지/틀렸는지)
+│     └── 현재 점수
+├── 마스터 확인       (예: 10문제 중 8개 정답, 또는 N개 연속 정답)
+└── 진행 상황 기록
 ```
 
-**Repetition mechanics:**
-- Questions are **randomly generated** so the set never feels memorized.
-- **Wrong answers are re-queued** (mistakes come back more often — light spaced
-  repetition).
-- A level can be **replayed** any time to keep skills sharp.
-- Optional **"endless drill"** mode per skill for grinding.
+**반복 장치:**
+- 문제는 **무작위로 생성**되어 외운 느낌이 들지 않습니다.
+- **틀린 문제는 다시 나옵니다** (실수한 내용이 더 자주 나오는 가벼운 간격 반복).
+- 언제든 레벨을 **다시 플레이**해서 실력을 유지할 수 있습니다.
+- 기술별로 계속 반복할 수 있는 **"무한 연습"** 모드가 있습니다.
 
 ---
 
-## 4. Game Features
+## 4. 게임 기능
 
-### Core (MVP)
-- Level map / progress path (locked vs. unlocked)
-- The 10 levels with drills + feedback
-- Score & mastery tracking per level
-- Progress saved locally (resume where you left off)
-- A simple **"Coach"** panel that explains the reasoning behind each answer
+### 핵심 (MVP)
+- 레벨 지도 / 진행 경로
+- 연습 문제와 피드백이 있는 10개 레벨
+- 레벨별 점수와 마스터 추적
+- 로컬에 진행 상황 저장 (하던 곳부터 이어 하기)
+- 각 답의 이유를 설명하는 간단한 **"코치"** 패널
 
-### Later (nice-to-have)
-- Streaks, badges, and a daily-practice reminder
-- Stats dashboard (accuracy per skill, weakest areas)
-- Adjustable difficulty within a level
-- Simple AI opponents with selectable styles (tight/loose) for Level 10
-- Hand-history review with coaching notes
-- Dark mode
+### 나중에 (있으면 좋은 것)
+- 연속 기록, 배지, 매일 연습 알림
+- 통계 화면 (분야별 정확도, 약한 분야)
+- 레벨 안에서 난이도 조절
+- 레벨 10용 스타일 선택 가능한 간단한 AI 상대 (타이트/루즈)
+- 코치 메모가 있는 핸드 기록 복기
+- 다크 모드
 
 ---
 
-## 5. Technical Architecture
+## 5. 기술 아키텍처
 
-A **client-side single-page app** is enough — no server or database required,
-which keeps it free and trivial to deploy. Progress is stored in the browser.
+**클라이언트 전용 싱글 페이지 앱**이면 충분합니다 — 서버나 데이터베이스가 필요 없어
+무료이고 배포도 아주 간단합니다. 진행 상황은 브라우저에 저장합니다.
 
-### Recommended stack
-- **Language:** TypeScript
-- **Framework:** React + Vite
-- **Styling:** Tailwind CSS (fast, clean UI)
-- **State/persistence:** React state + `localStorage` (no backend)
-- **Card images:** SVG card set (lightweight, scalable)
-- **Testing:** Vitest (unit-test the poker logic)
-- **Deployment:** Vercel (free tier, build-on-push)
+### 추천 스택
+- **언어:** TypeScript
+- **프레임워크:** React + Vite
+- **스타일:** Tailwind CSS (빠르고 깔끔한 UI)
+- **상태/저장:** React 상태 + `localStorage` (백엔드 없음)
+- **카드 이미지:** SVG 카드 세트 (가볍고 크기 조절 가능)
+- **테스트:** Vitest (포커 로직 단위 테스트)
+- **배포:** Vercel (무료 요금제, 푸시하면 빌드)
 
-> The poker rules engine (deck, dealing, hand evaluation) is pure TypeScript with
-> **zero UI dependencies**, so it can be fully unit-tested and reused anywhere.
+> 포커 규칙 엔진(덱, 딜, 핸드 평가)은 **UI 의존성이 전혀 없는** 순수 TypeScript라서
+> 완전히 단위 테스트할 수 있고 어디서든 재사용할 수 있습니다.
 
-### Proposed folder structure
+### 제안 폴더 구조
 ```
 /
-├── docs/                     # design docs (this file, beginner-guide.md)
+├── docs/                     # 설계 문서 (이 파일, beginner-guide.md)
 ├── public/
-│   └── cards/                # SVG card assets
+│   └── cards/                # SVG 카드 에셋
 ├── src/
-│   ├── engine/               # pure poker logic (no UI)
-│   │   ├── deck.ts           # 52-card deck, shuffle, deal
-│   │   ├── card.ts           # Card/Rank/Suit types
-│   │   ├── handEvaluator.ts  # best 5-of-7, hand ranking
-│   │   └── odds.ts           # outs & pot-odds helpers
-│   ├── drills/               # question generators per level
+│   ├── engine/               # 순수 포커 로직 (UI 없음)
+│   │   ├── deck.ts           # 52장 덱, 섞기, 딜
+│   │   ├── card.ts           # Card/Rank/Suit 타입
+│   │   ├── handEvaluator.ts  # 7장 중 가장 좋은 5장, 족보 판정
+│   │   └── odds.ts           # 아웃츠와 팟 오즈 도우미
+│   ├── drills/               # 레벨별 문제 생성기
 │   │   ├── level01_cards.ts
 │   │   ├── level02_rankings.ts
 │   │   └── ...
-│   ├── components/           # React UI (Card, Table, DrillScreen, Coach…)
-│   ├── state/                # progress, persistence (localStorage)
-│   ├── pages/                # LevelMap, LevelPlay, Stats
+│   ├── components/           # React UI (카드, 테이블, 연습 화면, 코치…)
+│   ├── state/                # 진행 상황, 저장 (localStorage)
+│   ├── pages/                # 레벨 지도, 레벨 플레이, 통계
 │   └── main.tsx
-├── tests/                    # engine + drill-generator tests
+├── tests/                    # 엔진 + 문제 생성기 테스트
 └── package.json
 ```
 
 ---
 
-## 6. Data Model (sketch)
+## 6. 데이터 모델 (초안)
 
 ```ts
 type Suit = '♠' | '♥' | '♦' | '♣';
@@ -149,17 +144,17 @@ interface Drill {
   id: string;
   levelId: number;
   prompt: string;
-  render?: { holeCards?: Card[]; board?: Card[] };  // visual context
+  render?: { holeCards?: Card[]; board?: Card[] };  // 시각 자료
   options: string[];
   correctIndex: number;
-  explanation: string;   // shown by the Coach after answering
+  explanation: string;   // 답한 뒤 코치가 보여 주는 해설
 }
 
 interface LevelProgress {
   levelId: number;
   unlocked: boolean;
-  bestScore: number;     // e.g. 9/10
-  mastered: boolean;     // passed the mastery threshold
+  bestScore: number;     // 예: 9/10
+  mastered: boolean;     // 마스터 기준 통과 여부
   attempts: number;
 }
 
@@ -173,86 +168,84 @@ interface PlayerProgress {
 
 ---
 
-## 7. Development Roadmap (milestones)
+## 7. 개발 로드맵 (마일스톤)
 
-**Status: all milestones complete.** The full 10-level curriculum plus the
-live table are shipped and merged to `main`. (Updated 2026-06-19.)
+**상태: 모든 마일스톤 완료.** 10개 레벨 커리큘럼 전체와 실전 테이블이 완성되어
+`main`에 병합되었습니다. (2026-06-19 기준.)
 
-- ✅ **M0 — Setup**: Vite + React + TS + Tailwind project; builds and deploys.
-- ✅ **M1 — Engine**: `card`, `deck`, `handEvaluator` (best 5-of-7) + a verified
-  `handFactory`, all unit-tested.
-- ✅ **M2 — Drill framework**: `DrillScreen`, scoring, instant Coach feedback,
-  mastery gating, `localStorage` progress, light spaced repetition.
-- ✅ **M3 — Levels 1–3**: cards, hand rankings, best-hand puzzles (rules fluency).
-- ✅ **M4 — Levels 4–6**: table flow, betting actions, position (game flow).
-- ✅ **M5 — Levels 7–9**: starting hands, outs/pot odds, board reading (strategy),
-  backed by `startingHands.ts` and `board.ts`.
-- ✅ **M6 — Level 10**: live table vs. AI (`game.ts` + `bot.ts` + `TableScreen`)
-  with an on-table coach, **3 bot difficulty levels**, and **side-pot** support.
-- ✅ **M7 — Polish (partial)**: per-skill **stats dashboard**, a **Learn (study)
-  stage** with visual-aid diagrams, **Korean term** translations, and an
-  **Endless Practice** mode. (Remaining nice-to-haves below.)
+- ✅ **M0 — 준비**: Vite + React + TS + Tailwind 프로젝트, 빌드와 배포 동작.
+- ✅ **M1 — 엔진**: `card`, `deck`, `handEvaluator`(7장 중 가장 좋은 5장)와 검증된
+  `handFactory`, 모두 단위 테스트 완료.
+- ✅ **M2 — 연습 문제 틀**: `DrillScreen`, 점수, 즉각적인 코치 피드백, 마스터 기준,
+  `localStorage` 진행 상황, 가벼운 간격 반복.
+- ✅ **M3 — 레벨 1–3**: 카드, 족보, 가장 좋은 핸드 퍼즐 (규칙 익히기).
+- ✅ **M4 — 레벨 4–6**: 테이블 진행, 베팅 액션, 포지션 (게임 진행).
+- ✅ **M5 — 레벨 7–9**: 스타팅 핸드, 아웃츠/팟 오즈, 보드 읽기 (전략),
+  `startingHands.ts`와 `board.ts` 기반.
+- ✅ **M6 — 레벨 10**: AI와의 실전 테이블(`game.ts` + `bot.ts` + `TableScreen`),
+  테이블 위 코치, **봇 난이도 3단계**, **사이드 팟** 지원.
+- ✅ **M7 — 다듬기 (일부)**: 분야별 **통계 화면**, 시각 자료가 있는 **학습 단계**,
+  **무한 연습** 모드, 그리고 **앱 전체 한국어화**. (남은 항목은 아래에.)
 
-### Shipped beyond the original plan
-- **Learn stage** before drills: definitions, worked examples, and schematic
-  diagrams (suits chart, rank strip, hand-ranking ladder, betting-rounds
-  timeline, poker-table position diagram).
-- **Korean translations** of key terms (Hangul + romanization), reinforced in
-  drill explanations.
-- **Endless Practice** mode for unlimited repetition per level.
-- **Stats dashboard**: per-skill accuracy, recent-session trend, weakest-area
-  flag, from both mastery and endless sessions.
+### 원래 계획 이상으로 완성한 것
+- 연습 문제 전 **학습 단계**: 정의, 예시 풀이, 도식(무늬 표, 랭크 순서, 족보 사다리,
+  베팅 라운드 타임라인, 포커 테이블 포지션 그림).
+- **앱 전체 한국어화**: 모든 화면, 문제, 해설, 코치 팁을 한국어로 제공하며, 문장 속
+  조사는 앞 단어에 맞게 자동으로 고릅니다(`josa.ts`).
+- 레벨마다 제한 없이 반복할 수 있는 **무한 연습** 모드.
+- **통계 화면**: 마스터 세션과 무한 연습 세션을 모두 반영한 분야별 정확도,
+  최근 세션 추세, 가장 약한 분야 표시.
+- **레벨 잠금 없음**: 모든 레벨을 처음부터 자유롭게 열 수 있습니다.
 
-### Still open (nice-to-have)
-- Badges / streaks / daily-practice reminder.
-- Dark mode.
-- Side-pot UI breakdown on the table (engine already computes pots; the table
-  shows an aggregate summary).
-- Hand-history review with coaching notes.
+### 아직 남은 것 (있으면 좋은 것)
+- 배지 / 연속 기록 / 매일 연습 알림.
+- 다크 모드.
+- 테이블의 사이드 팟 상세 표시 (엔진은 이미 팟을 계산하며, 테이블은 합계 요약만 보여 줍니다).
+- 코치 메모가 있는 핸드 기록 복기.
 
-> Shipped after **M3** as a usable v0.1, then iterated through to M6.
+> **M3** 이후 쓸 만한 v0.1로 공개한 뒤, M6까지 반복해서 개선했습니다.
 
 ---
 
-## Test coverage snapshot
+## 테스트 현황
 
-81 unit tests (Vitest) cover the pure logic:
-- hand evaluation (categories, best 5-of-7, tie-breaking), the deck/shuffle,
-  and the verified hand factory;
-- drill/lesson generators (well-formed across many seeds);
-- starting-hand classification and board reading (flush/pair/nuts);
-- progress accumulation; and the game engine (chip conservation across full
-  hands at every bot difficulty, blinds, fold-wins, and side-pot splits).
-
----
-
-## 8. Deployment
-
-- **Vercel**: connect the GitHub repo → Vercel auto-detects Vite → builds on
-  every push and publishes the `dist/` output.
-- No `base` path tweak needed (served from the domain root).
-- Result: a public URL the learner can open on desktop or phone, anytime.
+85개의 단위 테스트(Vitest)가 순수 로직을 검증합니다:
+- 핸드 평가(족보, 7장 중 가장 좋은 5장, 동점 판정), 덱/섞기, 검증된 핸드 생성기;
+- 문제·학습 생성기 (여러 시드에서 올바른 형태);
+- 스타팅 핸드 분류와 보드 읽기 (플러시/페어/넛츠);
+- 한국어 조사 선택;
+- 진행 상황 누적, 그리고 게임 엔진 (모든 봇 난이도에서 핸드를 끝까지 했을 때의 칩 보존,
+  블라인드, 폴드로 이기기, 사이드 팟 분배).
 
 ---
 
-## 9. Locked Decisions
+## 8. 배포
 
-These were confirmed and are the source of truth for the build:
-
-1. **Stack** — ✅ **React + Vite + TypeScript** (+ Tailwind CSS).
-2. **v0.1 scope** — ✅ **Levels 1–3 first** (rules-fluency core: cards, hand
-   rankings, best 5-of-7), then iterate toward the full 10.
-3. **Hosting** — ✅ **Vercel** (build on push, free tier).
-
-### Still open (minor)
-- **Card art** — start with simple CSS/Unicode cards, swap to an open-source SVG
-  deck later if desired.
-
-> Note on deployment: since hosting is **Vercel** (not GitHub Pages), Vite's
-> `base` can stay as the default `'/'` — no repo-name base path needed.
+- **Vercel**: GitHub 저장소를 연결 → Vercel이 Vite를 자동 감지 → 푸시할 때마다
+  빌드하고 `dist/` 결과물을 게시합니다.
+- `base` 경로를 바꿀 필요가 없습니다 (도메인 루트에서 서비스).
+- 결과: 학습자가 데스크톱이나 휴대폰에서 언제든 열 수 있는 공개 URL.
 
 ---
 
-## Related Docs
-- [`beginner-guide.md`](./beginner-guide.md) — the human-readable rules &
-  strategy reference that the level content is based on.
+## 9. 확정된 결정
+
+아래 항목은 확정되었으며 개발의 기준입니다:
+
+1. **스택** — ✅ **React + Vite + TypeScript** (+ Tailwind CSS).
+2. **v0.1 범위** — ✅ **레벨 1–3 먼저** (규칙 익히기의 핵심: 카드, 족보,
+   7장 중 가장 좋은 5장), 이후 10개 레벨 전체로 확장.
+3. **호스팅** — ✅ **Vercel** (푸시하면 빌드, 무료 요금제).
+
+### 아직 열려 있는 것 (사소함)
+- **카드 그림** — 간단한 CSS/유니코드 카드로 시작하고, 원하면 나중에 오픈소스 SVG 덱으로
+  바꿉니다.
+
+> 배포 참고: 호스팅이 GitHub Pages가 아니라 **Vercel**이므로, Vite의 `base`는 기본값
+> `'/'` 그대로 두면 됩니다 — 저장소 이름 경로가 필요 없습니다.
+
+---
+
+## 관련 문서
+- [`beginner-guide.md`](./beginner-guide.md) — 레벨 내용의 바탕이 된, 사람이 읽기 위한
+  규칙과 전략 자료.
