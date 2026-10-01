@@ -1,4 +1,4 @@
-import { type Card, type Rank, RANK_VALUE, cardLabel } from './card';
+import { type Card, type Rank, RANK_VALUE, cardShortName } from './card';
 
 /** 족보 종류. 가장 약한 것(0) → 가장 강한 것(9) 순서입니다. */
 export enum HandCategory {
@@ -163,7 +163,7 @@ export function parseCard(label: string): Card {
   return { rank, suit };
 }
 
-/** 카드 목록을 보기 좋게 출력합니다: "A♠ K♠ Q♠ J♠ 10♠". */
+/** 카드 목록을 한국어로 보기 좋게 출력합니다: "♠에이스 ♠킹 ♠퀸 ♠잭 ♠10". */
 export function handLabel(cards: Card[]): string {
-  return cards.map(cardLabel).join(' ');
+  return cards.map(cardShortName).join(' ');
 }

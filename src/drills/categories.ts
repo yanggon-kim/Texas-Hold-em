@@ -28,5 +28,5 @@ export const CATEGORY_HINT: Record<HandCategory, string> = {
   [HandCategory.FullHouse]: '트리플과 원 페어의 조합',
   [HandCategory.FourOfAKind]: '같은 랭크의 카드 4장',
   [HandCategory.StraightFlush]: '같은 무늬의 연속된 숫자 5장',
-  [HandCategory.RoyalFlush]: '같은 무늬의 A-K-Q-J-10 — 가능한 가장 강한 핸드',
+  [HandCategory.RoyalFlush]: '같은 무늬의 에이스-킹-퀸-잭-10 — 가능한 가장 강한 핸드',
 };

@@ -275,8 +275,8 @@ function Seat({
         <div className="flex items-center gap-1 min-w-0">
           <span className="font-semibold text-slate-800 truncate whitespace-nowrap">{player.name}</span>
           {isButton && (
-            <span className="inline-grid place-items-center w-4 h-4 rounded-full bg-slate-800 text-white text-[9px]">
-              D
+            <span className="inline-grid place-items-center w-4 h-4 shrink-0 rounded-full bg-slate-800 text-white text-[9px]">
+              딜
             </span>
           )}
         </div>

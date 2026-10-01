@@ -45,9 +45,14 @@ export function isRed(card: Card): boolean {
   return RED_SUITS.has(card.suit);
 }
 
-/** "A♠", "10♥" 같은 짧은 표기. */
+/** "A♠", "10♥" 같은 내부용 짧은 표기 (코드·테스트용). */
 export function cardLabel(card: Card): string {
   return `${card.rank}${card.suit}`;
+}
+
+/** 화면에 보여 주는 짧은 한국어 표기, 예: "♠에이스", "♥10". */
+export function cardShortName(card: Card): string {
+  return `${card.suit}${RANK_NAME[card.rank]}`;
 }
 
 /** "스페이드 에이스" 같은 카드의 전체 이름. */

@@ -9,21 +9,21 @@ import { ALL_CATEGORIES } from './categories';
 /** 학습 단계에서 쓰는 족보별 자세한 정의. */
 const HAND_DEF: Record<HandCategory, string> = {
   [HandCategory.RoyalFlush]:
-    '같은 무늬의 A-K-Q-J-10. 포커에서 가장 강한 핸드로, 이길 수 있는 핸드가 없습니다.',
+    '같은 무늬의 에이스-킹-퀸-잭-10. 포커에서 가장 강한 핸드로, 이길 수 있는 핸드가 없습니다.',
   [HandCategory.StraightFlush]:
     '같은 무늬로 연속된 숫자 5장. 예: 모두 하트인 9-8-7-6-5.',
   [HandCategory.FourOfAKind]:
-    '같은 랭크의 카드 4장 — 한 숫자의 네 무늬가 모두 모인 것. 예: Q 네 장.',
+    '같은 랭크의 카드 4장 — 한 숫자의 네 무늬가 모두 모인 것. 예: 퀸 네 장.',
   [HandCategory.FullHouse]:
-    '트리플에 원 페어를 더한 것. 예: K 세 장과 7 두 장.',
+    '트리플에 원 페어를 더한 것. 예: 킹 세 장과 7 두 장.',
   [HandCategory.Flush]:
     '연속되지는 않지만 모두 같은 무늬인 5장. 족보를 정할 때 숫자는 상관없습니다.',
   [HandCategory.Straight]:
-    '무늬가 섞인 연속된 숫자 5장. 예: 8-7-6-5-4. 에이스는 높게(A-K-Q-J-10)도, 낮게(5-4-3-2-A)도 쓸 수 있습니다.',
+    '무늬가 섞인 연속된 숫자 5장. 예: 8-7-6-5-4. 에이스는 높게(에이스-킹-퀸-잭-10)도, 낮게(5-4-3-2-에이스)도 쓸 수 있습니다.',
   [HandCategory.ThreeOfAKind]:
     '같은 랭크의 카드 3장과 관계없는 카드 2장. 예: 5 세 장.',
   [HandCategory.TwoPair]:
-    '서로 다른 페어 2개와 카드 1장. 예: J 두 장과 4 두 장.',
+    '서로 다른 페어 2개와 카드 1장. 예: 잭 두 장과 4 두 장.',
   [HandCategory.OnePair]:
     '같은 랭크의 카드 2장과 관계없는 카드 3장. 예: 10 두 장.',
   [HandCategory.HighCard]:
@@ -36,7 +36,7 @@ export function cardsLesson(rng: Rng): LessonCard[] {
     {
       term: '덱',
       definition:
-        '표준 덱은 52장입니다. 무늬 4가지가 있고, 무늬마다 랭크가 13가지(2부터 10, 그다음 J, Q, K, A) 있습니다.',
+        '표준 덱은 52장입니다. 무늬 4가지가 있고, 무늬마다 랭크가 13가지(2부터 10, 그다음 잭, 퀸, 킹, 에이스) 있습니다.',
       diagram: { kind: 'suits' },
     },
   ];
@@ -51,9 +51,9 @@ export function cardsLesson(rng: Rng): LessonCard[] {
   cards.push({
     term: '랭크와 색깔',
     definition:
-      '낮은 랭크 → 높은 랭크: 2,3,4,5,6,7,8,9,10,J,Q,K,A (보통 에이스가 가장 높습니다). 하트 ♥와 다이아몬드 ♦는 빨간색, 스페이드 ♠와 클럽 ♣는 검은색입니다.',
+      '낮은 랭크 → 높은 랭크: 2, 3, 4, 5, 6, 7, 8, 9, 10, 잭, 퀸, 킹, 에이스 (보통 에이스가 가장 높습니다). 하트 ♥와 다이아몬드 ♦는 빨간색, 스페이드 ♠와 클럽 ♣는 검은색입니다.',
     diagram: { kind: 'rankStrip' },
-    note: 'J는 잭, Q는 퀸, K는 킹, A는 에이스라고 읽습니다.',
+    note: '그림 카드는 잭, 퀸, 킹 세 가지입니다. 에이스는 보통 가장 높은 카드지만, 5-4-3-2-에이스 스트레이트에서는 가장 낮은 카드로 씁니다.',
   });
   void rng;
   return cards;
@@ -111,7 +111,7 @@ export function tableFlowLesson(_rng: Rng): LessonCard[] {
     {
       term: '딜러 버튼',
       definition:
-        '이번 핸드에서 누가 "딜러"인지 표시하는 표식("D")입니다. 매 핸드 시계 방향으로 한 자리씩 이동합니다.',
+        '이번 핸드에서 누가 "딜러"인지 표시하는 표식("딜")입니다. 매 핸드 시계 방향으로 한 자리씩 이동합니다.',
       diagram: { kind: 'table', highlight: 'button' },
     },
     {
@@ -196,13 +196,13 @@ export function positionLesson(_rng: Rng): LessonCard[] {
       diagram: { kind: 'table' },
     },
     {
-      term: '버튼 (BTN)',
+      term: '버튼',
       definition:
         '딜러 버튼이 놓인 자리입니다. 플랍 이후 가장 마지막에 행동하는, 가장 좋고 수익이 높은 자리입니다.',
       diagram: { kind: 'table', highlight: 'button' },
     },
     {
-      term: '언더더건 (UTG)',
+      term: '언더더건',
       definition:
         '빅 블라인드 왼쪽 자리입니다. 프리플랍에서 가장 먼저 행동하는 가장 어려운 자리이므로 타이트하게 플레이하세요.',
       diagram: { kind: 'table', highlight: 'utg' },
@@ -229,27 +229,27 @@ export function startingHandsLesson(_rng: Rng): LessonCard[] {
     {
       term: '프리미엄 핸드',
       definition:
-        '가장 강한 시작 핸드: 높은 페어(AA, KK, QQ, JJ)와 높은 에이스(AK, AQ). 어느 포지션에서든 항상 플레이할 수 있습니다.',
-      example: { label: '예: A♠ K♠', cards: [c('A♠'), c('K♠')] },
+        '가장 강한 시작 핸드: 높은 페어(에이스·킹·퀸·잭 페어)와 높은 에이스(에이스·킹, 에이스·퀸). 어느 포지션에서든 항상 플레이할 수 있습니다.',
+      example: { label: '예: ♠에이스 ♠킹', cards: [c('A♠'), c('K♠')] },
     },
     {
       term: '플레이 가능 핸드',
       definition:
         '작은·중간 페어, 수티드 커넥터, 수티드 에이스 같은 핸드입니다. 레이트 포지션에서는 좋지만, 얼리 포지션에서는 보통 폴드합니다.',
-      example: { label: '예: 7♥ 6♥', cards: [c('7♥'), c('6♥')] },
+      example: { label: '예: ♥7 ♥6', cards: [c('7♥'), c('6♥')] },
     },
     {
       term: '트래시 핸드',
       definition:
-        '7-2 오프수트처럼 약하고 연결되지 않은 카드입니다. 폴드하세요 — 초보자 대부분은 이런 핸드를 너무 많이 플레이해서 잃습니다.',
-      example: { label: '예: 7♣ 2♦', cards: [c('7♣'), c('2♦')] },
+        '7·2 오프수트처럼 약하고 연결되지 않은 카드입니다. 폴드하세요 — 초보자 대부분은 이런 핸드를 너무 많이 플레이해서 잃습니다.',
+      example: { label: '예: ♣7 ♦2', cards: [c('7♣'), c('2♦')] },
     },
     {
       term: '얼리는 타이트하게, 레이트는 느슨하게',
       definition:
         '얼리 포지션에서는 프리미엄·강한 핸드만 플레이하고, 버튼 근처에서는 플레이 가능 핸드도 더할 수 있습니다.',
       diagram: { kind: 'table', highlight: 'earlyLate' },
-      note: 'AKs의 s는 수티드(같은 무늬), 72o의 o는 오프수트(다른 무늬)를 뜻합니다.',
+      note: '수티드는 두 카드의 무늬가 같은 것, 오프수트는 무늬가 다른 것을 뜻합니다.',
     },
   ];
 }
@@ -318,7 +318,7 @@ export function tablePlayLesson(_rng: Rng): LessonCard[] {
   void _rng;
   return [
     {
-      term: 'AI와 실전',
+      term: '봇과 실전',
       definition:
         '이제 봇 상대와 핸드를 끝까지 플레이합니다. 4인 테이블에서 칩 1,000개로 시작하며, 블라인드는 10/20입니다.',
       diagram: { kind: 'table' },

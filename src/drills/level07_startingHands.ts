@@ -5,6 +5,7 @@ import {
   shouldPlay,
   TIER_LABEL,
 } from '../engine/startingHands';
+import { josa } from '../engine/josa';
 import { type Drill, type Rng, shuffledOptions } from './types';
 
 /** 레벨 7 — 포지션에 따른 프리플랍 스타팅 핸드 선택. */
@@ -25,7 +26,7 @@ export function generateStartingHandDrill(rng: Rng): Drill {
       visual: { hole },
       options,
       correctIndex,
-      explanation: `${hand.code} 핸드는 '${correct}' 등급의 스타팅 핸드입니다. 강한 핸드는 어느 자리에서나 플레이하고, 약한 핸드는 레이트 포지션에서만 플레이하거나 아예 플레이하지 않습니다.`,
+      explanation: `${josa(hand.name, '은/는')} '${correct}' 등급의 스타팅 핸드입니다. 강한 핸드는 어느 자리에서나 플레이하고, 약한 핸드는 레이트 포지션에서만 플레이하거나 아예 플레이하지 않습니다.`,
     };
   }
 
@@ -37,10 +38,10 @@ export function generateStartingHandDrill(rng: Rng): Drill {
   const correct = play ? '플레이 (레이즈)' : '폴드';
   const options = ['플레이 (레이즈)', '폴드'];
   const reason = play
-    ? `${hand.code} 핸드는 '${tierLabel}' 등급 — ${posLabel}에서 오픈하기에 충분히 강합니다.`
+    ? `${josa(hand.name, '은/는')} '${tierLabel}' 등급 — ${posLabel}에서 오픈하기에 충분히 강합니다.`
     : hand.tier === 'trash'
-      ? `${hand.code} 핸드는 '${tierLabel}' 등급 — 어느 포지션에서든 폴드하세요.`
-      : `${hand.code} 핸드는 '${tierLabel}' 등급일 뿐입니다. 레이트 포지션에서는 플레이하지만, ${posLabel}에서는 폴드하세요.`;
+      ? `${josa(hand.name, '은/는')} '${tierLabel}' 등급 — 어느 포지션에서든 폴드하세요.`
+        : `${josa(hand.name, '은/는')} '${tierLabel}' 등급일 뿐입니다. 레이트 포지션에서는 플레이하지만, ${posLabel}에서는 폴드하세요.`;
   return {
     prompt: `${posLabel}에서 이 핸드로 가장 먼저 행동합니다. 플레이할까요, 폴드할까요?`,
     visual: { hole },

@@ -35,7 +35,7 @@ export const LEVELS: LevelDef[] = [
     concept: [
       '표준 덱은 52장입니다: 무늬 4가지 × 랭크 13가지.',
       '무늬: 스페이드 ♠와 클럽 ♣는 검은색, 하트 ♥와 다이아몬드 ♦는 빨간색입니다.',
-      '랭크는 2, 3, 4 … 10, 그다음 J, Q, K, A 순서입니다. 보통 에이스가 가장 높습니다.',
+      '랭크는 2, 3, 4 … 10, 그다음 잭, 퀸, 킹, 에이스 순서입니다. 보통 에이스가 가장 높습니다.',
     ],
     lesson: cardsLesson,
     generate: generateCardDrill,
@@ -124,7 +124,7 @@ export const LEVELS: LevelDef[] = [
     icon: '🃏',
     concept: [
       '홀 카드 2장이 프리플랍 성패의 대부분을 정합니다 — 대부분의 핸드는 폴드하세요.',
-      '등급: 프리미엄(AA–JJ, AK, AQ), 강함, 플레이 가능(작은 페어, 수티드 커넥터), 트래시.',
+      '등급: 프리미엄(에이스~잭 페어, 에이스·킹, 에이스·퀸), 강함, 플레이 가능(작은 페어, 수티드 커넥터), 트래시.',
       '얼리 포지션에서는 타이트하게, 레이트 포지션에서는 플레이 가능 핸드를 더합니다.',
     ],
     lesson: startingHandsLesson,
@@ -164,7 +164,7 @@ export const LEVELS: LevelDef[] = [
   },
   {
     id: 10,
-    title: 'AI와 실전',
+    title: '봇과 실전',
     subtitle: '실전 테이블에서 한 핸드 끝까지',
     icon: '♠️',
     concept: [

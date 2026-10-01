@@ -1,4 +1,4 @@
-import { type Card, RANK_VALUE, rankForValue } from './card';
+import { type Card, RANK_VALUE, RANK_NAME, rankForValue } from './card';
 
 export type Tier = 'premium' | 'strong' | 'playable' | 'trash';
 
@@ -10,8 +10,10 @@ export const TIER_LABEL: Record<Tier, string> = {
 };
 
 export interface StartingHand {
-  /** 표준 코드, 예: "AA", "AKs", "72o". */
+  /** 내부용 표준 코드, 예: "AA", "AKs", "72o". */
   code: string;
+  /** 화면에 보여 주는 한국어 이름, 예: "에이스 페어", "에이스·킹 수티드", "7·2 오프수트". */
+  name: string;
   tier: Tier;
   suited: boolean;
   pair: boolean;
@@ -19,7 +21,7 @@ export interface StartingHand {
 
 /**
  * 2장짜리 스타팅 핸드를 초보자용 등급으로 분류합니다. 널리 쓰이는 간단한 차트를
- * 따릅니다. 높은 카드를 먼저 쓰며, 's' = 수티드(같은 무늬), 'o' = 오프수트(다른 무늬)입니다.
+ * 따릅니다. 코드는 높은 카드를 먼저 쓰며, 's' = 수티드(같은 무늬), 'o' = 오프수트(다른 무늬)입니다.
  */
 export function classifyStartingHand(a: Card, b: Card): StartingHand {
   const va = RANK_VALUE[a.rank];
@@ -30,8 +32,13 @@ export function classifyStartingHand(a: Card, b: Card): StartingHand {
   const suited = a.suit === b.suit;
   const code =
     rankForValue(hi) + rankForValue(lo) + (pair ? '' : suited ? 's' : 'o');
+  const hiName = RANK_NAME[rankForValue(hi)];
+  const loName = RANK_NAME[rankForValue(lo)];
+  const name = pair
+    ? `${hiName} 페어`
+    : `${hiName}·${loName} ${suited ? '수티드' : '오프수트'}`;
 
-  return { code, tier: tierOf(hi, lo, pair, suited), suited, pair };
+  return { code, name, tier: tierOf(hi, lo, pair, suited), suited, pair };
 }
 
 function tierOf(hi: number, lo: number, pair: boolean, suited: boolean): Tier {

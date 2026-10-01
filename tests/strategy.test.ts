@@ -27,6 +27,12 @@ describe('스타팅 핸드 — 분류', () => {
     expect(classifyStartingHand(c('Q♥'), c('Q♣')).code).toBe('QQ');
   });
 
+  it('화면에 보여 줄 한국어 이름을 만든다', () => {
+    expect(classifyStartingHand(c('K♠'), c('A♠')).name).toBe('에이스·킹 수티드');
+    expect(classifyStartingHand(c('2♦'), c('7♣')).name).toBe('7·2 오프수트');
+    expect(classifyStartingHand(c('Q♥'), c('Q♣')).name).toBe('퀸 페어');
+  });
+
   it('플레이/폴드 결정이 포지션을 따른다', () => {
     expect(shouldPlay('premium', 'early')).toBe(true);
     expect(shouldPlay('playable', 'early')).toBe(false);

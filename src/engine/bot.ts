@@ -100,13 +100,13 @@ export function coachTip(state: GameState): CoachTip {
   if (state.board.length === 0) {
     const hand = classifyStartingHand(p.hole[0], p.hole[1]);
     if (hand.tier === 'trash' && legal.callAmount > 0) {
-      return { suggestion: '폴드', reason: `${hand.code}: 트래시 핸드 — 벳을 받으면 폴드하세요.` };
+      return { suggestion: '폴드', reason: `${hand.name}: 트래시 핸드 — 벳을 받으면 폴드하세요.` };
     }
     if (hand.tier === 'premium' && legal.canRaise) {
-      return { suggestion: '레이즈', reason: `${hand.code}: 프리미엄 핸드 — 밸류를 위해 레이즈하세요.` };
+      return { suggestion: '레이즈', reason: `${hand.name}: 프리미엄 핸드 — 밸류를 위해 레이즈하세요.` };
     }
-    if (legal.canCheck) return { suggestion: '체크', reason: `${hand.code}: 싸게 플랍을 보세요.` };
-    return { suggestion: '콜', reason: `${hand.code}: 이 상황에서는 플레이할 만합니다.` };
+    if (legal.canCheck) return { suggestion: '체크', reason: `${hand.name}: 싸게 플랍을 보세요.` };
+    return { suggestion: '콜', reason: `${hand.name}: 이 상황에서는 플레이할 만합니다.` };
   }
 
   const made = evaluateHand([...p.hole, ...state.board]);

@@ -33,7 +33,7 @@ export function generateRankingDrill(rng: Rng): Drill {
   const resA = evaluateHand(handA);
   const resB = evaluateHand(handB);
   const aWins = compareScores(resA.score, resB.score) > 0;
-  const options = ['핸드 A', '핸드 B'];
+  const options = ['첫 번째 핸드', '두 번째 핸드'];
   const correctIndex = aWins ? 0 : 1;
   const winnerCat = aWins ? catA : catB;
   const loserCat = aWins ? catB : catA;
@@ -41,8 +41,8 @@ export function generateRankingDrill(rng: Rng): Drill {
     prompt: '어느 핸드가 더 강한가요?',
     visual: {
       hands: [
-        { label: '핸드 A', cards: handA },
-        { label: '핸드 B', cards: handB },
+        { label: '첫 번째 핸드', cards: handA },
+        { label: '두 번째 핸드', cards: handB },
       ],
     },
     options,

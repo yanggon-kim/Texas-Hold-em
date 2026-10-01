@@ -1,5 +1,5 @@
 import type { LessonDiagram as Diagram, TableHighlight } from '../drills/types';
-import { RANKS, SUITS, SUIT_NAME } from '../engine/card';
+import { RANKS, RANK_NAME, SUITS, SUIT_NAME } from '../engine/card';
 import { parseCard } from '../engine/handEvaluator';
 import { PlayingCard, CardBack } from './PlayingCard';
 
@@ -51,9 +51,11 @@ function RankStripDiagram() {
         {RANKS.map((rank) => (
           <span
             key={rank}
-            className="grid place-items-center w-8 h-10 rounded-md border border-slate-200 bg-white text-sm font-semibold text-slate-800"
+            className={`grid place-items-center min-w-8 h-10 px-1 rounded-md border border-slate-200 bg-white font-semibold text-slate-800 ${
+              RANK_NAME[rank].length > 2 ? 'text-xs' : 'text-sm'
+            }`}
           >
-            {rank}
+            {RANK_NAME[rank]}
           </span>
         ))}
       </div>
@@ -211,7 +213,7 @@ function PokerTableDiagram({ highlight }: { highlight?: TableHighlight }) {
             {SEAT_LABEL[seat.role]}
             {seat.role === 'BTN' && (
               <span className="ml-1 inline-grid place-items-center w-4 h-4 rounded-full bg-white text-slate-900 text-[9px] align-middle">
-                D
+                딜
               </span>
             )}
           </div>
