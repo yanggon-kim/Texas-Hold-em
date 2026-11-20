@@ -20,7 +20,7 @@ export const STREET_LABEL: Record<Street, string> = {
 };
 
 export interface Player {
-  id: number;
+  id: number; // 자리 인덱스와 같습니다 (자리 번호 = id + 1)
   name: string;
   isHuman: boolean;
   chips: number;
@@ -30,6 +30,8 @@ export interface Player {
   committed: number; // 이번 스트리트에 낸 칩
   totalCommitted: number; // 이번 핸드에 낸 칩
   hasActed: boolean; // 이번 스트리트의 마지막 벳·레이즈 이후 행동했는지
+  raises: number; // 이번 핸드에서 벳·레이즈·올인한 횟수
+  sittingOut: boolean; // 칩이 없어 이번 핸드에 참여하지 않음
   lastAction?: string; // 화면 표시용
 }
 
@@ -40,6 +42,7 @@ export interface ShowdownEntry {
 
 export interface PotResult {
   amount: number;
+  eligible: number[]; // 이 팟을 이길 자격이 있는(폴드하지 않은) 플레이어 ID
   winners: number[]; // 이 팟을 나눠 갖는 플레이어 ID
   label: string; // "팟", "메인 팟", "사이드 팟 1", …
 }
@@ -47,7 +50,9 @@ export interface PotResult {
 export interface HandOutcome {
   winners: number[]; // 팟을 하나라도 가져간 모든 플레이어 ID
   pots: PotResult[]; // 메인 팟 + 사이드 팟
-  winnings: Record<number, number>; // 플레이어 ID별로 딴 칩
+  winnings: Record<number, number>; // 플레이어 ID별로 받은 칩
+  contributed: Record<number, number>; // 플레이어 ID별로 이번 핸드에 낸 칩
+  net: Record<number, number>; // 받은 칩 − 낸 칩 (순이익, 음수면 손해)
   showdown: ShowdownEntry[]; // 공개된 비폴드 핸드 (모두 폴드해서 이겼다면 비어 있음)
   summary: string;
 }
@@ -55,6 +60,8 @@ export interface HandOutcome {
 export interface GameState {
   players: Player[];
   buttonIndex: number;
+  sbIndex: number; // 스몰 블라인드 자리
+  bbIndex: number; // 빅 블라인드 자리
   street: Street;
   board: Card[];
   deck: Card[];
@@ -85,11 +92,14 @@ export interface LegalActions {
 
 const BOT_NAMES = ['민수', '지영', '현우', '서연', '은지'];
 
+/** 자리 번호를 붙인 이름, 예: "2번 민수". */
+export function seatName(p: Player): string {
+  return `${p.id + 1}번 ${p.name}`;
+}
+
 /** 플레이어 구성: 사람 1명과 봇 `botCount`명, 각자 `startingChips`개의 칩. */
 export function makePlayers(botCount: number, startingChips: number): Player[] {
-  const players: Player[] = [
-    blankPlayer(0, '나', true, startingChips),
-  ];
+  const players: Player[] = [blankPlayer(0, '나', true, startingChips)];
   for (let i = 0; i < botCount; i++) {
     players.push(blankPlayer(i + 1, BOT_NAMES[i] ?? `봇 ${i + 1}`, false, startingChips));
   }
@@ -108,13 +118,22 @@ function blankPlayer(id: number, name: string, isHuman: boolean, chips: number):
     committed: 0,
     totalCommitted: 0,
     hasActed: false,
+    raises: 0,
+    sittingOut: false,
   };
 }
 
 const activeIndexes = (s: GameState): number[] =>
   s.players.map((_, i) => i).filter((i) => !s.players[i].folded);
 
-const nextSeat = (s: GameState, from: number): number => (from + 1) % s.players.length;
+/** `from` 다음 자리부터 시계 방향으로, 이번 핸드에 참여한 가장 가까운 자리. */
+function nextDealtIn(s: GameState, from: number): number {
+  for (let k = 1; k <= s.players.length; k++) {
+    const i = (from + k) % s.players.length;
+    if (!s.players[i].sittingOut) return i;
+  }
+  return from;
+}
 
 /** 새 핸드 시작: 플레이어 초기화, 홀 카드 딜, 블라인드 지불. */
 export function startHand(
@@ -128,16 +147,20 @@ export function startHand(
     ...p,
     hole: [] as Card[],
     folded: p.chips <= 0, // 칩이 없는 플레이어는 쉽니다
+    sittingOut: p.chips <= 0,
     allIn: false,
     committed: 0,
     totalCommitted: 0,
     hasActed: false,
+    raises: 0,
     lastAction: undefined,
   }));
 
   const state: GameState = {
     players: fresh,
     buttonIndex,
+    sbIndex: -1,
+    bbIndex: -1,
     street: 'preflop',
     board: [],
     deck,
@@ -152,21 +175,24 @@ export function startHand(
   // 자리에 앉은 플레이어마다 홀 카드 2장을 나눠 줍니다.
   for (let r = 0; r < 2; r++) {
     for (const p of state.players) {
-      if (!p.folded) p.hole.push(state.deck.shift()!);
+      if (!p.sittingOut) p.hole.push(state.deck.shift()!);
     }
   }
 
-  // 블라인드 지불 (헤즈업에서는 버튼이 스몰 블라인드지만, 여기서는 단순하게
-  // 버튼 왼쪽이 스몰 블라인드, 그다음이 빅 블라인드입니다).
-  const sbIndex = nextSeat(state, buttonIndex);
-  const bbIndex = nextSeat(state, sbIndex);
+  // 블라인드: 버튼 왼쪽이 스몰 블라인드, 그다음이 빅 블라인드입니다.
+  // 두 명만 남은 헤즈업에서는 버튼이 스몰 블라인드를 냅니다 (실제 규칙).
+  const dealtIn = state.players.filter((p) => !p.sittingOut).length;
+  const sbIndex = dealtIn === 2 ? buttonIndex : nextDealtIn(state, buttonIndex);
+  const bbIndex = nextDealtIn(state, sbIndex);
+  state.sbIndex = sbIndex;
+  state.bbIndex = bbIndex;
   postBlind(state, sbIndex, Math.floor(bigBlind / 2), '스몰 블라인드');
   postBlind(state, bbIndex, bigBlind, '빅 블라인드');
   state.currentBet = bigBlind;
   state.minRaise = bigBlind;
 
   // 프리플랍에서는 빅 블라인드 왼쪽이 먼저 행동합니다.
-  state.toAct = activeCanAct(state, nextSeat(state, bbIndex));
+  state.toAct = activeCanAct(state, (bbIndex + 1) % state.players.length);
   return state;
 }
 
@@ -178,7 +204,8 @@ function postBlind(state: GameState, index: number, amount: number, label: strin
   p.totalCommitted += pay;
   state.pot += pay;
   if (p.chips === 0) p.allIn = true;
-  state.log.push(`${p.name}: ${label} ${pay} 지불`);
+  p.lastAction = `${label} ${pay}`;
+  state.log.push(`${seatName(p)}: ${label} ${pay} 지불`);
 }
 
 /** `start`부터 행동할 수 있는(폴드·올인이 아닌) 다음 자리를 찾습니다. */
@@ -189,6 +216,37 @@ function activeCanAct(state: GameState, start: number): number {
     if (!p.folded && !p.allIn) return i;
   }
   return -1;
+}
+
+/**
+ * 이번 스트리트의 행동 순서 (자리 인덱스). 프리플랍은 빅 블라인드 왼쪽부터,
+ * 플랍 이후는 버튼 왼쪽부터 시작합니다. 이번 핸드에 참여한 자리만 들어갑니다
+ * (폴드한 자리도 순서 표시를 위해 포함).
+ */
+export function actingOrder(state: GameState): number[] {
+  const n = state.players.length;
+  const start = state.street === 'preflop' ? (state.bbIndex + 1) % n : (state.buttonIndex + 1) % n;
+  const order: number[] = [];
+  for (let k = 0; k < n; k++) {
+    const i = (start + k) % n;
+    if (!state.players[i].sittingOut) order.push(i);
+  }
+  return order;
+}
+
+/**
+ * 플랍 이후 이 자리 뒤에 행동하는(아직 폴드하지 않은) 플레이어 수.
+ * 0이면 가장 마지막에 행동하는 가장 좋은 포지션입니다.
+ */
+export function playersActingAfterPostflop(state: GameState, index: number): number {
+  const n = state.players.length;
+  const order: number[] = [];
+  for (let k = 1; k <= n; k++) {
+    const i = (state.buttonIndex + k) % n; // 버튼 왼쪽부터, 버튼이 마지막
+    if (!state.players[i].sittingOut) order.push(i);
+  }
+  const pos = order.indexOf(index);
+  return order.slice(pos + 1).filter((i) => !state.players[i].folded).length;
 }
 
 /** `toAct` 자리의 플레이어가 아직 행동해야 하는지 여부. */
@@ -227,19 +285,19 @@ export function applyAction(prev: GameState, action: Action): GameState {
       p.folded = true;
       p.hasActed = true;
       p.lastAction = '폴드';
-      state.log.push(`${p.name}: 폴드`);
+      state.log.push(`${seatName(p)}: 폴드`);
       break;
     case 'check':
       p.hasActed = true;
       p.lastAction = '체크';
-      state.log.push(`${p.name}: 체크`);
+      state.log.push(`${seatName(p)}: 체크`);
       break;
     case 'call': {
       const pay = Math.min(state.currentBet - p.committed, p.chips);
       commit(state, p, pay);
       p.hasActed = true;
       p.lastAction = pay > 0 ? `콜 ${pay}` : '체크';
-      state.log.push(`${p.name}: 콜 ${pay}`);
+      state.log.push(`${seatName(p)}: ${p.lastAction}`);
       break;
     }
     case 'raise':
@@ -250,8 +308,10 @@ export function applyAction(prev: GameState, action: Action): GameState {
           : Math.min(action.amount ?? 0, p.committed + p.chips);
       const pay = target - p.committed;
       const raiseSize = target - state.currentBet;
+      const wasBet = state.currentBet === 0;
       commit(state, p, pay);
       if (raiseSize > 0) {
+        p.raises++;
         state.minRaise = Math.max(state.minRaise, raiseSize);
         state.currentBet = target;
         // 레이즈가 나오면 다른 모든 플레이어가 다시 행동해야 합니다.
@@ -260,8 +320,8 @@ export function applyAction(prev: GameState, action: Action): GameState {
         }
       }
       p.hasActed = true;
-      p.lastAction = p.allIn ? `올인 ${target}` : `레이즈 ${target}`;
-      state.log.push(`${p.name}: ${p.lastAction}`);
+      p.lastAction = p.allIn ? `올인 ${target}` : `${wasBet ? '벳' : '레이즈'} ${target}`;
+      state.log.push(`${seatName(p)}: ${p.lastAction}`);
       break;
     }
   }
@@ -303,6 +363,7 @@ function advanceStreet(state: GameState): GameState {
   for (const p of state.players) {
     p.committed = 0;
     p.hasActed = false;
+    if (!p.folded && !p.allIn) p.lastAction = undefined;
   }
   state.currentBet = 0;
   state.minRaise = state.bigBlind;
@@ -327,7 +388,7 @@ function advanceStreet(state: GameState): GameState {
   state.log.push(`--- ${STREET_LABEL[state.street]} ---`);
 
   // 플랍 이후 첫 행동: 버튼 왼쪽에서 가장 가까운 활성 플레이어.
-  const first = activeCanAct(state, nextSeat(state, state.buttonIndex));
+  const first = activeCanAct(state, (state.buttonIndex + 1) % state.players.length);
 
   // 행동할 수 있는 플레이어가 2명 미만이면 보드를 끝까지 깔고 쇼다운합니다.
   const canActCount = state.players.filter((p) => !p.folded && !p.allIn).length;
@@ -346,7 +407,7 @@ function finishHand(state: GameState): GameState {
 
   // 남은 핸드를 평가합니다 (실제 쇼다운일 때만 필요).
   const handById = new Map<number, HandResult>();
-  let showdown: ShowdownEntry[] = [];
+  const showdown: ShowdownEntry[] = [];
   if (contenders.length > 1) {
     for (const i of contenders) {
       const res = evaluateHand([...state.players[i].hole, ...state.board]);
@@ -356,8 +417,12 @@ function finishHand(state: GameState): GameState {
   }
 
   // 이번 핸드에서 각 플레이어가 낸 총액으로 사이드 팟을 만듭니다.
+  const contributed: Record<number, number> = {};
   const contrib = new Map<number, number>();
-  for (const p of state.players) if (p.totalCommitted > 0) contrib.set(p.id, p.totalCommitted);
+  for (const p of state.players) {
+    contributed[p.id] = p.totalCommitted;
+    if (p.totalCommitted > 0) contrib.set(p.id, p.totalCommitted);
+  }
 
   const pots: PotResult[] = [];
   let guard = 0;
@@ -385,7 +450,15 @@ function finishHand(state: GameState): GameState {
       }
       winners = eligible.filter((id) => compareScores(handById.get(id)!.score, best!.score) === 0);
     }
-    pots.push({ amount, winners, label: '팟' });
+
+    // 자격자와 승자가 앞 팟과 똑같으면 같은 팟으로 합칩니다
+    // (폴드한 사람의 칩 때문에 생기는 의미 없는 사이드 팟을 없앱니다).
+    const last = pots[pots.length - 1];
+    if (last && sameIds(last.eligible, eligible) && sameIds(last.winners, winners)) {
+      last.amount += amount;
+    } else {
+      pots.push({ amount, eligible, winners, label: '팟' });
+    }
   }
 
   // 팟 이름(메인·사이드)을 붙이고 나눠 줍니다. 나누고 남는 칩은 첫 번째 승자에게 갑니다.
@@ -400,32 +473,54 @@ function finishHand(state: GameState): GameState {
   });
   for (const p of state.players) if (winnings[p.id]) p.chips += winnings[p.id];
 
+  const net: Record<number, number> = {};
+  for (const p of state.players) net[p.id] = (winnings[p.id] ?? 0) - contributed[p.id];
+
   const allWinners = [...new Set(pots.flatMap((p) => p.winners))];
-  const name = (id: number) => state.players.find((p) => p.id === id)!.name;
+  const byId = (id: number) => state.players.find((p) => p.id === id)!;
+  const names = (ids: number[]) => ids.map((id) => seatName(byId(id))).join(', ');
+  const total = pots.reduce((s, p) => s + p.amount, 0);
 
   let summary: string;
   if (showdown.length === 0) {
-    const total = pots.reduce((s, p) => s + p.amount, 0);
-    summary = `${allWinners.map(name).join(', ')} 승리 — ${total}칩 획득 (나머지 모두 폴드)`;
+    summary = `${names(allWinners)} 승리 — 나머지가 모두 폴드해서 팟 ${total}칩을 가져갑니다.`;
   } else if (pots.length === 1) {
     const pot = pots[0];
     const handName = handById.get(pot.winners[0])?.name ?? '가장 좋은 핸드';
-    summary = `${pot.winners.map(name).join(', ')} 승리 — ${josa(handName, '으로/로')} ${pot.amount}칩 획득`;
+    if (pot.winners.length === 1) {
+      summary = `${names(pot.winners)} 승리 — ${josa(handName, '으로/로')} 팟 ${pot.amount}칩을 모두 가져갑니다.`;
+    } else {
+      const each = Math.floor(pot.amount / pot.winners.length);
+      summary = `무승부 — ${names(pot.winners)} 모두 같은 ${josa(handName, '이/가')} 되어 팟 ${pot.amount}칩을 ${pot.winners.length}명이 나눠 가집니다 (1인당 약 ${each}칩).`;
+    }
+  } else if (pots.every((pot) => sameIds(pot.winners, pots[0].winners))) {
+    const w = pots[0].winners;
+    const handName = handById.get(w[0])?.name ?? '가장 좋은 핸드';
+    summary =
+      w.length === 1
+        ? `${names(w)} 승리 — ${josa(handName, '으로/로')} 모든 팟 ${total}칩을 가져갑니다.`
+        : `무승부 — ${names(w)} 모두 같은 ${josa(handName, '이/가')} 되어 모든 팟 ${total}칩을 나눠 가집니다.`;
   } else {
     summary = pots
       .map((pot) => {
         const handName = handById.get(pot.winners[0])?.name;
-        return `${pot.label}: ${pot.winners.map(name).join(', ')} 승리 — ${pot.amount}칩${
-          handName ? ` (${handName})` : ''
-        }`;
+        const how =
+          pot.winners.length === 1
+            ? `${names(pot.winners)} 승리`
+            : `${names(pot.winners)} 무승부로 나눠 가짐`;
+        return `${pot.label} ${pot.amount}칩: ${how}${handName ? ` (${handName})` : ''}`;
       })
-      .join('; ');
+      .join(' / ');
   }
 
-  state.outcome = { winners: allWinners, pots, winnings, showdown, summary };
+  state.outcome = { winners: allWinners, pots, winnings, contributed, net, showdown, summary };
   state.street = 'complete';
   state.log.push(summary);
   return state;
+}
+
+function sameIds(a: number[], b: number[]): boolean {
+  return a.length === b.length && a.every((x) => b.includes(x));
 }
 
 function cloneState(s: GameState): GameState {
