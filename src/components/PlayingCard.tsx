@@ -1,8 +1,9 @@
-import { type Card, RANK_NAME, cardName, isRed } from '../engine/card';
+import { type Card, cardName, isRed } from '../engine/card';
 
-type Size = 'sm' | 'md' | 'lg';
+type Size = 'xs' | 'sm' | 'md' | 'lg';
 
 const SIZE_CLASSES: Record<Size, string> = {
+  xs: 'w-7 h-10 text-xs rounded',
   sm: 'w-10 h-14 text-base rounded-md',
   md: 'w-14 h-20 text-xl rounded-lg',
   lg: 'w-16 h-24 text-2xl rounded-lg',
@@ -10,9 +11,10 @@ const SIZE_CLASSES: Record<Size, string> = {
 
 export function PlayingCard({ card, size = 'md' }: { card: Card; size?: Size }) {
   const red = isRed(card);
-  const rank = RANK_NAME[card.rank];
-  // "에이스"처럼 긴 이름은 모서리에 들어가도록 글자를 줄입니다.
-  const rankSize = rank.length > 2 ? 'text-[0.6em] tracking-tighter' : rank.length > 1 && /\D/.test(rank) ? 'text-[0.8em]' : '';
+  // 카드 앞면은 실제 카드처럼 영문자(J·Q·K·A)와 숫자로 표시합니다.
+  // 설명 문장에서는 "퀸"처럼 한국어 이름을 씁니다 (aria-label 포함).
+  const rank = card.rank;
+  const rankSize = rank.length > 1 ? 'text-[0.85em] tracking-tighter' : '';
   return (
     <div
       role="img"

@@ -22,6 +22,8 @@ export interface CoachAdvice {
   raiseTo?: number;
   /** 한 줄 요약. */
   headline: string;
+  /** 핵심만 담은 짧은 요약 (3~4줄). */
+  summary: string[];
   sections: CoachSection[];
   equity: EquityResult;
 }
@@ -222,6 +224,7 @@ export function coachAdvice(
   // ⑥ 추천
   let action: ActionType;
   const why: string[] = [];
+  let key = '';
   const raiseAction = (): ActionType => (raiseIsAllIn ? 'allin' : 'raise');
 
   if (preflop) {
@@ -231,31 +234,38 @@ export function coachAdvice(
     );
     if (hand.tier === 'premium' && legal.canRaise) {
       action = raiseAction();
+      key = '프리미엄 핸드 — 앞서 있을 가능성이 높으니 레이즈로 팟을 키우고 상대 수를 줄입니다.';
       why.push(
         `${TIER_TERM.premium}입니다. 이기고 있을 가능성이 높을 때는 팟을 키울수록 이득입니다. 레이즈하면 약한 패들이 폴드해 상대 수가 줄어서 이길 확률도 더 올라갑니다.`,
       );
     } else if (hand.tier === 'strong' || hand.tier === 'premium') {
       if (!raisedPot && legal.canRaise) {
         action = raiseAction();
+        key = '강한 핸드이고 아직 레이즈가 없으니 먼저 레이즈해 주도권을 잡습니다.';
         why.push(`${TIER_TERM.strong}이고 아직 아무도 레이즈하지 않았습니다. 먼저 레이즈해서 팟을 키우고 주도권을 잡는 것이 좋습니다.`);
       } else if (legal.canCheck) {
         action = 'check';
+        key = '강한 핸드지만 공짜로 다음 카드를 볼 수 있습니다.';
         why.push('강한 패지만 공짜로 다음 카드를 볼 수 있으니 체크합니다.');
       } else {
         action = 'call';
+        key = '강한 핸드지만 이미 레이즈가 나와 상대도 강할 수 있으니 콜로 플랍을 봅니다.';
         why.push('강한 패지만 누군가 이미 레이즈해서 상대도 강할 수 있습니다. 다시 올리기보다 콜해서 플랍을 보고 판단합니다.');
       }
     } else if (hand.tier === 'playable') {
       if (legal.canCheck) {
         action = 'check';
+        key = '공짜로 플랍을 볼 수 있으니 체크합니다.';
         why.push('공짜로 플랍을 볼 수 있으니 체크합니다. 플랍에서 맞으면 그때 적극적으로 플레이하면 됩니다.');
       } else if (late && !raisedPot) {
         action = 'call';
+        key = '늦은 자리에서 싸게 들어갈 수 있는 패 — 맞으면 크게 이깁니다.';
         why.push(
           `${TIER_TERM.playable}는 늦게 행동하는 자리에서 싸게 들어갈 때 가치가 있습니다. 지금은 빅 블라인드만큼만 내면 되니 콜로 플랍을 봅니다. 맞으면 크게 이기고, 안 맞으면 플랍에서 쉽게 버릴 수 있습니다.`,
         );
       } else {
         action = 'fold';
+        key = raisedPot ? '레이즈가 나와 비싸졌는데, 이 정도 패로는 그 값을 치를 가치가 없습니다.' : '일찍 행동하는 자리에서는 이 정도 패를 버립니다.';
         why.push(
           raisedPot
             ? '누군가 이미 레이즈해서 플랍을 보는 값이 비싸졌습니다. 이 정도 패로는 비싼 값을 치를 가치가 없습니다.'
@@ -265,9 +275,11 @@ export function coachAdvice(
     } else {
       if (legal.canCheck) {
         action = 'check';
+        key = '약한 패지만 빅 블라인드라 공짜로 플랍을 봅니다.';
         why.push(`약한 패지만 이미 ${g.t('빅 블라인드')}로 낸 칩만으로 공짜로 플랍을 볼 수 있으니 체크합니다.`);
       } else {
         action = 'fold';
+        key = '트래시 핸드 — 돈을 내고 들어갈 가치가 없습니다.';
         why.push(
           `${TIER_TERM.trash}입니다. 콜해서 플랍을 봐도 맞을 확률이 낮고, 맞아도 더 좋은 패에 지기 쉽습니다. 돈을 내야 한다면 버리는 것이 장기적으로 칩을 아끼는 길입니다.`,
         );
@@ -278,27 +290,32 @@ export function coachAdvice(
     if (call > 0) {
       if (eq >= strongTh && legal.canRaise) {
         action = raiseAction();
+        key = `승률 ${pct(eq)}%로 앞서 있을 가능성이 높아, 레이즈로 칩을 더 받아 냅니다.`;
         why.push(
           `승률 ${pct(eq)}%는 상대 ${nOpp}명 기준으로 꽤 높습니다(기준 ${pct(strongTh)}%). 이기고 있을 가능성이 높을 때 상대가 더 많이 내게 만드는 것이 ${g.t('밸류 벳')}의 핵심입니다. 콜만 하면 받을 수 있는 돈을 놓치고, 드로우를 가진 상대에게 싼 가격을 주게 됩니다.`,
         );
       } else if (eq >= potOdds) {
         action = 'call';
+        key = `승률 ${pct(eq)}% ≥ 팟 오즈 ${pct(potOdds)}% → 콜이 장기적으로 이득입니다.`;
         why.push(
           `승률 ${pct(eq)}%가 팟 오즈 ${pct(potOdds)}%보다 높으니 콜이 장기적으로 이득입니다(기대값 ${ev >= 0 ? '+' : ''}${ev}칩). 하지만 이기고 있다고 확신할 만큼 높지는 않아서(레이즈 기준 ${pct(strongTh)}%) 레이즈까지는 하지 않습니다.`,
         );
       } else {
         action = 'fold';
+        key = `승률 ${pct(eq)}% < 팟 오즈 ${pct(potOdds)}% → 콜하면 평균적으로 손해입니다.`;
         why.push(
           `승률 ${pct(eq)}%가 팟 오즈 ${pct(potOdds)}%보다 낮습니다. 이 콜을 100번 반복하면 평균적으로 한 번에 ${Math.abs(ev)}칩씩 잃는 셈이라 폴드가 맞습니다. 이미 낸 칩이 아까워도, 앞으로 잃을 돈을 막는 것이 더 중요합니다.`,
         );
       }
     } else if (eq >= strongTh && legal.canRaise) {
       action = raiseAction();
+      key = `승률 ${pct(eq)}%로 앞서 있어, 벳으로 약한 패에게서 칩을 받아 냅니다.`;
       why.push(
         `승률 ${pct(eq)}%로 앞서 있을 가능성이 높습니다(기준 ${pct(strongTh)}%). ${g.t('밸류 벳')}을 해서 나보다 약한 패를 가진 상대가 콜할 때 칩을 더 받아 냅니다. 체크하면 상대에게 다음 카드를 공짜로 보여 줘서 역전당할 기회를 주게 됩니다.`,
       );
     } else {
       action = 'check';
+      key = eq >= fair ? '중간 세기 패 — 베팅하면 강한 패만 따라오니 체크로 팟을 작게 유지합니다.' : '약한 패 — 공짜로 다음 카드를 보는 체크가 최선입니다.';
       if (eq >= fair) {
         why.push(
           `중간 세기의 패입니다(승률 ${pct(eq)}%, 평균 ${pct(fair)}%보다는 높지만 기준 ${pct(strongTh)}%보다는 낮음). 이런 패로 베팅하면 나보다 약한 패는 폴드하고, 나보다 강한 패만 콜하거나 레이즈합니다. 결국 이길 때는 더 벌지 못하고 질 때만 더 잃게 됩니다.`,
@@ -324,9 +341,24 @@ export function coachAdvice(
             : `${betWord} ${raiseTo}`;
   sections.push({ title: `⑥ 그래서 추천: ${label}`, lines: why });
 
+  const madeName = preflop ? null : evaluateHand([...me.hole, ...state.board]).name;
+  const summary = [
+    `내 패: ${
+      madeName === null
+        ? `${hand.name} (${TIER_TERM[hand.tier]})`
+        : `${madeName}${outs.total > 0 ? ` · 좋아지는 카드(아웃츠) ${outs.total}장` : ''}`
+    }`,
+    `내 자리: ${me.id + 1}번 · ${after === 0 ? '플랍 이후 가장 마지막에 행동(유리)' : `플랍 이후 내 뒤에 ${after}명`}`,
+    call > 0
+      ? `승률 ${pct(eq)}% vs 팟 오즈 ${pct(potOdds)}% (콜 ${call}칩 → 팟 ${state.pot + call}칩)`
+      : `승률 ${pct(eq)}% · 앞에서 아무도 걸지 않아 공짜로 체크 가능`,
+    `추천 ${label}: ${key}`,
+  ];
+
   return {
     action,
     label,
+    summary,
     raiseTo: action === 'raise' ? raiseTo : action === 'allin' ? legal.maxRaiseTo : undefined,
     headline: `${street} · 승률 약 ${pct(eq)}%${call > 0 ? ` · 팟 오즈 ${pct(potOdds)}%` : ''} → 추천: ${label}`,
     sections,

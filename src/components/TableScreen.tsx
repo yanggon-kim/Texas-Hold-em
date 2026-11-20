@@ -146,8 +146,9 @@ export function TableScreen({ onExit }: Props) {
   const recommended = showCoach && advice ? advice.action : null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-5">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+    <div className="px-3 py-3 lg:h-screen lg:flex lg:flex-col">
+      {/* 상단 메뉴 */}
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-2 shrink-0">
         <button onClick={onExit} className="text-sm text-slate-500 hover:text-slate-800">
           ← 나가기
         </button>
@@ -176,129 +177,84 @@ export function TableScreen({ onExit }: Props) {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="min-w-0">
-          {/* 상대 */}
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            {bots.map((p) => (
-              <Seat
-                key={p.id}
-                player={p}
-                game={game}
-                orderPos={orderPos(p.id)}
-                reveal={revealAll && !p.folded}
-                active={actor?.id === p.id}
-              />
-            ))}
-          </div>
+      {/* 4열: 테이블 | 해설 | 코치(또는 결과) | 내 패 전망 */}
+      <div className="grid gap-3 lg:flex-1 lg:min-h-0 lg:grid-cols-[250px_minmax(0,1fr)_minmax(0,1fr)_250px]">
+        {/* ① 테이블 */}
+        <section className="space-y-2 lg:overflow-y-auto lg:pr-1">
+          {bots.map((p) => (
+            <Seat
+              key={p.id}
+              player={p}
+              game={game}
+              orderPos={orderPos(p.id)}
+              reveal={revealAll && !p.folded}
+              active={actor?.id === p.id}
+            />
+          ))}
 
-          {/* 테이블: 팟 + 보드 */}
-          <div className="rounded-3xl bg-emerald-700 border-4 border-emerald-900 p-4 mb-3 shadow-inner">
-            <div className="text-center text-emerald-100 text-sm">
+          <div className="rounded-2xl bg-emerald-700 border-4 border-emerald-900 px-2 py-2 shadow-inner">
+            <div className="text-center text-emerald-100 text-xs">
               팟 <span className="font-bold text-white">{game.pot}</span>칩
-              <span className="mx-2 text-emerald-300">·</span>
+              <span className="mx-1.5 text-emerald-300">·</span>
               <span className="font-semibold text-white">{STREET_LABEL[game.street]}</span>
             </div>
             {GLOSSARY[STREET_LABEL[game.street]] && (
-              <p className="text-center text-[11px] text-emerald-200 mb-2">({GLOSSARY[STREET_LABEL[game.street]]})</p>
+              <p className="text-center text-[10px] leading-tight text-emerald-200 mb-1">
+                ({GLOSSARY[STREET_LABEL[game.street]]})
+              </p>
             )}
-            <div className="flex justify-center gap-1.5 min-h-[5rem] items-center">
+            <div className="flex justify-center gap-1 min-h-[3.5rem] items-center">
               {game.board.length === 0 ? (
-                <span className="text-emerald-200/70 text-sm">커뮤니티 카드가 여기에 깔립니다</span>
+                <span className="text-emerald-200/70 text-xs">커뮤니티 카드가 여기에 깔립니다</span>
               ) : (
-                game.board.map((c, i) => <PlayingCard key={i} card={c} size="md" />)
+                game.board.map((c, i) => <PlayingCard key={i} card={c} size="sm" />)
               )}
             </div>
           </div>
 
-          {/* 행동 순서 */}
+          <Seat player={human} game={game} orderPos={orderPos(human.id)} reveal mine active={humanToAct} />
+
           {!handOver && <OrderBar game={game} order={order} />}
 
-          {/* 내 자리 */}
-          <Seat player={human} game={game} orderPos={orderPos(human.id)} reveal big active={humanToAct} />
-
-          <p className="mt-2 text-[11px] text-slate-400 leading-relaxed">
-            딜러 = 딜러 버튼(매 핸드 한 칸씩 옮겨 가며, 플랍 이후 가장 마지막에 행동) · SB = 스몰 블라인드(버튼 왼쪽,
-            의무로 10칩) · BB = 빅 블라인드(그다음 자리, 의무로 20칩) · "n번째" = 이번 베팅 라운드에서 행동하는 순서
+          <p className="text-[10px] text-slate-400 leading-snug">
+            딜러 = 딜러 버튼(플랍 이후 가장 마지막에 행동) · SB = 스몰 블라인드(의무 10칩) · BB = 빅
+            블라인드(의무 20칩)
           </p>
 
-          {/* 해설 */}
-          <NarrationFeed feed={feed} />
-
-          {/* 결과 / 진행 / 액션 */}
-          {handOver ? (
-            <ResultPanel game={game} onNext={nextHand} onNewGame={newGame} broke={humanBroke} />
-          ) : humanToAct && legal ? (
-            <div className="mt-3">
-              {showCoach && advice && <CoachPanel advice={advice} />}
-              <div className="mt-2 flex flex-wrap gap-2">
-                <ActButton
-                  onClick={() => act({ type: 'fold' })}
-                  tone="rose"
-                  label="폴드"
-                  hint="패를 버리고 포기"
-                  rec={recommended === 'fold'}
-                />
-                {legal.canCheck ? (
-                  <ActButton
-                    onClick={() => act({ type: 'check' })}
-                    tone="slate"
-                    label="체크"
-                    hint="칩 없이 차례 넘기기"
-                    rec={recommended === 'check'}
-                  />
-                ) : (
-                  <ActButton
-                    onClick={() => act({ type: 'call' })}
-                    tone="slate"
-                    label={`콜 ${legal.callAmount}`}
-                    hint="앞사람 금액에 맞추기"
-                    rec={recommended === 'call'}
-                  />
-                )}
-                {legal.canRaise && raiseTarget < legal.maxRaiseTo && (
-                  <ActButton
-                    onClick={() => act({ type: 'raise', amount: raiseTarget })}
-                    tone="emerald"
-                    label={`${game.currentBet > 0 ? '레이즈' : '벳'} ${raiseTarget}`}
-                    hint={game.currentBet > 0 ? '더 올려서 걸기' : '처음으로 칩 걸기'}
-                    rec={recommended === 'raise'}
-                  />
-                )}
-                {legal.canRaise && (
-                  <ActButton
-                    onClick={() => act({ type: 'allin' })}
-                    tone="amber"
-                    label={`올인 ${legal.maxRaiseTo}`}
-                    hint="가진 칩 전부 걸기"
-                    rec={recommended === 'allin'}
-                  />
-                )}
-              </div>
+          <details className="rounded-lg bg-slate-100 px-2 py-1">
+            <summary className="cursor-pointer text-[11px] text-slate-500">액션 기록 ({game.log.length})</summary>
+            <div className="mt-1 max-h-40 overflow-y-auto text-[11px] text-slate-500 font-mono">
+              {game.log.map((line, i) => (
+                <div key={i}>{line}</div>
+              ))}
             </div>
-          ) : actor && !humanOut && stepMode ? (
-            <button
-              onClick={stepBot}
-              className="mt-3 w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700"
-            >
-              다음 ▶ {seatName(actor)}의 행동 보기
-            </button>
+          </details>
+        </section>
+
+        {/* ② 해설 (노란 상자) */}
+        <section key={`feed-${feed.length}`} className="lg:overflow-y-auto lg:min-h-0">
+          <NarrationFeed feed={feed} />
+        </section>
+
+        {/* ③ 코치 또는 핸드 결과 */}
+        <section key={`coach-${game.log.length}-${handOver}`} className="lg:overflow-y-auto lg:min-h-0">
+          {handOver ? (
+            <ResultDetails game={game} />
+          ) : showCoach && advice ? (
+            <CoachPanel advice={advice} />
           ) : (
-            <div className="mt-3 text-center text-sm text-slate-400 py-3">
-              {humanOut ? '내가 빠진 핸드라 빠르게 진행합니다…' : actor ? `${seatName(actor)} 생각 중…` : '카드를 나누는 중…'}
+            <div className="rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-400">
+              {showCoach
+                ? humanOut
+                  ? '이번 핸드는 폴드했습니다. 핸드가 끝나면 결과가 여기에 나옵니다.'
+                  : '내 차례가 되면 코치 설명이 여기에 나옵니다.'
+                : '코치가 꺼져 있습니다.'}
             </div>
           )}
+        </section>
 
-          {/* 액션 기록 */}
-          <div className="mt-4 rounded-xl bg-slate-100 p-3 max-h-32 overflow-y-auto text-xs text-slate-500 font-mono">
-            {game.log.map((line, i) => (
-              <div key={i}>{line}</div>
-            ))}
-          </div>
-        </div>
-
-        {/* 사이드 패널 */}
-        <aside className="space-y-3">
+        {/* ④ 내 패 전망 */}
+        <aside className="space-y-3 lg:overflow-y-auto lg:min-h-0">
           <HandOutlook
             hole={human.hole}
             board={game.board}
@@ -311,20 +267,100 @@ export function TableScreen({ onExit }: Props) {
           <GlossaryPanel />
         </aside>
       </div>
+
+      {/* 맨 아래: 선택지 버튼 */}
+      <div className="mt-3 shrink-0">
+        {handOver ? (
+          humanBroke ? (
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-sm text-rose-600">칩을 모두 잃었습니다!</span>
+              <button
+                onClick={newGame}
+                className="rounded-xl bg-slate-800 px-6 py-2.5 font-semibold text-white hover:bg-slate-900"
+              >
+                새 게임
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={nextHand}
+              className="w-full rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700"
+            >
+              다음 핸드 →
+            </button>
+          )
+        ) : humanToAct && legal ? (
+          <div className="flex flex-wrap gap-2">
+            <ActButton
+              onClick={() => act({ type: 'fold' })}
+              tone="rose"
+              label="폴드"
+              hint="패를 버리고 포기"
+              rec={recommended === 'fold'}
+            />
+            {legal.canCheck ? (
+              <ActButton
+                onClick={() => act({ type: 'check' })}
+                tone="slate"
+                label="체크"
+                hint="칩 없이 차례 넘기기"
+                rec={recommended === 'check'}
+              />
+            ) : (
+              <ActButton
+                onClick={() => act({ type: 'call' })}
+                tone="slate"
+                label={`콜 ${legal.callAmount}`}
+                hint="앞사람 금액에 맞추기"
+                rec={recommended === 'call'}
+              />
+            )}
+            {legal.canRaise && raiseTarget < legal.maxRaiseTo && (
+              <ActButton
+                onClick={() => act({ type: 'raise', amount: raiseTarget })}
+                tone="emerald"
+                label={`${game.currentBet > 0 ? '레이즈' : '벳'} ${raiseTarget}`}
+                hint={game.currentBet > 0 ? '더 올려서 걸기' : '처음으로 칩 걸기'}
+                rec={recommended === 'raise'}
+              />
+            )}
+            {legal.canRaise && (
+              <ActButton
+                onClick={() => act({ type: 'allin' })}
+                tone="amber"
+                label={`올인 ${legal.maxRaiseTo}`}
+                hint="가진 칩 전부 걸기"
+                rec={recommended === 'allin'}
+              />
+            )}
+          </div>
+        ) : actor && !humanOut && stepMode ? (
+          <button
+            onClick={stepBot}
+            className="w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700"
+          >
+            다음 ▶ {seatName(actor)}의 행동 보기
+          </button>
+        ) : (
+          <div className="text-center text-sm text-slate-400 py-3">
+            {humanOut ? '내가 빠진 핸드라 빠르게 진행합니다…' : actor ? `${seatName(actor)} 생각 중…` : '카드를 나누는 중…'}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 function OrderBar({ game, order }: { game: GameState; order: number[] }) {
   return (
-    <div className="mb-3 rounded-xl bg-white border border-slate-200 px-3 py-2 text-xs text-slate-600">
+    <div className="rounded-lg bg-white border border-slate-200 px-2 py-1.5 text-[11px] leading-snug text-slate-600">
       <span className="font-semibold text-slate-700">{STREET_LABEL[game.street]} 행동 순서: </span>
       {order.map((i, k) => {
         const p = game.players[i];
         const current = game.toAct === i;
         return (
           <span key={i}>
-            {k > 0 && <span className="mx-1 text-slate-300">→</span>}
+            {k > 0 && <span className="mx-0.5 text-slate-300">→</span>}
             <span
               className={`${current ? 'rounded bg-emerald-100 px-1 font-bold text-emerald-800' : ''} ${
                 p.folded ? 'line-through text-slate-300' : ''
@@ -345,14 +381,14 @@ function Seat({
   game,
   orderPos,
   reveal,
-  big,
+  mine,
   active,
 }: {
   player: Player;
   game: GameState;
   orderPos: number;
   reveal: boolean;
-  big?: boolean;
+  mine?: boolean;
   active?: boolean;
 }) {
   const roles: string[] = [];
@@ -361,45 +397,49 @@ function Seat({
     if (game.sbIndex === player.id) roles.push('SB');
     if (game.bbIndex === player.id) roles.push('BB');
   }
+  const size = mine ? 'sm' : 'xs';
   return (
     <div
-      className={`rounded-2xl border bg-white p-3 ${
+      className={`rounded-xl border px-2 py-1.5 ${mine ? 'bg-sky-50' : 'bg-white'} ${
         active ? 'border-emerald-400 ring-2 ring-emerald-200' : 'border-slate-200'
       } ${player.folded ? 'opacity-50' : ''}`}
     >
       <div className="flex items-center justify-between gap-1">
-        <div className="flex items-center gap-1 min-w-0 flex-wrap">
-          <span className="inline-grid place-items-center w-5 h-5 shrink-0 rounded-full bg-slate-700 text-white text-[11px] font-bold">
+        <div className="flex items-center gap-1 min-w-0">
+          <span className="inline-grid place-items-center w-4 h-4 shrink-0 rounded-full bg-slate-700 text-white text-[10px] font-bold">
             {player.id + 1}
           </span>
-          <span className="font-semibold text-slate-800 truncate whitespace-nowrap">
+          <span className="text-sm font-semibold text-slate-800 truncate">
             {player.id + 1}번 {player.name}
           </span>
           {roles.map((r) => (
-            <span key={r} className="rounded bg-slate-800 px-1 text-[10px] text-white">
+            <span key={r} className="shrink-0 rounded bg-slate-800 px-1 text-[9px] text-white">
               {r}
             </span>
           ))}
         </div>
-        <span className="text-sm font-bold text-emerald-700 shrink-0">{player.chips}</span>
+        <span className="text-xs font-bold text-emerald-700 shrink-0">{player.chips}칩</span>
       </div>
-      {!player.sittingOut && game.street !== 'complete' && orderPos > 0 && (
-        <div className="text-[10px] text-slate-400 mt-0.5">이번 라운드 {orderPos}번째로 행동</div>
-      )}
-      <div className="flex items-center justify-between mt-2 gap-1">
+      <div className="flex items-center justify-between mt-1 gap-1">
         <div className="flex gap-1 shrink-0">
           {player.hole.length === 0 ? (
-            <span className="text-xs text-slate-300">{player.sittingOut ? '칩 없음 · 쉼' : '—'}</span>
+            <span className="text-[11px] text-slate-300">{player.sittingOut ? '칩 없음 · 쉼' : '—'}</span>
           ) : reveal ? (
-            player.hole.map((c, i) => <PlayingCard key={i} card={c} size={big ? 'md' : 'sm'} />)
+            player.hole.map((c, i) => <PlayingCard key={i} card={c} size={size} />)
           ) : (
-            player.hole.map((_, i) => <CardBack key={i} size={big ? 'md' : 'sm'} />)
+            player.hole.map((_, i) => <CardBack key={i} size={size} />)
           )}
         </div>
-        {player.lastAction && !player.folded && (
-          <span className="text-[11px] text-slate-500 text-right">{player.lastAction}</span>
-        )}
-        {player.folded && !player.sittingOut && <span className="text-[11px] text-rose-400 shrink-0">폴드</span>}
+        <div className="text-right leading-tight">
+          {player.folded && !player.sittingOut ? (
+            <div className="text-[11px] text-rose-400">폴드</div>
+          ) : (
+            player.lastAction && <div className="text-[11px] text-slate-600">{player.lastAction}</div>
+          )}
+          {!player.sittingOut && game.street !== 'complete' && orderPos > 0 && (
+            <div className="text-[10px] text-slate-400">이번 라운드 {orderPos}번째</div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -433,7 +473,7 @@ function ActButton({
     >
       <div>
         {label}
-        {rec && ' 💡'}
+        {rec && ' 💡추천'}
       </div>
       <div className="text-[10px] font-normal opacity-80">{hint}</div>
     </button>
@@ -459,9 +499,21 @@ function Sections({ sections }: { sections: { title: string; lines: string[] }[]
 
 function CoachPanel({ advice }: { advice: CoachAdvice }) {
   return (
-    <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900 leading-relaxed">
-      <div className="font-bold mb-2">💡 코치: {advice.headline}</div>
-      <Sections sections={advice.sections} />
+    <div className="rounded-xl border border-indigo-200 bg-indigo-50 text-sm text-indigo-950 leading-relaxed">
+      <div className="px-4 pt-3 pb-3 border-b border-indigo-200 bg-indigo-100/60 rounded-t-xl">
+        <div className="text-xs font-semibold text-indigo-600 mb-1">💡 코치 요약</div>
+        <ul className="space-y-1">
+          {advice.summary.map((line, i) => (
+            <li key={i} className={i === advice.summary.length - 1 ? 'font-bold text-indigo-900' : ''}>
+              {line}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="px-4 py-3">
+        <div className="text-xs font-semibold text-indigo-600 mb-2">▼ 자세한 설명 (스크롤해서 읽기)</div>
+        <Sections sections={advice.sections} />
+      </div>
     </div>
   );
 }
@@ -477,7 +529,7 @@ function NarrationFeed({ feed }: { feed: Narration[] }) {
         ? 'border-sky-200 bg-sky-50 text-sky-950'
         : 'border-slate-200 bg-white text-slate-800';
   return (
-    <div className="mt-3">
+    <div>
       <div className={`rounded-xl border px-4 py-3 text-sm leading-relaxed ${tone}`}>
         <div className="font-bold mb-2">📢 {latest.title}</div>
         <Sections sections={latest.sections} />
@@ -501,17 +553,7 @@ function NarrationFeed({ feed }: { feed: Narration[] }) {
   );
 }
 
-function ResultPanel({
-  game,
-  onNext,
-  onNewGame,
-  broke,
-}: {
-  game: GameState;
-  onNext: () => void;
-  onNewGame: () => void;
-  broke: boolean;
-}) {
+function ResultDetails({ game }: { game: GameState }) {
   const o = game.outcome!;
   const g = new Glosser();
   const name = (id: number) => seatName(game.players[id]);
@@ -522,7 +564,8 @@ function ResultPanel({
   const players = game.players.filter((p) => !p.sittingOut);
 
   return (
-    <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm">
+      <div className="text-xs font-semibold text-slate-500 mb-1">🏁 핸드 결과</div>
       <p className="font-semibold text-slate-800">{o.summary}</p>
 
       {!me.sittingOut && (
@@ -592,32 +635,8 @@ function ResultPanel({
         {o.showdown.length > 0 && (
           <p>
             {g.t('쇼다운')}에서 공개된 패:{' '}
-            {o.showdown
-              .map((s) => `${name(s.playerId)} ${s.result ? s.result.name : ''}`)
-              .join(' · ')}
-            .
+            {o.showdown.map((s) => `${name(s.playerId)} ${s.result ? s.result.name : ''}`).join(' · ')}.
           </p>
-        )}
-      </div>
-
-      <div className="mt-3 text-center">
-        {broke ? (
-          <>
-            <p className="text-sm text-rose-600">칩을 모두 잃었습니다!</p>
-            <button
-              onClick={onNewGame}
-              className="mt-2 rounded-xl bg-slate-800 px-6 py-2.5 font-semibold text-white hover:bg-slate-900"
-            >
-              새 게임
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={onNext}
-            className="rounded-xl bg-emerald-600 px-6 py-2.5 font-semibold text-white hover:bg-emerald-700"
-          >
-            다음 핸드 →
-          </button>
         )}
       </div>
     </div>

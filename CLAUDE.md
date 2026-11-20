@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A client-only Texas Hold'em **learning game** (React 18 + Vite 6 + TypeScript + Tailwind CSS v4). It has 10 levels: levels 1–9 are multiple-choice drills, and level 10 is a live no-limit table against bots with a coach. There is no backend; progress is kept in `localStorage`. It deploys to Vercel as a static SPA (default `base: '/'`, no env vars).
 
-The whole app is in **Korean**: UI text, drill prompts, explanations, card rank names (`RANK_NAME` in `src/engine/card.ts`), code comments, test names and commit messages. Keep new content in Korean as well.
+The whole app is in **Korean**: UI text, drill prompts, explanations, card rank names in text (`RANK_NAME` in `src/engine/card.ts`, e.g. 퀸; card faces in `PlayingCard.tsx` show J/Q/K/A instead), code comments, test names and commit messages. Keep new content in Korean as well.
 
 Design docs: `docs/game-development.md` (curriculum, milestones, remaining nice-to-haves) and `docs/beginner-guide.md` (the rules and strategy content the levels are based on).
 
