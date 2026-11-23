@@ -75,6 +75,8 @@ export interface LevelDef {
   masteryNeeded?: number;
   /** "플레이" 레벨은 연습 문제 대신 AI와의 실전 테이블을 엽니다. */
   play?: boolean;
+  /** play 레벨에서 휴대폰용 간단한 테이블(SimpleTableScreen)을 엽니다. */
+  simpleTable?: boolean;
 }
 
 /**

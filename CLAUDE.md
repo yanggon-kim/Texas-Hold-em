@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A client-only Texas Hold'em **learning game** (React 18 + Vite 6 + TypeScript + Tailwind CSS v4). It has 10 levels: levels 1–9 are multiple-choice drills, and level 10 is a live no-limit table against bots with a coach. There is no backend; progress is kept in `localStorage`. It deploys to Vercel as a static SPA (default `base: '/'`, no env vars).
+A client-only Texas Hold'em **learning game** (React 18 + Vite 6 + TypeScript + Tailwind CSS v4). It has 11 levels: levels 1–9 are multiple-choice drills, level 10 is a live no-limit table against bots with a detailed coach (desktop-oriented), and level 11 is the same game on a simple mobile-sized table. There is no backend; progress is kept in `localStorage`. It deploys to Vercel as a static SPA (default `base: '/'`, no env vars).
 
 The whole app is in **Korean**: UI text, drill prompts, explanations, card rank names in text (`RANK_NAME` in `src/engine/card.ts`, e.g. 퀸; card faces in `PlayingCard.tsx` show J/Q/K/A instead), code comments, test names and commit messages. Keep new content in Korean as well.
 
@@ -48,7 +48,7 @@ There are three layers. Dependencies point downward only:
 
 3. **`src/state/progress.ts` + `src/components/`**: UI.
    - `useProgress()` stores the per-level `LevelProgress` under the `localStorage` key `th-learn-progress-v1`. `normalize()` fills in missing fields and levels, so old saves keep working. When you add a field, give it a default in `emptyLevel()`; don't bump the key.
-   - `TableScreen.tsx` stores the game and its narration feed together. Bot turns wait for the **다음 ▶** button (or advance on a timer when step mode is off), and the rest of the hand fast-forwards once the human folds. `App.tsx` is a small view-state machine (`map → intro → lesson → drill | table`, plus `stats`) with no router. `DrillScreen` runs in `'mastery'` or `'endless'` mode. It is remounted through `sessionKey` for each new session and re-asks missed drills.
+   - `TableScreen.tsx` stores the game and its narration feed together. Bot turns wait for the **다음 ▶** button (or advance on a timer when step mode is off), and the rest of the hand fast-forwards once the human folds. `SimpleTableScreen.tsx` (level 11, chosen by `simpleTable: true` on the `LevelDef`) reuses the same engine and `coachAdvice`, but shows only a one-line tip and auto-advances bots. `App.tsx` is a small view-state machine (`map → intro → lesson → drill | table`, plus `stats`) with no router. `DrillScreen` runs in `'mastery'` or `'endless'` mode. It is remounted through `sessionKey` for each new session and re-asks missed drills.
 
 ### Adding or changing a level
 

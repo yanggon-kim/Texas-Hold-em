@@ -83,7 +83,7 @@ export function LevelMap({ progress, onPick, onPractice, onShowStats, onReset }:
       </ol>
 
       <p className="text-center text-xs text-slate-400 mt-8">
-        10개 레벨을 차례로 익히고, 레벨 10에서 봇과 실전 핸드를 플레이하세요. ♠️
+        레벨을 차례로 익히고, 레벨 10(자세한 해설) 또는 레벨 11(휴대폰용)에서 봇과 실전 핸드를 플레이하세요. ♠️
       </p>
 
       {masteredCount > 0 && (

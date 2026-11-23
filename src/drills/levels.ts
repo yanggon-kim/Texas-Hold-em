@@ -24,7 +24,7 @@ import {
 /**
  * 커리큘럼.
  *   레벨 1–3: 규칙 익히기.   레벨 4–6: 게임 진행.   레벨 7–9: 전략.
- *   레벨 10: AI와의 실전 테이블.
+ *   레벨 10: AI와의 실전 테이블(자세한 해설).   레벨 11: 휴대폰용 간단한 실전 테이블.
  */
 export const LEVELS: LevelDef[] = [
   {
@@ -174,6 +174,20 @@ export const LEVELS: LevelDef[] = [
     ],
     lesson: tablePlayLesson,
     play: true,
+  },
+  {
+    id: 11,
+    title: '봇과 실전 (모바일)',
+    subtitle: '휴대폰에서 가볍게 즐기는 간단한 테이블',
+    icon: '📱',
+    concept: [
+      '레벨 10과 같은 게임을 휴대폰 화면에 맞춘 간단한 테이블입니다.',
+      '자세한 해설 대신 한 줄 코치 추천만 보여 주고, 봇 차례는 자동으로 진행됩니다.',
+      '내가 폴드하면 남은 진행은 빠르게 넘어갑니다.',
+    ],
+    lesson: tablePlayLesson,
+    play: true,
+    simpleTable: true,
   },
 ];
 

@@ -7,6 +7,7 @@ import { LessonScreen } from './components/LessonScreen';
 import { DrillScreen, type DrillMode } from './components/DrillScreen';
 import { StatsDashboard } from './components/StatsDashboard';
 import { TableScreen } from './components/TableScreen';
+import { SimpleTableScreen } from './components/SimpleTableScreen';
 
 type View =
   | { name: 'map' }
@@ -101,7 +102,7 @@ export default function App() {
   if (view.name === 'table') {
     return (
       <Shell>
-        <TableScreen onExit={goMap} />
+        {level.simpleTable ? <SimpleTableScreen onExit={goMap} /> : <TableScreen onExit={goMap} />}
       </Shell>
     );
   }
