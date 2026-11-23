@@ -15,7 +15,10 @@ import {
   STREET_LABEL,
 } from '../engine/game';
 import { decideBotAction, type Difficulty, DIFFICULTY_LABEL } from '../engine/bot';
-import { coachAdvice, suggestedRaiseTo } from '../engine/coach';
+import { coachAdvice, suggestedRaiseTo, TIER_TERM } from '../engine/coach';
+import { evaluateHand, type HandResult } from '../engine/handEvaluator';
+import { classifyStartingHand } from '../engine/startingHands';
+import { josa } from '../engine/josa';
 import { PlayingCard, CardBack } from './PlayingCard';
 
 const BIG_BLIND = 20;
@@ -92,6 +95,9 @@ export function SimpleTableScreen({ onExit }: Props) {
   const bots = game.players.filter((p) => !p.isHuman);
   const revealAll = handOver && game.outcome!.showdown.length > 0;
   const humanBroke = handOver && human.chips <= 0;
+  // 봇이 모두 칩을 잃으면 내가 우승한 것이므로 게임이 끝납니다.
+  const humanChampion = handOver && !humanBroke && bots.every((p) => p.chips <= 0);
+  const myHand = !handOver && !humanOut && human.hole.length === 2 ? describeMyHand(human, game) : null;
   const myNet = handOver ? (game.outcome!.net[human.id] ?? 0) : 0;
   const isButton = (p: Player) => game.players[game.buttonIndex].id === p.id;
 
@@ -165,7 +171,18 @@ export function SimpleTableScreen({ onExit }: Props) {
             {myNet > 0 ? `+${myNet}칩 땄습니다!` : myNet < 0 ? `${myNet}칩 잃었습니다` : '본전입니다'}
           </p>
           <p className="text-sm text-slate-700 mt-1">{game.outcome!.summary}</p>
-          {humanBroke ? (
+          <ShowdownList game={game} />
+          {humanChampion ? (
+            <>
+              <p className="text-sm font-semibold text-emerald-700 mt-2">🏆 우승! 상대 3명의 칩을 모두 땄습니다.</p>
+              <button
+                onClick={newGame}
+                className="mt-3 w-full rounded-xl bg-emerald-600 py-3 font-semibold text-white"
+              >
+                새 게임
+              </button>
+            </>
+          ) : humanBroke ? (
             <>
               <p className="text-sm text-rose-600 mt-2">칩을 모두 잃었습니다!</p>
               <button
@@ -186,6 +203,7 @@ export function SimpleTableScreen({ onExit }: Props) {
         </div>
       ) : humanToAct && legal ? (
         <div className="mt-3">
+          {myHand && <MyHandBox info={myHand} />}
           {tip && (
             <div className="mb-2 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm text-indigo-800">
               💡 {tip}
@@ -232,12 +250,15 @@ export function SimpleTableScreen({ onExit }: Props) {
           </div>
         </div>
       ) : (
-        <div className="mt-3 text-center text-sm text-slate-400 py-3">
+        <div className="mt-3">
+          {myHand && <MyHandBox info={myHand} />}
+        <div className="text-center text-sm text-slate-400 py-3">
           {humanOut
             ? '폴드했습니다 — 남은 사람들의 진행을 빠르게 넘깁니다…'
             : actor
               ? `${seatName(actor)} 생각 중…`
               : '카드를 나누는 중…'}
+        </div>
         </div>
       )}
 
@@ -247,6 +268,112 @@ export function SimpleTableScreen({ onExit }: Props) {
           <div key={i}>{line}</div>
         ))}
       </div>
+    </div>
+  );
+}
+
+interface MyHandInfo {
+  title: string;
+  detail: string;
+  bestFive: HandResult['bestFive'] | null;
+}
+
+/** 지금 내 패 조합: 프리플랍이면 시작 2장의 등급, 이후에는 7장 중 가장 좋은 5장의 족보. */
+export function describeMyHand(me: Player, game: GameState): MyHandInfo {
+  if (game.board.length === 0) {
+    const h = classifyStartingHand(me.hole[0], me.hole[1]);
+    return { title: h.name, detail: `시작 2장 등급: ${TIER_TERM[h.tier]}`, bestFive: null };
+  }
+  const r = evaluateHand([...me.hole, ...game.board]);
+  return { title: r.name, detail: '내 카드 2장 + 커뮤니티 카드 중 가장 좋은 5장', bestFive: r.bestFive };
+}
+
+function MyHandBox({ info }: { info: MyHandInfo }) {
+  return (
+    <div className="mb-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+      <div className="flex items-center justify-between gap-2">
+        <span>
+          🃏 지금 내 패: <strong>{info.title}</strong>
+        </span>
+        {info.bestFive && (
+          <span className="flex gap-0.5 shrink-0">
+            {info.bestFive.map((c, i) => (
+              <PlayingCard key={i} card={c} size="xs" />
+            ))}
+          </span>
+        )}
+      </div>
+      <div className="text-xs text-emerald-700 mt-0.5">{info.detail}</div>
+    </div>
+  );
+}
+
+/** 승부가 끝났을 때 각자의 패와 족보, 그리고 누가 왜 이겼는지 보여 줍니다. */
+export function ShowdownList({ game }: { game: GameState }) {
+  const outcome = game.outcome!;
+  const byId = (id: number) => game.players.find((p) => p.id === id)!;
+  const winners = new Set(outcome.winners);
+
+  if (outcome.showdown.length === 0) {
+    const w = outcome.winners.map((id) => seatName(byId(id))).join(', ');
+    return (
+      <p className="mt-2 rounded-lg bg-slate-50 px-2 py-1.5 text-xs text-slate-600">
+        나머지가 모두 폴드해서 {josa(w, '이/가')} 카드를 공개하지 않고 팟을 가져갔습니다.
+      </p>
+    );
+  }
+
+  const entries = outcome.showdown
+    .filter((e) => e.result)
+    .map((e) => ({ player: byId(e.playerId), result: e.result!, won: winners.has(e.playerId) }))
+    .sort((a, b) => Number(b.won) - Number(a.won) || b.result.category - a.result.category);
+
+  const best = entries.find((e) => e.won);
+  const loser = entries.find((e) => !e.won);
+  let why = '';
+  if (best && loser) {
+    const w = seatName(best.player);
+    why =
+      best.result.category > loser.result.category
+        ? `${w}의 ${josa(best.result.name, '이/가')} ${seatName(loser.player)}의 ${loser.result.name}보다 높은 족보라서 이겼습니다.`
+        : `${josa(w, '과/와')} ${seatName(loser.player)} 모두 ${josa(best.result.name, '으로/로')} 족보는 같지만, 5장의 숫자(높은 카드·킥커)를 비교해 ${josa(w, '이/가')} 이겼습니다.`;
+  } else if (entries.length > 1) {
+    why = `모두 같은 세기의 ${best?.result.name ?? '패'}라서 팟을 나눠 가졌습니다.`;
+  }
+
+  return (
+    <div className="mt-3 text-left">
+      <div className="text-xs font-semibold text-slate-500 mb-1">공개된 패</div>
+      <ul className="space-y-1.5">
+        {entries.map(({ player, result, won }) => (
+          <li
+            key={player.id}
+            className={`rounded-lg border px-2 py-1.5 ${won ? 'border-amber-300 bg-amber-50' : 'border-slate-200'}`}
+          >
+            <div className="flex items-center justify-between gap-2 text-sm">
+              <span className="font-semibold text-slate-800">
+                {won && '🏆 '}
+                {seatName(player)}
+              </span>
+              <span className={won ? 'font-bold text-amber-700' : 'text-slate-600'}>{result.name}</span>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="flex gap-0.5">
+                {player.hole.map((c, i) => (
+                  <PlayingCard key={i} card={c} size="xs" />
+                ))}
+              </span>
+              <span className="text-[10px] text-slate-400">→ 가장 좋은 5장</span>
+              <span className="flex gap-0.5">
+                {result.bestFive.map((c, i) => (
+                  <PlayingCard key={i} card={c} size="xs" />
+                ))}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+      {why && <p className="mt-2 text-xs text-slate-600">💬 {why}</p>}
     </div>
   );
 }

@@ -139,6 +139,8 @@ export function TableScreen({ onExit }: Props) {
   const bots = game.players.filter((p) => !p.isHuman);
   const revealAll = handOver && game.outcome!.showdown.length > 0;
   const humanBroke = human.chips <= 0 && handOver;
+  // 봇이 모두 칩을 잃으면 내가 우승한 것이므로 게임이 끝납니다.
+  const humanChampion = handOver && !humanBroke && bots.every((p) => p.chips <= 0);
   const legal = humanToAct ? legalActions(game) : null;
   const raiseTarget = legal ? suggestedRaiseTo(game) : 0;
   const order = actingOrder(game);
@@ -277,6 +279,16 @@ export function TableScreen({ onExit }: Props) {
               <button
                 onClick={newGame}
                 className="rounded-xl bg-slate-800 px-6 py-2.5 font-semibold text-white hover:bg-slate-900"
+              >
+                새 게임
+              </button>
+            </div>
+          ) : humanChampion ? (
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-sm font-semibold text-emerald-700">🏆 우승! 상대 3명의 칩을 모두 땄습니다.</span>
+              <button
+                onClick={newGame}
+                className="rounded-xl bg-emerald-600 px-6 py-2.5 font-semibold text-white hover:bg-emerald-700"
               >
                 새 게임
               </button>
