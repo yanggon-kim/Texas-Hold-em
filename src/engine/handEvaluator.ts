@@ -185,7 +185,7 @@ const MAIN_COUNT: Record<HandCategory, number> = {
 /**
  * 가장 좋은 5장을 족보 모양대로 정렬합니다. 같은 숫자끼리 묶어 많은 묶음·높은 숫자 순으로
  * 놓고(예: 풀하우스는 트리플 → 페어, 투 페어는 높은 페어 → 낮은 페어 → 킥커),
- * 스트레이트는 높은 카드부터(A-2-3-4-5는 5부터, A는 맨 끝). 족보를 이루는 카드(main)와
+ * 스트레이트는 이어지는 순서대로 낮은 카드부터(5-6-7-8-9, A-2-3-4-5는 A가 맨 앞). 족보를 이루는 카드(main)와
  * 승부가 같을 때만 쓰이는 킥커(kickers)를 나눠 돌려줍니다.
  */
 export function arrangeBestFive(result: HandResult): { main: Card[]; kickers: Card[] } {
@@ -199,7 +199,7 @@ export function arrangeBestFive(result: HandResult): { main: Card[]; kickers: Ca
     const values = cards.map((c) => RANK_VALUE[c.rank]);
     const wheel = values.includes(14) && values.includes(2);
     const v = (c: Card) => (wheel && c.rank === 'A' ? 1 : RANK_VALUE[c.rank]);
-    cards.sort((a, b) => v(b) - v(a));
+    cards.sort((a, b) => v(a) - v(b));
   } else {
     const count = new Map<Rank, number>();
     for (const c of cards) count.set(c.rank, (count.get(c.rank) ?? 0) + 1);

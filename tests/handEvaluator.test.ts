@@ -90,8 +90,8 @@ describe('가장 좋은 5장 정렬 (arrangeBestFive)', () => {
     expect(arranged('3♣ J♠ 3♦ J♥ 3♠ 9♦ 4♠')).toEqual(['333JJ', '']); // 풀하우스: 트리플 먼저
     expect(arranged('A♣ K♦ 2♥ 7♠ 9♣ 4♦ J♠')).toEqual(['A', 'KJ97']); // 하이 카드
   });
-  it('스트레이트는 높은 카드부터, A-2-3-4-5는 A를 맨 끝에 놓는다', () => {
-    expect(arranged('9♣ 6♠ 8♦ 7♥ 5♣ 2♦ K♠')).toEqual(['98765', '']);
-    expect(arranged('A♣ 3♠ 2♦ 5♥ 4♣ K♦ 9♠')).toEqual(['5432A', '']);
+  it('스트레이트는 낮은 카드부터 이어지게, A-2-3-4-5는 A를 맨 앞에 놓는다', () => {
+    expect(arranged('9♣ 6♠ 8♦ 7♥ 5♣ 2♦ K♠')).toEqual(['56789', '']);
+    expect(arranged('A♣ 3♠ 2♦ 5♥ 4♣ K♦ 9♠')).toEqual(['A2345', '']);
   });
 });
