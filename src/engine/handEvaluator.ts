@@ -1,4 +1,4 @@
-import { type Card, type Rank, RANK_VALUE, cardShortName } from './card';
+import { type Card, type Rank, RANK_VALUE, SUITS, cardShortName } from './card';
 
 /** 족보 종류. 가장 약한 것(0) → 가장 강한 것(9) 순서입니다. */
 export enum HandCategory {
@@ -166,4 +166,50 @@ export function parseCard(label: string): Card {
 /** 카드 목록을 한국어로 보기 좋게 출력합니다: "♠에이스 ♠킹 ♠퀸 ♠잭 ♠10". */
 export function handLabel(cards: Card[]): string {
   return cards.map(cardShortName).join(' ');
+}
+
+/** 족보를 이루는 카드 수 (나머지는 킥커). */
+const MAIN_COUNT: Record<HandCategory, number> = {
+  [HandCategory.HighCard]: 1,
+  [HandCategory.OnePair]: 2,
+  [HandCategory.TwoPair]: 4,
+  [HandCategory.ThreeOfAKind]: 3,
+  [HandCategory.Straight]: 5,
+  [HandCategory.Flush]: 5,
+  [HandCategory.FullHouse]: 5,
+  [HandCategory.FourOfAKind]: 4,
+  [HandCategory.StraightFlush]: 5,
+  [HandCategory.RoyalFlush]: 5,
+};
+
+/**
+ * 가장 좋은 5장을 족보 모양대로 정렬합니다. 같은 숫자끼리 묶어 많은 묶음·높은 숫자 순으로
+ * 놓고(예: 풀하우스는 트리플 → 페어, 투 페어는 높은 페어 → 낮은 페어 → 킥커),
+ * 스트레이트는 높은 카드부터(A-2-3-4-5는 5부터, A는 맨 끝). 족보를 이루는 카드(main)와
+ * 승부가 같을 때만 쓰이는 킥커(kickers)를 나눠 돌려줍니다.
+ */
+export function arrangeBestFive(result: HandResult): { main: Card[]; kickers: Card[] } {
+  const cards = result.bestFive.slice();
+  const suitOrder = (c: Card) => SUITS.indexOf(c.suit);
+  const straightLike =
+    result.category === HandCategory.Straight ||
+    result.category === HandCategory.StraightFlush ||
+    result.category === HandCategory.RoyalFlush;
+  if (straightLike) {
+    const values = cards.map((c) => RANK_VALUE[c.rank]);
+    const wheel = values.includes(14) && values.includes(2);
+    const v = (c: Card) => (wheel && c.rank === 'A' ? 1 : RANK_VALUE[c.rank]);
+    cards.sort((a, b) => v(b) - v(a));
+  } else {
+    const count = new Map<Rank, number>();
+    for (const c of cards) count.set(c.rank, (count.get(c.rank) ?? 0) + 1);
+    cards.sort(
+      (a, b) =>
+        count.get(b.rank)! - count.get(a.rank)! ||
+        RANK_VALUE[b.rank] - RANK_VALUE[a.rank] ||
+        suitOrder(a) - suitOrder(b),
+    );
+  }
+  const n = MAIN_COUNT[result.category];
+  return { main: cards.slice(0, n), kickers: cards.slice(n) };
 }

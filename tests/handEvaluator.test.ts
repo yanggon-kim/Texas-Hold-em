@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  arrangeBestFive,
   evaluateHand,
   compareScores,
   parseCard,
@@ -74,5 +75,23 @@ describe('compareScores — 동점 판정', () => {
     const a = evaluateHand(hand('A♦ K♣ Q♠ J♥ 9♦'));
     const b = evaluateHand(hand('A♣ K♦ Q♥ J♠ 9♣'));
     expect(compareScores(a.score, b.score)).toBe(0);
+  });
+});
+
+describe('가장 좋은 5장 정렬 (arrangeBestFive)', () => {
+  const arranged = (labels: string) => {
+    const { main, kickers } = arrangeBestFive(evaluateHand(labels.split(' ').map(parseCard)));
+    return [main.map((c) => c.rank).join(''), kickers.map((c) => c.rank).join('')];
+  };
+  it('족보를 이루는 카드를 앞에, 킥커를 뒤에 높은 순으로 놓는다', () => {
+    expect(arranged('9♣ K♠ 2♦ K♥ A♣ 7♦ 4♠')).toEqual(['KK', 'A97']); // 원 페어
+    expect(arranged('5♣ Q♠ 5♦ Q♥ A♣ 2♦ 3♠')).toEqual(['QQ55', 'A']); // 투 페어
+    expect(arranged('7♣ 7♠ K♦ 7♥ 2♣ 9♦ 4♠')).toEqual(['777', 'K9']); // 트리플
+    expect(arranged('3♣ J♠ 3♦ J♥ 3♠ 9♦ 4♠')).toEqual(['333JJ', '']); // 풀하우스: 트리플 먼저
+    expect(arranged('A♣ K♦ 2♥ 7♠ 9♣ 4♦ J♠')).toEqual(['A', 'KJ97']); // 하이 카드
+  });
+  it('스트레이트는 높은 카드부터, A-2-3-4-5는 A를 맨 끝에 놓는다', () => {
+    expect(arranged('9♣ 6♠ 8♦ 7♥ 5♣ 2♦ K♠')).toEqual(['98765', '']);
+    expect(arranged('A♣ 3♠ 2♦ 5♥ 4♣ K♦ 9♠')).toEqual(['5432A', '']);
   });
 });
